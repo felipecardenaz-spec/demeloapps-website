@@ -281,12 +281,13 @@ function SupportVisualBottom({ variant }: { variant: "software" | "mobile" }) {
         <circle cx="40" cy="20" r="14" fill={`${color}0.10)`} stroke={`${color}0.25)`} strokeWidth="0.8" />
         <circle cx="40" cy="20" r="8" fill={`${color}0.18)`} stroke={`${color}0.35)`} strokeWidth="0.8" />
         <circle cx="40" cy="20" r="3" fill={`${color}0.70)`} />
-        {[0, 60, 120, 180, 240, 300].map((deg, i) => {
-          const rad = (deg * Math.PI) / 180;
-          const x = 40 + 18 * Math.cos(rad);
-          const y = 20 + 18 * Math.sin(rad);
-          return <circle key={i} cx={x} cy={y} r="1.5" fill={`${color}0.40)`} />;
-        })}
+        {/* Pre-computed orbit dots to avoid SSR/client floating-point mismatch */}
+        <circle cx="58" cy="20" r="1.5" fill={`${color}0.40)`} />
+        <circle cx="49" cy="4.41" r="1.5" fill={`${color}0.40)`} />
+        <circle cx="31" cy="4.41" r="1.5" fill={`${color}0.40)`} />
+        <circle cx="22" cy="20" r="1.5" fill={`${color}0.40)`} />
+        <circle cx="31" cy="35.59" r="1.5" fill={`${color}0.40)`} />
+        <circle cx="49" cy="35.59" r="1.5" fill={`${color}0.40)`} />
       </svg>
     </div>
   );
