@@ -19,7 +19,7 @@ const CARDS = [
       "Launch-ready delivery",
     ],
     outcome: "Best when you need to move fast with a focused scope.",
-    cta: "Start with Launch",
+    cta: "Start a Project",
     featured: false,
   },
   {
@@ -37,7 +37,7 @@ const CARDS = [
       "Launch support",
     ],
     outcome: "Best when your business needs systems that work together.",
-    cta: "Explore Growth",
+    cta: "Get a Proposal",
     featured: true,
   },
   {
@@ -55,7 +55,7 @@ const CARDS = [
       "Scalable infrastructure",
     ],
     outcome: "Best when you need a complete system built for long-term scale.",
-    cta: "Plan Advanced",
+    cta: "Discuss Your System",
     featured: false,
   },
 ] as const;
@@ -101,6 +101,69 @@ const COMPARISON_ROWS = [
   },
 ] as const;
 
+/* ─── Card CTA button ───────────────────────────────────────────── */
+function CardCTA({ label, featured }: { label: string; featured: boolean }) {
+  const [h, setH] = useState(false);
+
+  return (
+    <a
+      href="#contact"
+      onMouseEnter={() => setH(true)}
+      onMouseLeave={() => setH(false)}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "6px",
+        padding: "12px 18px",
+        borderRadius: "10px",
+        fontSize: "12.5px",
+        fontWeight: 400,
+        letterSpacing: "0.02em",
+        textDecoration: "none",
+        position: "relative",
+        overflow: "hidden",
+        color: featured
+          ? "rgba(255,255,255,0.96)"
+          : h ? "rgba(255,255,255,0.80)" : "rgba(255,255,255,0.50)",
+        background: featured
+          ? h
+            ? "linear-gradient(170deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%)"
+            : "linear-gradient(170deg, #5b5ef4 0%, #4338ca 100%)"
+          : h
+            ? "rgba(255,255,255,0.07)"
+            : "rgba(255,255,255,0.03)",
+        border: featured
+          ? h ? "1px solid rgba(255,255,255,0.20)" : "1px solid rgba(129,140,248,0.28)"
+          : h ? "1px solid rgba(255,255,255,0.14)" : "1px solid rgba(255,255,255,0.08)",
+        boxShadow: featured
+          ? h
+            ? "inset 0 1px 0 rgba(255,255,255,0.22), 0 4px 16px -4px rgba(79,70,229,0.55)"
+            : "inset 0 1px 0 rgba(255,255,255,0.14), 0 2px 8px -2px rgba(79,70,229,0.30)"
+          : "none",
+        transition: "all 240ms cubic-bezier(0.22,1,0.36,1)",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {featured && (
+        <span aria-hidden="true" style={{
+          position: "absolute", top: 0, bottom: 0, width: "60%",
+          left: h ? "120%" : "-60%",
+          transform: "skewX(-12deg)",
+          background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%)",
+          transition: "left 480ms cubic-bezier(0.22,1,0.36,1)",
+          pointerEvents: "none",
+        }} />
+      )}
+      {label}
+      <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"
+        style={{ transform: h ? "translateX(2px)" : "translateX(0)", transition: "transform 200ms", flexShrink: 0 }}>
+        <path d="M2.5 6H9.5M9.5 6L6.5 3M9.5 6L6.5 9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </a>
+  );
+}
+
 /* ─── Pricing card ──────────────────────────────────────────────── */
 function PricingCard({
   card,
@@ -108,14 +171,12 @@ function PricingCard({
   hoveredId,
   onHover,
   delay,
-  mobileOrder,
 }: {
   card: typeof CARDS[number];
   active: boolean;
   hoveredId: CardId | null;
   onHover: (id: CardId | null) => void;
   delay: number;
-  mobileOrder?: number;
 }) {
   const isHovered = hoveredId === card.id;
   const isDimmed = hoveredId !== null && !isHovered;
@@ -123,28 +184,27 @@ function PricingCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-      transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay }}
+      initial={{ opacity: 0, y: 28 }}
+      animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+      transition={{ duration: 0.78, ease: [0.22, 1, 0.36, 1], delay }}
       onMouseEnter={() => onHover(card.id)}
       onMouseLeave={() => onHover(null)}
       style={{
         flex: "1 1 0",
         minWidth: 0,
         position: "relative",
-        opacity: isDimmed ? 0.82 : 1,
-        transition: "opacity 240ms ease",
-        zIndex: isHovered ? 2 : f ? 1 : 0,
-        order: mobileOrder,
+        opacity: isDimmed ? 0.88 : 1,
+        transition: "opacity 260ms ease",
+        zIndex: isHovered ? 3 : f ? 2 : 1,
       }}
     >
-      {/* Featured outer ring */}
+      {/* Featured outer gradient ring */}
       {f && (
         <div style={{
           position: "absolute",
           inset: "-1px",
-          borderRadius: "23px",
-          background: "linear-gradient(145deg, rgba(129,140,248,0.22) 0%, rgba(99,102,241,0.08) 50%, transparent 100%)",
+          borderRadius: "24px",
+          background: "linear-gradient(145deg, rgba(129,140,248,0.28) 0%, rgba(99,102,241,0.10) 40%, rgba(139,92,246,0.06) 100%)",
           pointerEvents: "none",
           zIndex: 0,
         }} />
@@ -156,64 +216,64 @@ function PricingCard({
         zIndex: 1,
         height: "100%",
         borderRadius: "22px",
-        padding: f ? "28px 26px 26px" : "26px 24px 24px",
+        padding: "28px 24px 24px",
         background: f
           ? isHovered
-            ? "linear-gradient(155deg, rgba(99,102,241,0.12) 0%, rgba(79,70,229,0.07) 50%, rgba(255,255,255,0.03) 100%)"
-            : "linear-gradient(155deg, rgba(99,102,241,0.09) 0%, rgba(79,70,229,0.05) 50%, rgba(255,255,255,0.02) 100%)"
+            ? "linear-gradient(170deg, rgba(99,102,241,0.14) 0%, rgba(79,70,229,0.08) 40%, rgba(15,15,30,0.95) 100%)"
+            : "linear-gradient(170deg, rgba(99,102,241,0.10) 0%, rgba(79,70,229,0.06) 40%, rgba(12,12,26,0.96) 100%)"
           : isHovered
-            ? "linear-gradient(155deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)"
-            : "linear-gradient(155deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
+            ? "linear-gradient(170deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 40%, rgba(10,10,20,0.96) 100%)"
+            : "linear-gradient(170deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 40%, rgba(8,8,18,0.97) 100%)",
+        backdropFilter: "blur(28px)",
+        WebkitBackdropFilter: "blur(28px)",
         border: f
-          ? isHovered ? "1px solid rgba(129,140,248,0.35)" : "1px solid rgba(129,140,248,0.22)"
-          : isHovered ? "1px solid rgba(255,255,255,0.14)" : "1px solid rgba(255,255,255,0.08)",
+          ? isHovered ? "1px solid rgba(129,140,248,0.38)" : "1px solid rgba(129,140,248,0.22)"
+          : isHovered ? "1px solid rgba(255,255,255,0.13)" : "1px solid rgba(255,255,255,0.07)",
         boxShadow: f
           ? isHovered
-            ? "inset 0 1px 0 rgba(255,255,255,0.12), 0 20px 56px rgba(0,0,0,0.36), 0 0 0 1px rgba(99,102,241,0.10)"
-            : "inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 40px rgba(0,0,0,0.28), 0 0 0 1px rgba(99,102,241,0.06)"
+            ? "inset 0 1px 0 rgba(255,255,255,0.14), 0 24px 64px rgba(0,0,0,0.40), 0 0 0 1px rgba(99,102,241,0.12)"
+            : "inset 0 1px 0 rgba(255,255,255,0.09), 0 14px 44px rgba(0,0,0,0.32), 0 0 0 1px rgba(99,102,241,0.07)"
           : isHovered
-            ? "inset 0 1px 0 rgba(255,255,255,0.10), 0 10px 28px rgba(0,0,0,0.24)"
-            : "inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 16px rgba(0,0,0,0.18)",
-        transform: isHovered ? "translateY(-5px)" : "translateY(0)",
+            ? "inset 0 1px 0 rgba(255,255,255,0.09), 0 12px 32px rgba(0,0,0,0.28)"
+            : "inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 18px rgba(0,0,0,0.20)",
+        transform: isHovered ? "translateY(-6px)" : "translateY(0)",
         transition: "all 260ms cubic-bezier(0.22,1,0.36,1)",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
       }}>
-        {/* Top shimmer */}
+        {/* Top shimmer line */}
         <span aria-hidden="true" style={{
           position: "absolute", top: 0, left: 0, right: 0, height: "1px",
           background: f
-            ? "linear-gradient(to right, transparent, rgba(165,180,252,0.40), transparent)"
-            : "linear-gradient(to right, transparent, rgba(255,255,255,0.12), transparent)",
+            ? "linear-gradient(to right, transparent 0%, rgba(165,180,252,0.45) 50%, transparent 100%)"
+            : "linear-gradient(to right, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%)",
           pointerEvents: "none",
         }} />
 
         {/* Featured inner glow */}
         {f && (
           <div aria-hidden="true" style={{
-            position: "absolute", top: "-40%", left: "50%", transform: "translateX(-50%)",
-            width: "100%", height: "200px", borderRadius: "9999px",
-            background: "radial-gradient(ellipse, rgba(99,102,241,0.10) 0%, transparent 70%)",
+            position: "absolute", top: "-50%", left: "50%", transform: "translateX(-50%)",
+            width: "110%", height: "220px", borderRadius: "9999px",
+            background: "radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%)",
             pointerEvents: "none",
           }} />
         )}
 
         {/* Top label */}
-        <div style={{ marginBottom: "16px" }}>
+        <div style={{ marginBottom: "18px" }}>
           <span style={{
             display: "inline-block",
             fontSize: "9px",
             fontWeight: 600,
-            letterSpacing: "0.12em",
+            letterSpacing: "0.13em",
             textTransform: "uppercase",
             padding: "3px 10px",
             borderRadius: "9999px",
-            color: f ? "rgba(165,180,252,0.90)" : "rgba(255,255,255,0.40)",
-            background: f ? "rgba(99,102,241,0.14)" : "rgba(255,255,255,0.05)",
-            border: f ? "1px solid rgba(129,140,248,0.22)" : "1px solid rgba(255,255,255,0.08)",
+            color: f ? "rgba(165,180,252,0.92)" : "rgba(255,255,255,0.38)",
+            background: f ? "rgba(99,102,241,0.16)" : "rgba(255,255,255,0.05)",
+            border: f ? "1px solid rgba(129,140,248,0.24)" : "1px solid rgba(255,255,255,0.08)",
           }}>
             {card.topLabel}
           </span>
@@ -223,11 +283,11 @@ function PricingCard({
         <h3 style={{
           fontSize: "clamp(17px, 1.9vw, 21px)",
           fontWeight: 500,
-          letterSpacing: "-0.020em",
+          letterSpacing: "-0.022em",
           lineHeight: 1.18,
-          color: isHovered ? "#ffffff" : "#f0f0f5",
+          color: isHovered ? "#ffffff" : f ? "rgba(245,245,250,0.96)" : "rgba(240,240,245,0.88)",
           margin: "0 0 6px",
-          transition: "color 200ms ease",
+          transition: "color 220ms ease",
         }}>
           {card.title}
         </h3>
@@ -236,10 +296,10 @@ function PricingCard({
         <p style={{
           fontSize: "12.5px",
           fontWeight: 300,
-          lineHeight: 1.60,
-          color: isHovered ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.45)",
-          margin: "0 0 20px",
-          transition: "color 200ms ease",
+          lineHeight: 1.62,
+          color: isHovered ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.42)",
+          margin: "0 0 22px",
+          transition: "color 220ms ease",
         }}>
           {card.value}
         </p>
@@ -248,30 +308,39 @@ function PricingCard({
         <div style={{
           padding: "14px 16px",
           borderRadius: "12px",
-          background: f ? "rgba(99,102,241,0.10)" : "rgba(255,255,255,0.04)",
-          border: f ? "1px solid rgba(129,140,248,0.16)" : "1px solid rgba(255,255,255,0.06)",
-          marginBottom: "20px",
+          background: f ? "rgba(99,102,241,0.11)" : "rgba(255,255,255,0.04)",
+          border: f ? "1px solid rgba(129,140,248,0.18)" : "1px solid rgba(255,255,255,0.06)",
+          marginBottom: "22px",
+          position: "relative",
+          overflow: "hidden",
         }}>
+          {f && (
+            <span aria-hidden="true" style={{
+              position: "absolute", top: 0, left: 0, right: 0, height: "1px",
+              background: "linear-gradient(to right, transparent, rgba(165,180,252,0.25), transparent)",
+              pointerEvents: "none",
+            }} />
+          )}
           <span style={{
             display: "block",
             fontSize: "8.5px",
             fontWeight: 600,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
-            color: "rgba(165,180,252,0.40)",
-            marginBottom: "3px",
+            color: f ? "rgba(165,180,252,0.45)" : "rgba(255,255,255,0.25)",
+            marginBottom: "4px",
           }}>
             Investment
           </span>
           <span style={{
             fontSize: "clamp(22px, 2.6vw, 30px)",
             fontWeight: 600,
-            letterSpacing: "-0.025em",
+            letterSpacing: "-0.028em",
             lineHeight: 1.0,
             color: f
-              ? isHovered ? "rgba(215,220,255,1.0)" : "rgba(200,208,255,0.92)"
-              : isHovered ? "rgba(245,245,247,0.90)" : "rgba(245,245,247,0.72)",
-            transition: "color 200ms ease",
+              ? isHovered ? "rgba(215,222,255,1.0)" : "rgba(200,210,255,0.94)"
+              : isHovered ? "rgba(245,245,247,0.92)" : "rgba(245,245,247,0.70)",
+            transition: "color 220ms ease",
           }}>
             {card.investment}
           </span>
@@ -282,7 +351,7 @@ function PricingCard({
           fontSize: "11.5px",
           fontWeight: 400,
           lineHeight: 1.55,
-          color: "rgba(255,255,255,0.38)",
+          color: "rgba(255,255,255,0.35)",
           margin: "0 0 18px",
           fontStyle: "italic",
         }}>
@@ -298,22 +367,22 @@ function PricingCard({
 
         {/* Includes */}
         <ul style={{
-          listStyle: "none", margin: "0 0 20px", padding: 0,
-          display: "flex", flexDirection: "column", gap: "7px",
+          listStyle: "none", margin: "0 0 22px", padding: 0,
+          display: "flex", flexDirection: "column", gap: "8px",
           flex: 1,
         }}>
           {card.includes.map((item) => (
             <li key={item} style={{ display: "flex", alignItems: "center", gap: "9px" }}>
               <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true" style={{ flexShrink: 0 }}>
                 <path d="M2 6L4.5 8.5L10 3.5"
-                  stroke={f ? "rgba(165,180,252,0.70)" : "rgba(129,140,248,0.45)"}
+                  stroke={f ? "rgba(165,180,252,0.72)" : "rgba(129,140,248,0.42)"}
                   strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span style={{
                 fontSize: "12px",
                 fontWeight: 400,
-                color: isHovered ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.50)",
-                transition: "color 200ms ease",
+                color: isHovered ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.48)",
+                transition: "color 220ms ease",
               }}>
                 {item}
               </span>
@@ -326,7 +395,7 @@ function PricingCard({
           fontSize: "11px",
           fontWeight: 300,
           lineHeight: 1.55,
-          color: f ? "rgba(165,180,252,0.55)" : "rgba(255,255,255,0.30)",
+          color: f ? "rgba(165,180,252,0.52)" : "rgba(255,255,255,0.28)",
           margin: "0 0 20px",
           paddingTop: "12px",
           borderTop: f ? "1px solid rgba(129,140,248,0.08)" : "1px solid rgba(255,255,255,0.04)",
@@ -335,61 +404,9 @@ function PricingCard({
         </p>
 
         {/* CTA */}
-        <CTAButton label={card.cta} featured={f} hovered={isHovered} />
+        <CardCTA label={card.cta} featured={f} />
       </div>
     </motion.div>
-  );
-}
-
-/* ─── CTA button ────────────────────────────────────────────────── */
-function CTAButton({ label, featured, hovered }: { label: string; featured: boolean; hovered: boolean }) {
-  const [h, setH] = useState(false);
-  const active = h || hovered;
-
-  return (
-    <a
-      href="#contact"
-      onMouseEnter={() => setH(true)}
-      onMouseLeave={() => setH(false)}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "6px",
-        padding: "11px 18px",
-        borderRadius: "10px",
-        fontSize: "12.5px",
-        fontWeight: 400,
-        letterSpacing: "0.02em",
-        textDecoration: "none",
-        color: featured
-          ? active ? "rgba(255,255,255,0.96)" : "rgba(255,255,255,0.85)"
-          : active ? "rgba(255,255,255,0.80)" : "rgba(255,255,255,0.45)",
-        background: featured
-          ? active
-            ? "linear-gradient(170deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%)"
-            : "linear-gradient(170deg, #5b5ef4 0%, #4338ca 100%)"
-          : active
-            ? "rgba(255,255,255,0.08)"
-            : "rgba(255,255,255,0.04)",
-        border: featured
-          ? active ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(129,140,248,0.22)"
-          : active ? "1px solid rgba(255,255,255,0.14)" : "1px solid rgba(255,255,255,0.07)",
-        boxShadow: featured && active
-          ? "inset 0 1px 0 rgba(255,255,255,0.20), 0 4px 14px -4px rgba(79,70,229,0.50)"
-          : "none",
-        transition: "all 240ms cubic-bezier(0.22,1,0.36,1)",
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        position: "relative",
-      }}
-    >
-      {label}
-      <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"
-        style={{ transform: active ? "translateX(2px)" : "translateX(0)", transition: "transform 200ms", flexShrink: 0 }}>
-        <path d="M2.5 6H9.5M9.5 6L6.5 3M9.5 6L6.5 9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    </a>
   );
 }
 
@@ -403,7 +420,7 @@ function ComparisonPanel({ open }: { open: boolean }) {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
           style={{ overflow: "hidden" }}
         >
           <div style={{
@@ -411,30 +428,34 @@ function ComparisonPanel({ open }: { open: boolean }) {
             borderRadius: "18px",
             overflow: "hidden",
             border: "1px solid rgba(255,255,255,0.07)",
-            background: "linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)",
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
+            background: "linear-gradient(170deg, rgba(255,255,255,0.04) 0%, rgba(8,8,18,0.96) 100%)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)",
           }}>
             {/* Header row */}
             <div style={{
               display: "grid",
-              gridTemplateColumns: "1.4fr 1fr 1fr 1fr",
+              gridTemplateColumns: "1.5fr 1fr 1fr 1fr",
               borderBottom: "1px solid rgba(255,255,255,0.06)",
-              padding: "14px 20px",
+              padding: "14px 24px",
               gap: "12px",
+              background: "rgba(255,255,255,0.02)",
             }}
-              className="comparison-grid"
+              className="comp-row"
             >
               <div />
-              {["Launch", "Growth", "Advanced"].map((col, i) => (
+              {(["Launch", "Growth", "Advanced"] as const).map((col, i) => (
                 <div key={col} style={{
-                  fontSize: "10px",
+                  fontSize: "9.5px",
                   fontWeight: 600,
-                  letterSpacing: "0.10em",
+                  letterSpacing: "0.12em",
                   textTransform: "uppercase",
-                  color: i === 1 ? "rgba(165,180,252,0.75)" : "rgba(255,255,255,0.30)",
+                  color: i === 1 ? "rgba(165,180,252,0.80)" : "rgba(255,255,255,0.28)",
                   textAlign: "center",
+                  padding: i === 1 ? "3px 8px" : "3px 0",
+                  borderRadius: i === 1 ? "6px" : "0",
+                  background: i === 1 ? "rgba(99,102,241,0.08)" : "transparent",
                 }}>
                   {col}
                 </div>
@@ -447,37 +468,34 @@ function ComparisonPanel({ open }: { open: boolean }) {
                 key={row.label}
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "1.4fr 1fr 1fr 1fr",
-                  padding: "13px 20px",
+                  gridTemplateColumns: "1.5fr 1fr 1fr 1fr",
+                  padding: "12px 24px",
                   gap: "12px",
                   borderBottom: ri < COMPARISON_ROWS.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
-                  background: ri % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)",
+                  background: ri % 2 === 1 ? "rgba(255,255,255,0.01)" : "transparent",
+                  alignItems: "center",
                 }}
-                className="comparison-grid"
+                className="comp-row"
               >
                 <div style={{
                   fontSize: "11.5px",
                   fontWeight: 500,
-                  color: "rgba(255,255,255,0.55)",
+                  color: "rgba(255,255,255,0.52)",
                   letterSpacing: "0.01em",
-                  display: "flex",
-                  alignItems: "center",
                 }}>
                   {row.label}
                 </div>
-                {[row.launch, row.growth, row.advanced].map((val, ci) => (
+                {([row.launch, row.growth, row.advanced] as const).map((val, ci) => (
                   <div key={ci} style={{
                     fontSize: "11.5px",
                     fontWeight: 300,
-                    color: ci === 1 ? "rgba(200,208,255,0.80)" : "rgba(255,255,255,0.45)",
+                    color: ci === 1 ? "rgba(200,210,255,0.82)" : "rgba(255,255,255,0.42)",
                     textAlign: "center",
                     lineHeight: 1.50,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: ci === 1 ? "4px 8px" : "0",
-                    borderRadius: ci === 1 ? "6px" : "0",
-                    background: ci === 1 ? "rgba(99,102,241,0.06)" : "transparent",
+                    padding: ci === 1 ? "5px 8px" : "0",
+                    borderRadius: ci === 1 ? "7px" : "0",
+                    background: ci === 1 ? "rgba(99,102,241,0.07)" : "transparent",
+                    border: ci === 1 ? "1px solid rgba(129,140,248,0.08)" : "none",
                   }}>
                     {val}
                   </div>
@@ -497,22 +515,22 @@ function FinalCTA({ active }: { active: boolean }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 18 }}
-      animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-      transition={{ duration: 0.70, ease: [0.22, 1, 0.36, 1], delay: 0.16 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1], delay: 0.14 }}
       style={{
-        marginTop: "56px",
+        marginTop: "60px",
         borderRadius: "20px",
-        padding: "36px 40px",
-        background: "linear-gradient(145deg, rgba(99,102,241,0.07) 0%, rgba(139,92,246,0.04) 100%)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        border: "1px solid rgba(129,140,248,0.12)",
-        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.20)",
+        padding: "40px 44px",
+        background: "linear-gradient(145deg, rgba(99,102,241,0.08) 0%, rgba(139,92,246,0.04) 100%)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
+        border: "1px solid rgba(129,140,248,0.13)",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07), 0 10px 36px rgba(0,0,0,0.22)",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        gap: "28px",
+        gap: "32px",
         flexWrap: "wrap",
         position: "relative",
         overflow: "hidden",
@@ -520,36 +538,36 @@ function FinalCTA({ active }: { active: boolean }) {
     >
       <span aria-hidden="true" style={{
         position: "absolute", top: 0, left: 0, right: 0, height: "1px",
-        background: "linear-gradient(to right, transparent, rgba(165,180,252,0.22), transparent)",
+        background: "linear-gradient(to right, transparent, rgba(165,180,252,0.24), transparent)",
         pointerEvents: "none",
       }} />
       <div aria-hidden="true" style={{
         position: "absolute", top: "-60%", left: "50%", transform: "translateX(-50%)",
         width: "60%", height: "200px", borderRadius: "9999px",
-        background: "radial-gradient(ellipse, rgba(99,102,241,0.07) 0%, transparent 70%)",
+        background: "radial-gradient(ellipse, rgba(99,102,241,0.08) 0%, transparent 70%)",
         pointerEvents: "none",
       }} />
 
       <div style={{ flex: 1, minWidth: "220px", position: "relative", zIndex: 1 }}>
         <h3 style={{
-          fontSize: "clamp(16px, 2vw, 20px)",
+          fontSize: "clamp(17px, 2.1vw, 22px)",
           fontWeight: 500,
-          letterSpacing: "-0.018em",
-          lineHeight: 1.25,
+          letterSpacing: "-0.020em",
+          lineHeight: 1.22,
           color: "#f5f5f7",
-          margin: "0 0 6px",
+          margin: "0 0 8px",
         }}>
-          Not sure where your project fits?
+          Not sure which system fits your needs?
         </h3>
         <p style={{
           fontSize: "13.5px",
           fontWeight: 300,
-          lineHeight: 1.65,
-          color: "rgba(255,255,255,0.60)",
+          lineHeight: 1.68,
+          color: "rgba(255,255,255,0.58)",
           margin: 0,
-          maxWidth: "420px",
+          maxWidth: "400px",
         }}>
-          Book a free call and we&apos;ll help you define the right scope, timeline, and investment range.
+          We&apos;ll help you define the right scope, timeline, and investment.
         </p>
       </div>
 
@@ -563,20 +581,20 @@ function FinalCTA({ active }: { active: boolean }) {
           alignItems: "center",
           justifyContent: "center",
           gap: "8px",
-          padding: "13px 26px",
+          padding: "14px 28px",
           borderRadius: "12px",
-          fontSize: "13px",
+          fontSize: "13.5px",
           fontWeight: 400,
           letterSpacing: "0.02em",
           textDecoration: "none",
-          color: "rgba(255,255,255,0.94)",
+          color: "rgba(255,255,255,0.96)",
           background: hov
             ? "linear-gradient(170deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%)"
             : "linear-gradient(170deg, #5b5ef4 0%, #4338ca 100%)",
           boxShadow: hov
-            ? "inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 20px -4px rgba(79,70,229,0.55)"
-            : "inset 0 1px 0 rgba(255,255,255,0.14)",
-          border: hov ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(255,255,255,0.10)",
+            ? "inset 0 1px 0 rgba(255,255,255,0.28), 0 8px 24px -4px rgba(79,70,229,0.60)"
+            : "inset 0 1px 0 rgba(255,255,255,0.16), 0 4px 14px -4px rgba(79,70,229,0.35)",
+          border: hov ? "1px solid rgba(255,255,255,0.20)" : "1px solid rgba(129,140,248,0.28)",
           transform: hov ? "scale(1.02)" : "scale(1)",
           transition: "all 260ms cubic-bezier(0.22,1,0.36,1)",
           overflow: "hidden",
@@ -617,9 +635,6 @@ export function Pricing() {
   const cardsInView = useInView(cardsRef, { once: true, margin: "-60px" });
   const ctaInView = useInView(ctaRef, { once: true, margin: "-60px" });
 
-  /* Mobile order: growth first */
-  const mobileOrderMap: Record<CardId, number> = { growth: 0, launch: 1, advanced: 2 };
-
   return (
     <section
       ref={sectionRef}
@@ -630,7 +645,7 @@ export function Pricing() {
       {/* Background */}
       <div aria-hidden="true" style={{
         position: "absolute", inset: 0,
-        background: "linear-gradient(180deg, rgba(5,5,5,0) 0%, rgba(6,6,20,0.50) 50%, rgba(5,5,5,0) 100%)",
+        background: "linear-gradient(180deg, rgba(5,5,5,0) 0%, rgba(6,6,20,0.52) 50%, rgba(5,5,5,0) 100%)",
         pointerEvents: "none", zIndex: 0,
       }} />
       <div aria-hidden="true" style={{
@@ -639,12 +654,12 @@ export function Pricing() {
         transform: "translate(-50%, -50%)",
         width: "800px", height: "500px",
         borderRadius: "9999px",
-        background: "radial-gradient(ellipse, rgba(99,102,241,0.05) 0%, transparent 65%)",
+        background: "radial-gradient(ellipse, rgba(99,102,241,0.055) 0%, transparent 65%)",
         pointerEvents: "none", zIndex: 0,
       }} />
       <div aria-hidden="true" style={{
         position: "absolute",
-        top: "48%", left: "10%", right: "10%",
+        top: "48%", left: "8%", right: "8%",
         height: "1px",
         background: "linear-gradient(to right, transparent, rgba(129,140,248,0.05), transparent)",
         pointerEvents: "none", zIndex: 0,
@@ -694,7 +709,7 @@ export function Pricing() {
             fontSize: "clamp(14px, 1.4vw, 16px)",
             fontWeight: 300,
             lineHeight: 1.75,
-            color: "rgba(255,255,255,0.60)",
+            color: "rgba(255,255,255,0.58)",
             margin: "0 auto",
             maxWidth: "460px",
           }}>
@@ -702,7 +717,7 @@ export function Pricing() {
           </p>
         </motion.div>
 
-        {/* ── Cards ── */}
+        {/* ── Desktop cards ── */}
         <div
           ref={cardsRef}
           style={{
@@ -710,7 +725,7 @@ export function Pricing() {
             gap: "16px",
             alignItems: "stretch",
           }}
-          className="pricing-cards"
+          className="pricing-desktop"
         >
           {CARDS.map((card, i) => (
             <PricingCard
@@ -720,8 +735,44 @@ export function Pricing() {
               hoveredId={hoveredId}
               onHover={setHoveredId}
               delay={0.06 + i * 0.09}
-              mobileOrder={mobileOrderMap[card.id]}
             />
+          ))}
+        </div>
+
+        {/* ── Mobile carousel ── */}
+        <div
+          ref={cardsRef}
+          className="pricing-mobile"
+          style={{
+            display: "none",
+            overflowX: "auto",
+            scrollSnapType: "x mandatory",
+            WebkitOverflowScrolling: "touch",
+            gap: "12px",
+            paddingBottom: "12px",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
+        >
+          {/* Growth first on mobile */}
+          {[CARDS[1], CARDS[0], CARDS[2]].map((card, i) => (
+            <div
+              key={card.id}
+              style={{
+                flex: "0 0 85vw",
+                maxWidth: "360px",
+                scrollSnapAlign: "center",
+                position: "relative",
+              }}
+            >
+              <PricingCard
+                card={card}
+                active={cardsInView}
+                hoveredId={null}
+                onHover={() => {}}
+                delay={0.06 + i * 0.09}
+              />
+            </div>
           ))}
         </div>
 
@@ -729,7 +780,7 @@ export function Pricing() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={cardsInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.60, delay: 0.40 }}
+          transition={{ duration: 0.60, delay: 0.38 }}
           style={{ marginTop: "28px", display: "flex", justifyContent: "center" }}
         >
           <button
@@ -737,30 +788,34 @@ export function Pricing() {
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: "6px",
-              padding: "9px 18px",
+              gap: "7px",
+              padding: "9px 20px",
               borderRadius: "9999px",
               fontSize: "12px",
               fontWeight: 400,
               letterSpacing: "0.02em",
-              color: "rgba(255,255,255,0.50)",
+              color: "rgba(255,255,255,0.48)",
               background: "rgba(255,255,255,0.04)",
               border: "1px solid rgba(255,255,255,0.08)",
               cursor: "pointer",
-              transition: "all 220ms ease",
+              transition: "color 200ms ease, border-color 200ms ease, background 200ms ease",
               outline: "none",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.75)";
-              (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.14)";
+              const b = e.currentTarget as HTMLButtonElement;
+              b.style.color = "rgba(255,255,255,0.75)";
+              b.style.borderColor = "rgba(255,255,255,0.14)";
+              b.style.background = "rgba(255,255,255,0.06)";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.50)";
-              (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.08)";
+              const b = e.currentTarget as HTMLButtonElement;
+              b.style.color = "rgba(255,255,255,0.48)";
+              b.style.borderColor = "rgba(255,255,255,0.08)";
+              b.style.background = "rgba(255,255,255,0.04)";
             }}
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"
-              style={{ transform: comparisonOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 280ms ease" }}>
+              style={{ transform: comparisonOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 300ms ease" }}>
               <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             {comparisonOpen ? "Hide comparison" : "Compare engagement levels"}
@@ -778,20 +833,20 @@ export function Pricing() {
 
       {/* Responsive */}
       <style>{`
+        .pricing-mobile::-webkit-scrollbar { display: none; }
+
         @media (max-width: 768px) {
-          .pricing-cards {
-            flex-direction: column !important;
-          }
-          .pricing-cards > * {
-            order: var(--mobile-order, 0);
-          }
-          .comparison-grid {
+          .pricing-desktop { display: none !important; }
+          .pricing-mobile { display: flex !important; }
+          .comp-row {
             grid-template-columns: 1fr !important;
           }
-          .comparison-grid > *:first-child {
+          .comp-row > *:first-child {
             font-weight: 600 !important;
             color: rgba(255,255,255,0.60) !important;
-            padding-bottom: 4px !important;
+            padding-bottom: 6px !important;
+            border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+            margin-bottom: 4px !important;
           }
         }
       `}</style>
