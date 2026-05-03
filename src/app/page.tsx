@@ -4,7 +4,7 @@ import { Stats } from "@/components/sections/stats";
 import { ImpactAreas } from "@/components/sections/impact-areas";
 import { Services } from "@/components/sections/services";
 import { HowItWorks } from "@/components/sections/how-it-works";
-import { Pricing } from "@/components/sections/pricing";
+import { InvestmentSection } from "@/components/sections/InvestmentSection";
 
 /**
  * Home Page — DeMeloApps
@@ -18,7 +18,7 @@ export default function HomePage() {
       <ImpactAreas />
       <Services />
       <HowItWorks />
-      <Pricing />
+      <InvestmentSection />
       {/* Future sections:
           <Testimonials />
           <CTA />
