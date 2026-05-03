@@ -325,13 +325,16 @@ function ConnSvg({ t, conns, isMobile, msx, msy, focusIdx, focusInt }: {
 function HeroCanvas({ mouseX, mouseY, isMobile, metricCycle }: {
   mouseX: number; mouseY: number; isMobile: boolean; metricCycle: number;
 }) {
-  const [t, setT] = useState(0);
+  const [t, setT] = useState<number | null>(null);
   useEffect(() => {
     let raf: number, start: number|null = null;
     const loop = (ts: number) => { if (!start) start=ts; setT((ts-start)/1000); raf=requestAnimationFrame(loop); };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
   }, []);
+
+  // Don't render on server — all values depend on requestAnimationFrame time
+  if (t === null) return null;
 
   const ox = isMobile ? 0 : mouseX*9;
   const oy = isMobile ? 0 : mouseY*6;
