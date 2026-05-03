@@ -4,169 +4,209 @@ import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 
 /* ─── Data ──────────────────────────────────────────────────────── */
-const BLOCKS = [
+const LEVELS = [
   {
     id: "launch",
-    position: "left" as const,
-    label: "Focused Systems",
+    label: "Level 01",
     title: "Launch System",
-    description: "Lean systems for validation and targeted automation.",
     investment: "$5k – $15k",
-    bullets: ["MVP builds", "Core automation", "Essential integrations"],
+    description: "For MVPs, focused automation, and lean digital products.",
+    bestFor: "Validating an idea or automating one important workflow.",
+    includes: ["MVP builds", "Core automation", "Essential integrations"],
+    badge: null,
+    size: "compact" as const,
   },
   {
     id: "growth",
-    position: "center" as const,
-    label: "Most Common",
+    label: "Level 02",
     title: "Growth System",
-    description: "Connected systems to scale business operations.",
     investment: "$15k – $40k",
-    bullets: ["Multi workflows", "Dashboards", "AI-assisted processes", "Integrations"],
+    description: "For connected workflows, dashboards, and AI-assisted operations.",
+    bestFor: "Businesses ready to connect sales, marketing, and operations.",
+    includes: ["Multi-workflow systems", "Dashboards and portals", "AI-assisted workflows", "Integrations"],
+    badge: "Most common",
+    size: "featured" as const,
   },
   {
     id: "advanced",
-    position: "right" as const,
-    label: "Full Systems",
+    label: "Level 03",
     title: "Advanced Systems",
-    description: "Scalable ecosystems with advanced automation.",
     investment: "$40k+",
-    bullets: ["Custom architecture", "AI systems", "Complex platforms"],
+    description: "For complex platforms, automation ecosystems, and scalable infrastructure.",
+    bestFor: "Companies building full product ecosystems or advanced AI operations.",
+    includes: ["Custom architecture", "AI systems", "Complex platforms"],
+    badge: null,
+    size: "deep" as const,
   },
 ] as const;
 
-type BlockId = typeof BLOCKS[number]["id"];
+type LevelId = typeof LEVELS[number]["id"];
+type LevelSize = typeof LEVELS[number]["size"];
 
-/* ─── Animated signal flow ──────────────────────────────────────── */
-function SignalFlow({ t }: { t: number }) {
-  const progress = (t * 0.18) % 1;
+/* ─── Animated signal along pathway ────────────────────────────── */
+function PathwaySignal({ t, activeId }: { t: number; activeId: LevelId | null }) {
+  const progress = (t * 0.14) % 1;
   const x = progress * 100;
+  const opacity = activeId ? 0.55 : 0.28;
+
   return (
     <svg
       aria-hidden="true"
-      style={{
-        position: "absolute",
-        inset: 0,
-        width: "100%",
-        height: "100%",
-        pointerEvents: "none",
-        zIndex: 0,
-        overflow: "visible",
-      }}
+      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0, overflow: "visible" }}
       preserveAspectRatio="none"
     >
-      {/* Structural horizontal line */}
-      <line
-        x1="0%" y1="52%"
-        x2="100%" y2="52%"
-        stroke="rgba(129,140,248,0.05)"
-        strokeWidth="1"
-        strokeDasharray="6 12"
-      />
-      {/* Left–center connector */}
-      <line x1="30%" y1="52%" x2="38%" y2="52%"
-        stroke="rgba(129,140,248,0.09)" strokeWidth="0.8" />
-      {/* Center–right connector */}
-      <line x1="62%" y1="52%" x2="70%" y2="52%"
-        stroke="rgba(129,140,248,0.09)" strokeWidth="0.8" />
-      {/* Junction dots */}
-      <circle cx="38%" cy="52%" r="2" fill="rgba(129,140,248,0.18)" />
-      <circle cx="62%" cy="52%" r="2" fill="rgba(129,140,248,0.18)" />
+      {/* Main pathway line */}
+      <line x1="0%" y1="50%" x2="100%" y2="50%"
+        stroke="rgba(129,140,248,0.08)" strokeWidth="1.2" strokeDasharray="5 10" />
+      {/* Solid segments between modules */}
+      <line x1="28%" y1="50%" x2="36%" y2="50%"
+        stroke={`rgba(129,140,248,${activeId === "launch" || activeId === "growth" ? 0.22 : 0.10})`}
+        strokeWidth="1" />
+      <line x1="64%" y1="50%" x2="72%" y2="50%"
+        stroke={`rgba(129,140,248,${activeId === "growth" || activeId === "advanced" ? 0.22 : 0.10})`}
+        strokeWidth="1" />
+      {/* Junction nodes */}
+      <circle cx="36%" cy="50%" r="3" fill="rgba(129,140,248,0.20)" />
+      <circle cx="64%" cy="50%" r="3" fill="rgba(129,140,248,0.20)" />
+      {/* Scope arrow label */}
+      <text x="50%" y="calc(50% + 14px)" textAnchor="middle" fontSize="7"
+        fill="rgba(129,140,248,0.25)" fontFamily="monospace" letterSpacing="0.08em">
+        SCOPE INCREASES →
+      </text>
       {/* Animated signal dot */}
-      <circle
-        cx={`${x}%`}
-        cy="52%"
-        r="2.5"
-        fill="rgba(165,180,252,0.35)"
+      <circle cx={`${x}%`} cy="50%" r="3"
+        fill={`rgba(165,180,252,${opacity})`}
         style={{ filter: "blur(0.5px)" }}
       />
     </svg>
   );
 }
 
-/* ─── System block ──────────────────────────────────────────────── */
-function SystemBlock({
-  block,
+/* ─── Stacked layers visual (Advanced) ─────────────────────────── */
+function StackedLayers() {
+  return (
+    <div style={{ position: "relative", height: "32px", marginBottom: "16px" }}>
+      {[0, 1, 2].map((i) => (
+        <div key={i} style={{
+          position: "absolute",
+          left: `${i * 4}px`,
+          top: `${i * 5}px`,
+          right: `${-i * 4}px`,
+          height: "10px",
+          borderRadius: "4px",
+          background: `rgba(139,92,246,${0.08 - i * 0.02})`,
+          border: `1px solid rgba(139,92,246,${0.14 - i * 0.04})`,
+        }} />
+      ))}
+    </div>
+  );
+}
+
+/* ─── Level module ──────────────────────────────────────────────── */
+function LevelModule({
+  level,
   active,
-  hoveredId,
+  activeId,
   onHover,
   delay,
-  t,
 }: {
-  block: typeof BLOCKS[number];
+  level: typeof LEVELS[number];
   active: boolean;
-  hoveredId: BlockId | null;
-  onHover: (id: BlockId | null) => void;
+  activeId: LevelId | null;
+  onHover: (id: LevelId | null) => void;
   delay: number;
-  t: number;
 }) {
-  const isCenter = block.position === "center";
-  const isLeft = block.position === "left";
-  const isDimmed = hoveredId !== null && hoveredId !== block.id;
-  const isHovered = hoveredId === block.id;
+  const isFeatured = level.size === "featured";
+  const isDeep = level.size === "deep";
+  const isCompact = level.size === "compact";
+  const isDimmed = activeId !== null && activeId !== level.id;
+  const isHovered = activeId === level.id;
 
-  /* Vertical offset: left lower, right higher, center neutral */
-  const verticalOffset = isCenter ? 0 : isLeft ? 32 : -16;
+  /* Vertical positioning */
+  const marginTop = isCompact ? "28px" : isDeep ? "-12px" : "0";
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: isCenter ? 28 : 20 }}
-      animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: isCenter ? 28 : 20 }}
-      transition={{ duration: 0.78, ease: [0.22, 1, 0.36, 1], delay }}
-      onMouseEnter={() => onHover(block.id)}
+      initial={{ opacity: 0, y: isFeatured ? 30 : 20 }}
+      animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: isFeatured ? 30 : 20 }}
+      transition={{ duration: 0.80, ease: [0.22, 1, 0.36, 1], delay }}
+      onMouseEnter={() => onHover(level.id)}
       onMouseLeave={() => onHover(null)}
       style={{
-        flex: isCenter ? "1.22" : "1",
+        flex: isFeatured ? "1.28" : isDeep ? "1.08" : "1",
         minWidth: 0,
         position: "relative",
-        marginTop: `${verticalOffset}px`,
-        opacity: isDimmed ? 0.42 : 1,
-        transition: "opacity 280ms ease",
-        zIndex: isHovered ? 3 : isCenter ? 2 : 1,
+        marginTop,
+        opacity: isDimmed ? 0.38 : 1,
+        transition: "opacity 260ms ease",
+        zIndex: isHovered ? 4 : isFeatured ? 3 : 2,
       }}
     >
-      {/* Outer depth layer */}
-      <div style={{
-        position: "absolute",
-        inset: isCenter ? "-6px" : "-4px",
-        borderRadius: isCenter ? "28px" : "22px",
-        background: isCenter
-          ? "linear-gradient(145deg, rgba(99,102,241,0.06) 0%, transparent 60%)"
-          : "linear-gradient(145deg, rgba(255,255,255,0.02) 0%, transparent 60%)",
-        border: isCenter
-          ? "1px solid rgba(99,102,241,0.08)"
-          : "1px solid rgba(255,255,255,0.03)",
-        pointerEvents: "none",
-      }} />
+      {/* Outer halo (featured only) */}
+      {isFeatured && (
+        <div style={{
+          position: "absolute",
+          inset: "-8px",
+          borderRadius: "30px",
+          background: "linear-gradient(145deg, rgba(99,102,241,0.07) 0%, transparent 55%)",
+          border: "1px solid rgba(99,102,241,0.07)",
+          pointerEvents: "none",
+        }} />
+      )}
 
-      {/* Main surface */}
+      {/* Deep stacked shadow layers (advanced) */}
+      {isDeep && (
+        <>
+          <div style={{
+            position: "absolute",
+            inset: "6px", top: "10px",
+            borderRadius: "20px",
+            background: "rgba(139,92,246,0.04)",
+            border: "1px solid rgba(139,92,246,0.06)",
+            pointerEvents: "none",
+          }} />
+          <div style={{
+            position: "absolute",
+            inset: "3px", top: "5px",
+            borderRadius: "20px",
+            background: "rgba(139,92,246,0.05)",
+            border: "1px solid rgba(139,92,246,0.08)",
+            pointerEvents: "none",
+          }} />
+        </>
+      )}
+
+      {/* Main module surface */}
       <div style={{
         position: "relative",
-        borderRadius: isCenter ? "22px" : "18px",
-        padding: isCenter ? "40px 34px 36px" : "30px 26px 28px",
-        background: isCenter
+        borderRadius: isFeatured ? "24px" : "18px",
+        padding: isFeatured ? "36px 30px 32px" : isDeep ? "28px 24px 26px" : "24px 22px 22px",
+        background: isFeatured
           ? isHovered
-            ? "linear-gradient(160deg, rgba(99,102,241,0.11) 0%, rgba(79,70,229,0.06) 50%, rgba(255,255,255,0.03) 100%)"
-            : "linear-gradient(160deg, rgba(99,102,241,0.08) 0%, rgba(79,70,229,0.04) 50%, rgba(255,255,255,0.02) 100%)"
-          : isHovered
-            ? "linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)"
-            : "linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)",
+            ? "linear-gradient(155deg, rgba(99,102,241,0.13) 0%, rgba(79,70,229,0.07) 45%, rgba(255,255,255,0.03) 100%)"
+            : "linear-gradient(155deg, rgba(99,102,241,0.09) 0%, rgba(79,70,229,0.05) 45%, rgba(255,255,255,0.02) 100%)"
+          : isDeep
+            ? isHovered
+              ? "linear-gradient(155deg, rgba(139,92,246,0.09) 0%, rgba(255,255,255,0.04) 100%)"
+              : "linear-gradient(155deg, rgba(139,92,246,0.05) 0%, rgba(255,255,255,0.02) 100%)"
+            : isHovered
+              ? "linear-gradient(155deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)"
+              : "linear-gradient(155deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)",
         backdropFilter: "blur(24px)",
         WebkitBackdropFilter: "blur(24px)",
-        border: isCenter
+        border: isFeatured
+          ? isHovered ? "1px solid rgba(129,140,248,0.32)" : "1px solid rgba(129,140,248,0.18)"
+          : isDeep
+            ? isHovered ? "1px solid rgba(167,139,250,0.22)" : "1px solid rgba(167,139,250,0.10)"
+            : isHovered ? "1px solid rgba(255,255,255,0.14)" : "1px solid rgba(255,255,255,0.07)",
+        boxShadow: isFeatured
           ? isHovered
-            ? "1px solid rgba(129,140,248,0.30)"
-            : "1px solid rgba(129,140,248,0.18)"
-          : isHovered
-            ? "1px solid rgba(255,255,255,0.14)"
-            : "1px solid rgba(255,255,255,0.07)",
-        boxShadow: isCenter
-          ? isHovered
-            ? "inset 0 1px 0 rgba(255,255,255,0.12), 0 20px 60px rgba(0,0,0,0.36), 0 0 0 1px rgba(99,102,241,0.10)"
-            : "inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 40px rgba(0,0,0,0.28), 0 0 0 1px rgba(99,102,241,0.06)"
+            ? "inset 0 1px 0 rgba(255,255,255,0.12), 0 24px 64px rgba(0,0,0,0.38), 0 0 0 1px rgba(99,102,241,0.10)"
+            : "inset 0 1px 0 rgba(255,255,255,0.08), 0 14px 44px rgba(0,0,0,0.30), 0 0 0 1px rgba(99,102,241,0.06)"
           : isHovered
             ? "inset 0 1px 0 rgba(255,255,255,0.10), 0 10px 30px rgba(0,0,0,0.26)"
             : "inset 0 1px 0 rgba(255,255,255,0.05), 0 4px 16px rgba(0,0,0,0.18)",
-        transform: isHovered ? "translateY(-5px)" : "translateY(0)",
+        transform: isHovered ? "translateY(-6px)" : "translateY(0)",
         transition: "all 270ms cubic-bezier(0.22,1,0.36,1)",
         overflow: "hidden",
         display: "flex",
@@ -175,43 +215,58 @@ function SystemBlock({
         {/* Top shimmer */}
         <span aria-hidden="true" style={{
           position: "absolute", top: 0, left: 0, right: 0, height: "1px",
-          background: isCenter
-            ? "linear-gradient(to right, transparent 0%, rgba(165,180,252,0.35) 50%, transparent 100%)"
-            : "linear-gradient(to right, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%)",
+          background: isFeatured
+            ? "linear-gradient(to right, transparent, rgba(165,180,252,0.40), transparent)"
+            : "linear-gradient(to right, transparent, rgba(255,255,255,0.12), transparent)",
           pointerEvents: "none",
         }} />
 
-        {/* Center inner glow */}
-        {isCenter && (
+        {/* Featured inner glow */}
+        {isFeatured && (
           <div aria-hidden="true" style={{
-            position: "absolute", top: "-60%", left: "50%", transform: "translateX(-50%)",
-            width: "100%", height: "220px", borderRadius: "9999px",
-            background: "radial-gradient(ellipse, rgba(99,102,241,0.10) 0%, transparent 70%)",
+            position: "absolute", top: "-50%", left: "50%", transform: "translateX(-50%)",
+            width: "110%", height: "220px", borderRadius: "9999px",
+            background: "radial-gradient(ellipse, rgba(99,102,241,0.11) 0%, transparent 70%)",
             pointerEvents: "none",
           }} />
         )}
 
+        {/* Badge */}
+        {level.badge && (
+          <div style={{ marginBottom: "14px" }}>
+            <span style={{
+              display: "inline-block",
+              fontSize: "8.5px",
+              fontWeight: 600,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              padding: "3px 10px",
+              borderRadius: "9999px",
+              color: "rgba(165,180,252,0.90)",
+              background: "rgba(99,102,241,0.14)",
+              border: "1px solid rgba(129,140,248,0.22)",
+            }}>
+              {level.badge}
+            </span>
+          </div>
+        )}
+
         {/* Label */}
-        <div style={{ marginBottom: isCenter ? "16px" : "12px" }}>
-          <span style={{
-            fontSize: "9px",
-            fontWeight: 600,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            color: isCenter ? "rgba(165,180,252,0.65)" : "rgba(255,255,255,0.28)",
-            display: "inline-block",
-            paddingBottom: "8px",
-            borderBottom: isCenter
-              ? "1px solid rgba(129,140,248,0.18)"
-              : "1px solid rgba(255,255,255,0.06)",
-          }}>
-            {block.label}
-          </span>
-        </div>
+        <span style={{
+          fontSize: "9px",
+          fontWeight: 600,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          color: isFeatured ? "rgba(165,180,252,0.55)" : "rgba(255,255,255,0.22)",
+          display: "block",
+          marginBottom: "8px",
+        }}>
+          {level.label}
+        </span>
 
         {/* Title */}
         <h3 style={{
-          fontSize: isCenter ? "clamp(20px, 2.2vw, 24px)" : "clamp(16px, 1.8vw, 19px)",
+          fontSize: isFeatured ? "clamp(19px, 2.1vw, 23px)" : "clamp(15px, 1.7vw, 18px)",
           fontWeight: 500,
           letterSpacing: "-0.020em",
           lineHeight: 1.18,
@@ -219,84 +274,85 @@ function SystemBlock({
           margin: "0 0 8px",
           transition: "color 220ms ease",
         }}>
-          {block.title}
+          {level.title}
         </h3>
 
         {/* Description */}
         <p style={{
-          fontSize: isCenter ? "13px" : "12px",
+          fontSize: isFeatured ? "12.5px" : "11.5px",
           fontWeight: 300,
           lineHeight: 1.65,
-          color: isHovered ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.42)",
-          margin: "0 0 28px",
+          color: isHovered ? "rgba(255,255,255,0.68)" : "rgba(255,255,255,0.38)",
+          margin: "0 0 22px",
           transition: "color 220ms ease",
         }}>
-          {block.description}
+          {level.description}
         </p>
 
-        {/* Investment — visually dominant */}
+        {/* Investment */}
         <div style={{
-          marginBottom: "28px",
-          paddingBottom: "24px",
-          borderBottom: isCenter
-            ? "1px solid rgba(129,140,248,0.10)"
+          marginBottom: "22px",
+          paddingBottom: "20px",
+          borderBottom: isFeatured
+            ? "1px solid rgba(129,140,248,0.12)"
             : "1px solid rgba(255,255,255,0.05)",
         }}>
           <span style={{
             display: "block",
-            fontSize: "9px",
+            fontSize: "8.5px",
             fontWeight: 600,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
-            color: "rgba(165,180,252,0.40)",
-            marginBottom: "4px",
+            color: "rgba(165,180,252,0.35)",
+            marginBottom: "3px",
           }}>
             Investment
           </span>
           <span style={{
             display: "block",
-            fontSize: isCenter ? "clamp(28px, 3.2vw, 38px)" : "clamp(22px, 2.5vw, 30px)",
+            fontSize: isFeatured ? "clamp(26px, 3vw, 36px)" : "clamp(20px, 2.4vw, 28px)",
             fontWeight: 600,
             letterSpacing: "-0.030em",
             lineHeight: 1.0,
-            color: isCenter
+            color: isFeatured
               ? isHovered ? "rgba(215,220,255,1.0)" : "rgba(200,208,255,0.92)"
-              : isHovered ? "rgba(245,245,247,0.92)" : "rgba(245,245,247,0.68)",
+              : isHovered ? "rgba(245,245,247,0.90)" : "rgba(245,245,247,0.65)",
             transition: "color 220ms ease",
           }}>
-            {block.investment}
+            {level.investment}
           </span>
         </div>
 
-        {/* Bullets */}
+        {/* Stacked layers visual for Advanced */}
+        {isDeep && <StackedLayers />}
+
+        {/* Includes */}
         <ul style={{
-          listStyle: "none",
-          margin: 0,
-          padding: 0,
-          display: "flex",
-          flexDirection: "column",
-          gap: isCenter ? "9px" : "7px",
+          listStyle: "none", margin: 0, padding: 0,
+          display: "flex", flexDirection: "column",
+          gap: isFeatured ? "8px" : "6px",
         }}>
-          {block.bullets.map((b) => (
-            <li key={b} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          {level.includes.map((item) => (
+            <li key={item} style={{ display: "flex", alignItems: "center", gap: "9px" }}>
               <span style={{
-                width: isCenter ? "5px" : "4px",
-                height: isCenter ? "5px" : "4px",
+                width: isFeatured ? "5px" : "4px",
+                height: isFeatured ? "5px" : "4px",
                 borderRadius: "50%",
                 flexShrink: 0,
-                background: isCenter
-                  ? isHovered ? "rgba(165,180,252,0.80)" : "rgba(129,140,248,0.55)"
-                  : isHovered ? "rgba(255,255,255,0.40)" : "rgba(255,255,255,0.20)",
+                background: isFeatured
+                  ? isHovered ? "rgba(165,180,252,0.80)" : "rgba(129,140,248,0.50)"
+                  : isDeep
+                    ? isHovered ? "rgba(167,139,250,0.70)" : "rgba(167,139,250,0.30)"
+                    : isHovered ? "rgba(255,255,255,0.40)" : "rgba(255,255,255,0.18)",
                 transition: "background 220ms ease",
               }} />
               <span style={{
-                fontSize: isCenter ? "12.5px" : "11.5px",
+                fontSize: isFeatured ? "12px" : "11px",
                 fontWeight: 400,
-                color: isHovered ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.38)",
-                letterSpacing: "0.01em",
+                color: isHovered ? "rgba(255,255,255,0.70)" : "rgba(255,255,255,0.35)",
                 transition: "color 220ms ease",
               }}>
-                {b}
+                {item}
               </span>
             </li>
           ))}
@@ -306,44 +362,319 @@ function SystemBlock({
   );
 }
 
-/* ─── CTA block ─────────────────────────────────────────────────── */
-function CTABlock({ active }: { active: boolean }) {
+/* ─── Insight panel ─────────────────────────────────────────────── */
+function InsightPanel({ active }: { active: boolean }) {
+  const rows = [
+    { level: "Launch", text: "One focused workflow or product" },
+    { level: "Growth", text: "Connected systems across teams" },
+    { level: "Advanced", text: "Full ecosystem with deeper automation" },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+      transition={{ duration: 0.70, ease: [0.22, 1, 0.36, 1], delay: 0.20 }}
+      style={{
+        marginTop: "48px",
+        borderRadius: "18px",
+        padding: "28px 32px",
+        background: "linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        border: "1px solid rgba(255,255,255,0.07)",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        gap: "24px 40px",
+        position: "relative",
+        overflow: "hidden",
+      }}
+      className="insight-panel"
+    >
+      <span aria-hidden="true" style={{
+        position: "absolute", top: 0, left: 0, right: 0, height: "1px",
+        background: "linear-gradient(to right, transparent, rgba(255,255,255,0.10), transparent)",
+        pointerEvents: "none",
+      }} />
+
+      {/* Left: title + text */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <h4 style={{
+          fontSize: "14px",
+          fontWeight: 500,
+          letterSpacing: "-0.015em",
+          color: "#f0f0f5",
+          margin: 0,
+        }}>
+          What changes between levels?
+        </h4>
+        <p style={{
+          fontSize: "12.5px",
+          fontWeight: 300,
+          lineHeight: 1.68,
+          color: "rgba(255,255,255,0.50)",
+          margin: 0,
+        }}>
+          Each level increases in workflow depth, integration requirements, automation complexity, and product scale.
+        </p>
+      </div>
+
+      {/* Right: comparison rows */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        {rows.map((row, i) => (
+          <div key={row.level} style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "8px 12px",
+            borderRadius: "10px",
+            background: i === 1 ? "rgba(99,102,241,0.06)" : "rgba(255,255,255,0.02)",
+            border: i === 1 ? "1px solid rgba(129,140,248,0.10)" : "1px solid rgba(255,255,255,0.04)",
+          }}>
+            <span style={{
+              fontSize: "8.5px",
+              fontWeight: 600,
+              letterSpacing: "0.10em",
+              textTransform: "uppercase",
+              color: i === 1 ? "rgba(165,180,252,0.65)" : "rgba(255,255,255,0.25)",
+              flexShrink: 0,
+              minWidth: "52px",
+            }}>
+              {row.level}
+            </span>
+            <span style={{
+              fontSize: "12px",
+              fontWeight: 300,
+              color: i === 1 ? "rgba(255,255,255,0.72)" : "rgba(255,255,255,0.45)",
+              lineHeight: 1.5,
+            }}>
+              {row.text}
+            </span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─── Mobile level card ─────────────────────────────────────────── */
+function MobileLevelCard({
+  level,
+  active,
+  delay,
+  t,
+}: {
+  level: typeof LEVELS[number];
+  active: boolean;
+  delay: number;
+  t: number;
+}) {
+  const isFeatured = level.size === "featured";
+  const isDeep = level.size === "deep";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -16 }}
+      animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: -16 }}
+      transition={{ duration: 0.70, ease: [0.22, 1, 0.36, 1], delay }}
+      style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}
+    >
+      {/* Left: vertical connector */}
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0, paddingTop: "6px" }}>
+        <div style={{
+          width: isFeatured ? "10px" : "7px",
+          height: isFeatured ? "10px" : "7px",
+          borderRadius: "50%",
+          background: isFeatured ? "rgba(129,140,248,0.85)" : "rgba(255,255,255,0.25)",
+          border: isFeatured ? "1px solid rgba(165,180,252,0.55)" : "1px solid rgba(255,255,255,0.12)",
+          boxShadow: isFeatured ? "0 0 10px rgba(99,102,241,0.40)" : "none",
+          flexShrink: 0,
+        }} />
+        <div style={{
+          width: "1px",
+          flex: 1,
+          minHeight: "32px",
+          background: isFeatured
+            ? "linear-gradient(to bottom, rgba(129,140,248,0.30), rgba(129,140,248,0.06))"
+            : "linear-gradient(to bottom, rgba(255,255,255,0.10), rgba(255,255,255,0.02))",
+          marginTop: "6px",
+        }} />
+      </div>
+
+      {/* Right: module */}
+      <div style={{
+        flex: 1,
+        borderRadius: isFeatured ? "20px" : "16px",
+        padding: isFeatured ? "24px 20px" : "18px 16px",
+        background: isFeatured
+          ? "linear-gradient(155deg, rgba(99,102,241,0.09) 0%, rgba(79,70,229,0.05) 50%, rgba(255,255,255,0.02) 100%)"
+          : isDeep
+            ? "linear-gradient(155deg, rgba(139,92,246,0.05) 0%, rgba(255,255,255,0.02) 100%)"
+            : "linear-gradient(155deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        border: isFeatured
+          ? "1px solid rgba(129,140,248,0.18)"
+          : isDeep
+            ? "1px solid rgba(167,139,250,0.10)"
+            : "1px solid rgba(255,255,255,0.07)",
+        boxShadow: isFeatured
+          ? "inset 0 1px 0 rgba(255,255,255,0.08), 0 10px 32px rgba(0,0,0,0.28)"
+          : "inset 0 1px 0 rgba(255,255,255,0.04), 0 4px 14px rgba(0,0,0,0.18)",
+        position: "relative",
+        overflow: "hidden",
+        marginBottom: "4px",
+      }}>
+        <span aria-hidden="true" style={{
+          position: "absolute", top: 0, left: 0, right: 0, height: "1px",
+          background: isFeatured
+            ? "linear-gradient(to right, transparent, rgba(165,180,252,0.30), transparent)"
+            : "linear-gradient(to right, transparent, rgba(255,255,255,0.10), transparent)",
+          pointerEvents: "none",
+        }} />
+
+        {/* Badge */}
+        {level.badge && (
+          <span style={{
+            fontSize: "8px",
+            fontWeight: 600,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            padding: "2px 8px",
+            borderRadius: "9999px",
+            color: "rgba(165,180,252,0.90)",
+            background: "rgba(99,102,241,0.14)",
+            border: "1px solid rgba(129,140,248,0.22)",
+            marginBottom: "10px",
+            display: "block",
+          }}>
+            {level.badge}
+          </span>
+        )}
+
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px", marginBottom: "12px" }}>
+          <div>
+            <span style={{
+              fontSize: "8.5px", fontWeight: 600, letterSpacing: "0.14em",
+              textTransform: "uppercase", color: isFeatured ? "rgba(165,180,252,0.55)" : "rgba(255,255,255,0.22)",
+              display: "block", marginBottom: "4px",
+            }}>
+              {level.label}
+            </span>
+            <h3 style={{
+              fontSize: isFeatured ? "17px" : "15px",
+              fontWeight: 500, letterSpacing: "-0.018em",
+              lineHeight: 1.20, color: "#f5f5f7", margin: 0,
+            }}>
+              {level.title}
+            </h3>
+          </div>
+          <div style={{ textAlign: "right", flexShrink: 0 }}>
+            <span style={{
+              fontSize: "8px", fontWeight: 600, letterSpacing: "0.10em",
+              textTransform: "uppercase", color: "rgba(165,180,252,0.35)",
+              display: "block", marginBottom: "2px",
+            }}>
+              Investment
+            </span>
+            <span style={{
+              fontSize: isFeatured ? "20px" : "17px",
+              fontWeight: 600, letterSpacing: "-0.025em",
+              color: isFeatured ? "rgba(200,208,255,0.92)" : "rgba(245,245,247,0.70)",
+            }}>
+              {level.investment}
+            </span>
+          </div>
+        </div>
+
+        <p style={{
+          fontSize: "12px", fontWeight: 300, lineHeight: 1.65,
+          color: "rgba(255,255,255,0.50)", margin: "0 0 14px",
+        }}>
+          {level.description}
+        </p>
+
+        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "5px" }}>
+          {level.includes.map((item) => (
+            <li key={item} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span style={{
+                width: "4px", height: "4px", borderRadius: "50%", flexShrink: 0,
+                background: isFeatured ? "rgba(129,140,248,0.50)" : "rgba(255,255,255,0.18)",
+              }} />
+              <span style={{ fontSize: "11px", fontWeight: 400, color: "rgba(255,255,255,0.45)" }}>
+                {item}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </motion.div>
+  );
+}
+
+/* ─── CTA strip ─────────────────────────────────────────────────── */
+function CTAStrip({ active }: { active: boolean }) {
   const [hov, setHov] = useState(false);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.70, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
+      transition={{ duration: 0.70, ease: [0.22, 1, 0.36, 1], delay: 0.24 }}
       style={{
-        marginTop: "72px",
-        textAlign: "center",
+        marginTop: "56px",
+        borderRadius: "20px",
+        padding: "36px 40px",
+        background: "linear-gradient(145deg, rgba(99,102,241,0.07) 0%, rgba(139,92,246,0.04) 100%)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+        border: "1px solid rgba(129,140,248,0.12)",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.20)",
         display: "flex",
-        flexDirection: "column",
         alignItems: "center",
-        gap: "12px",
+        justifyContent: "space-between",
+        gap: "28px",
+        flexWrap: "wrap",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <h3 style={{
-        fontSize: "clamp(18px, 2.2vw, 24px)",
-        fontWeight: 500,
-        letterSpacing: "-0.020em",
-        lineHeight: 1.22,
-        color: "#f0f0f5",
-        margin: 0,
-      }}>
-        Define your system and scope
-      </h3>
-      <p style={{
-        fontSize: "14px",
-        fontWeight: 300,
-        lineHeight: 1.65,
-        color: "rgba(255,255,255,0.55)",
-        margin: "0 0 20px",
-        maxWidth: "380px",
-      }}>
-        We&apos;ll help you map the right approach, timeline, and investment.
-      </p>
+      <span aria-hidden="true" style={{
+        position: "absolute", top: 0, left: 0, right: 0, height: "1px",
+        background: "linear-gradient(to right, transparent, rgba(165,180,252,0.22), transparent)",
+        pointerEvents: "none",
+      }} />
+      <div aria-hidden="true" style={{
+        position: "absolute", top: "-60%", left: "50%", transform: "translateX(-50%)",
+        width: "60%", height: "200px", borderRadius: "9999px",
+        background: "radial-gradient(ellipse, rgba(99,102,241,0.07) 0%, transparent 70%)",
+        pointerEvents: "none",
+      }} />
+
+      <div style={{ flex: 1, minWidth: "220px", position: "relative", zIndex: 1 }}>
+        <h3 style={{
+          fontSize: "clamp(16px, 2vw, 20px)",
+          fontWeight: 500,
+          letterSpacing: "-0.018em",
+          lineHeight: 1.25,
+          color: "#f5f5f7",
+          margin: "0 0 6px",
+        }}>
+          Not sure where your project fits?
+        </h3>
+        <p style={{
+          fontSize: "13.5px",
+          fontWeight: 300,
+          lineHeight: 1.65,
+          color: "rgba(255,255,255,0.60)",
+          margin: 0,
+          maxWidth: "420px",
+        }}>
+          Book a free call and we&apos;ll help define the right scope, timeline, and investment range.
+        </p>
+      </div>
+
       <a
         href="#contact"
         onMouseEnter={() => setHov(true)}
@@ -354,7 +685,7 @@ function CTABlock({ active }: { active: boolean }) {
           alignItems: "center",
           justifyContent: "center",
           gap: "8px",
-          padding: "14px 28px",
+          padding: "13px 26px",
           borderRadius: "12px",
           fontSize: "13px",
           fontWeight: 400,
@@ -372,6 +703,8 @@ function CTABlock({ active }: { active: boolean }) {
           transition: "all 260ms cubic-bezier(0.22,1,0.36,1)",
           overflow: "hidden",
           whiteSpace: "nowrap",
+          flexShrink: 0,
+          zIndex: 1,
         }}
       >
         <span aria-hidden="true" style={{
@@ -394,16 +727,27 @@ function CTABlock({ active }: { active: boolean }) {
 
 /* ─── Main export ───────────────────────────────────────────────── */
 export function Pricing() {
-  const [hoveredId, setHoveredId] = useState<BlockId | null>(null);
+  const [activeId, setActiveId] = useState<LevelId | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const [t, setT] = useState(0);
+
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
-  const blocksRef = useRef<HTMLDivElement>(null);
+  const pathwayRef = useRef<HTMLDivElement>(null);
+  const insightRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
 
   const headerInView = useInView(headerRef, { once: true, margin: "-60px" });
-  const blocksInView = useInView(blocksRef, { once: true, margin: "-60px" });
+  const pathwayInView = useInView(pathwayRef, { once: true, margin: "-60px" });
+  const insightInView = useInView(insightRef, { once: true, margin: "-60px" });
   const ctaInView = useInView(ctaRef, { once: true, margin: "-60px" });
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check, { passive: true });
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     let raf: number;
@@ -417,6 +761,13 @@ export function Pricing() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
+  /* Mobile order: growth first, then launch, then advanced */
+  const mobileOrder = [
+    LEVELS.find((l) => l.id === "growth")!,
+    LEVELS.find((l) => l.id === "launch")!,
+    LEVELS.find((l) => l.id === "advanced")!,
+  ];
+
   return (
     <section
       ref={sectionRef}
@@ -424,28 +775,19 @@ export function Pricing() {
       aria-label="Investment Architecture"
       style={{ padding: "80px 20px 100px", position: "relative", overflow: "hidden" }}
     >
-      {/* Background layers */}
+      {/* Background */}
       <div aria-hidden="true" style={{
         position: "absolute", inset: 0,
         background: "linear-gradient(180deg, rgba(5,5,5,0) 0%, rgba(6,6,20,0.55) 50%, rgba(5,5,5,0) 100%)",
         pointerEvents: "none", zIndex: 0,
       }} />
-      {/* Faint structural horizontal line */}
       <div aria-hidden="true" style={{
         position: "absolute",
-        top: "52%", left: "8%", right: "8%",
-        height: "1px",
-        background: "linear-gradient(to right, transparent, rgba(129,140,248,0.05), transparent)",
-        pointerEvents: "none", zIndex: 0,
-      }} />
-      {/* Center radial depth */}
-      <div aria-hidden="true" style={{
-        position: "absolute",
-        left: "50%", top: "52%",
+        left: "50%", top: "50%",
         transform: "translate(-50%, -50%)",
-        width: "800px", height: "500px",
+        width: "900px", height: "500px",
         borderRadius: "9999px",
-        background: "radial-gradient(ellipse, rgba(99,102,241,0.055) 0%, transparent 65%)",
+        background: "radial-gradient(ellipse, rgba(99,102,241,0.05) 0%, transparent 65%)",
         pointerEvents: "none", zIndex: 0,
       }} />
 
@@ -486,7 +828,7 @@ export function Pricing() {
             color: "#f0f0f5",
             margin: 0,
           }}>
-            Built for different<br />levels of complexity
+            Choose the right level of<br />system for your stage
           </h2>
 
           <p style={{
@@ -497,67 +839,70 @@ export function Pricing() {
             margin: "0 auto",
             maxWidth: "480px",
           }}>
-            From focused systems to full-scale platforms, each engagement is structured around your business needs, system complexity, and long-term goals.
+            Every engagement is tailored, but most projects fall into one of three levels based on scope, complexity, and the outcomes your business needs.
           </p>
         </motion.div>
 
-        {/* ── Blocks ── */}
-        <div
-          ref={blocksRef}
-          style={{ position: "relative" }}
-        >
-          {/* Signal flow layer */}
-          <div
-            aria-hidden="true"
-            className="pricing-signal"
-            style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}
-          >
-            <SignalFlow t={t} />
-          </div>
+        {/* ── Desktop pathway ── */}
+        {!isMobile && (
+          <div ref={pathwayRef} style={{ position: "relative" }}>
+            {/* Pathway signal layer */}
+            <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0 }}>
+              <PathwaySignal t={t} activeId={activeId} />
+            </div>
 
-          <div
-            style={{
+            <div style={{
               display: "flex",
               gap: "18px",
               alignItems: "flex-start",
               position: "relative",
               zIndex: 1,
-            }}
-            className="pricing-blocks"
-          >
-            {BLOCKS.map((block, i) => (
-              <SystemBlock
-                key={block.id}
-                block={block}
-                active={blocksInView}
-                hoveredId={hoveredId}
-                onHover={setHoveredId}
+            }}>
+              {LEVELS.map((level, i) => (
+                <LevelModule
+                  key={level.id}
+                  level={level}
+                  active={pathwayInView}
+                  activeId={activeId}
+                  onHover={setActiveId}
+                  delay={0.06 + i * 0.10}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Mobile pathway ── */}
+        {isMobile && (
+          <div ref={pathwayRef} style={{ display: "flex", flexDirection: "column", gap: "0" }}>
+            {mobileOrder.map((level, i) => (
+              <MobileLevelCard
+                key={level.id}
+                level={level}
+                active={pathwayInView}
                 delay={0.06 + i * 0.10}
                 t={t}
               />
             ))}
           </div>
+        )}
+
+        {/* ── Insight panel ── */}
+        <div ref={insightRef}>
+          <InsightPanel active={insightInView} />
         </div>
 
         {/* ── CTA ── */}
         <div ref={ctaRef}>
-          <CTABlock active={ctaInView} />
+          <CTAStrip active={ctaInView} />
         </div>
       </div>
 
       {/* Responsive */}
       <style>{`
         @media (max-width: 768px) {
-          .pricing-blocks {
-            flex-direction: column !important;
-            align-items: stretch !important;
-          }
-          .pricing-blocks > * {
-            flex: 1 1 auto !important;
-            margin-top: 0 !important;
-          }
-          .pricing-signal {
-            display: none !important;
+          .insight-panel {
+            grid-template-columns: 1fr !important;
           }
         }
       `}</style>
