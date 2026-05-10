@@ -10,15 +10,15 @@ const PLANS = [
     label: "Focused Start",
     title: "Launch System",
     investment: "$5k – $15k",
-    description: "For MVPs, first automations, and focused digital products.",
-    bestFor: "Validating an idea or automating one critical workflow.",
+    valueLine: "Validate an idea or automate one high-impact workflow.",
+    bestFor: "MVPs, first automations, and lean product builds.",
     includes: [
       "Discovery & scope",
-      "Core product or workflow",
+      "Core workflow or product",
       "Essential integrations",
       "Launch-ready delivery",
     ],
-    outcome: "Move fast with a clear, focused scope.",
+    outcome: "Move fast with a focused, controlled scope.",
     cta: "Start a Project",
     featured: false,
   },
@@ -27,16 +27,16 @@ const PLANS = [
     label: "Most Common",
     title: "Growth System",
     investment: "$15k – $40k",
-    description: "For businesses ready to connect workflows and scale operations.",
-    bestFor: "Teams that need systems across sales, marketing, and operations.",
+    valueLine: "Connect workflows, dashboards, and AI-assisted processes.",
+    bestFor: "Growing teams ready to scale sales, marketing, or operations.",
     includes: [
       "Multi-workflow automation",
       "Dashboards or portals",
-      "AI-assisted processes",
+      "AI-assisted workflows",
       "Third-party integrations",
       "Launch support",
     ],
-    outcome: "Build connected systems that work together.",
+    outcome: "Build connected systems that reduce manual work.",
     cta: "Get a Proposal",
     featured: true,
   },
@@ -45,8 +45,8 @@ const PLANS = [
     label: "Custom Ecosystem",
     title: "Advanced System",
     investment: "$40k+",
-    description: "For complex platforms, AI-enabled operations, and scalable ecosystems.",
-    bestFor: "Companies building advanced software, mobile, web, or AI systems.",
+    valueLine: "Build scalable platforms with advanced automation.",
+    bestFor: "Complex web, mobile, AI, and operational ecosystems.",
     includes: [
       "Custom architecture",
       "AI automation systems",
@@ -54,7 +54,7 @@ const PLANS = [
       "Complex integrations",
       "Scalable infrastructure",
     ],
-    outcome: "Design a system built for long-term scale.",
+    outcome: "Design a system built for long-term growth.",
     cta: "Discuss Your System",
     featured: false,
   },
@@ -102,28 +102,61 @@ const COMPARISON_ROWS = [
 /* ─── Check icon ─────────────────────────────────────────────────── */
 function CheckIcon({ featured }: { featured: boolean }) {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style={{ flexShrink: 0, marginTop: "1px" }}>
-      <circle cx="7" cy="7" r="6.5" fill={featured ? "rgba(99,102,241,0.18)" : "rgba(255,255,255,0.06)"} stroke={featured ? "rgba(99,102,241,0.35)" : "rgba(255,255,255,0.12)"} />
-      <path d="M4.5 7L6.2 8.7L9.5 5.3" stroke={featured ? "rgba(165,180,252,0.90)" : "rgba(255,255,255,0.55)"} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"
+      style={{ flexShrink: 0, marginTop: "2px" }}>
+      <circle cx="7" cy="7" r="6.5"
+        fill={featured ? "rgba(99,102,241,0.20)" : "rgba(255,255,255,0.06)"}
+        stroke={featured ? "rgba(99,102,241,0.40)" : "rgba(255,255,255,0.14)"} />
+      <path d="M4.5 7L6.2 8.7L9.5 5.3"
+        stroke={featured ? "rgba(165,180,252,0.95)" : "rgba(255,255,255,0.60)"}
+        strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-/* ─── Abstract card pattern ─────────────────────────────────────── */
-function CardPattern({ featured }: { featured: boolean }) {
-  const c = featured ? "rgba(99,102,241," : "rgba(255,255,255,";
+/* ─── Abstract system texture per card ──────────────────────────── */
+function CardTexture({ featured, id }: { featured: boolean; id: string }) {
+  const accent = featured ? "rgba(99,102,241," : "rgba(255,255,255,";
+  const op = featured ? 0.22 : 0.06;
+
+  if (id === "launch") {
+    /* Signal path — faint curved line + dots */
+    return (
+      <svg width="140" height="90" viewBox="0 0 140 90" fill="none" aria-hidden="true"
+        style={{ position: "absolute", top: 0, right: 0, opacity: op, pointerEvents: "none" }}>
+        <path d="M140 0 Q100 30 80 60 Q60 80 20 90" stroke={`${accent}1)`} strokeWidth="0.7" strokeLinecap="round" />
+        <circle cx="80" cy="60" r="2.5" fill={`${accent}0.8)`} />
+        <circle cx="110" cy="28" r="1.5" fill={`${accent}0.6)`} />
+        <circle cx="50" cy="76" r="1.5" fill={`${accent}0.6)`} />
+      </svg>
+    );
+  }
+  if (id === "growth") {
+    /* Concentric arcs — system core */
+    return (
+      <svg width="130" height="90" viewBox="0 0 130 90" fill="none" aria-hidden="true"
+        style={{ position: "absolute", top: 0, right: 0, opacity: op, pointerEvents: "none" }}>
+        <circle cx="115" cy="10" r="50" stroke={`${accent}1)`} strokeWidth="0.6" />
+        <circle cx="115" cy="10" r="34" stroke={`${accent}1)`} strokeWidth="0.5" />
+        <circle cx="115" cy="10" r="18" stroke={`${accent}1)`} strokeWidth="0.4" />
+        <circle cx="115" cy="10" r="5" fill={`${accent}0.7)`} />
+        <line x1="65" y1="10" x2="110" y2="10" stroke={`${accent}0.5)`} strokeWidth="0.5" strokeDasharray="3 4" />
+      </svg>
+    );
+  }
+  /* advanced — grid fragment */
   return (
-    <svg
-      width="120" height="80"
-      viewBox="0 0 120 80"
-      fill="none"
-      aria-hidden="true"
-      style={{ position: "absolute", top: 0, right: 0, opacity: featured ? 0.18 : 0.07, pointerEvents: "none" }}
-    >
-      <circle cx="100" cy="10" r="40" stroke={`${c}1)`} strokeWidth="0.6" />
-      <circle cx="100" cy="10" r="28" stroke={`${c}1)`} strokeWidth="0.5" />
-      <circle cx="100" cy="10" r="16" stroke={`${c}1)`} strokeWidth="0.4" />
-      <circle cx="100" cy="10" r="5" fill={`${c}0.5)`} />
+    <svg width="130" height="90" viewBox="0 0 130 90" fill="none" aria-hidden="true"
+      style={{ position: "absolute", top: 0, right: 0, opacity: op, pointerEvents: "none" }}>
+      {[0, 20, 40, 60, 80, 100, 120].map((x) => (
+        <line key={`v${x}`} x1={x} y1="0" x2={x} y2="90" stroke={`${accent}1)`} strokeWidth="0.4" />
+      ))}
+      {[0, 20, 40, 60, 80].map((y) => (
+        <line key={`h${y}`} x1="0" y1={y} x2="130" y2={y} stroke={`${accent}1)`} strokeWidth="0.4" />
+      ))}
+      <circle cx="80" cy="40" r="4" fill={`${accent}0.6)`} />
+      <circle cx="40" cy="20" r="2" fill={`${accent}0.4)`} />
+      <circle cx="100" cy="60" r="2" fill={`${accent}0.4)`} />
     </svg>
   );
 }
@@ -140,76 +173,79 @@ function PlanCard({ plan }: { plan: typeof PLANS[0] }) {
       style={{
         position: "relative",
         borderRadius: "22px",
-        padding: "28px",
+        padding: "28px 26px 26px",
         background: f
           ? hovered
-            ? "linear-gradient(160deg, rgba(99,102,241,0.14) 0%, rgba(139,92,246,0.08) 50%, rgba(10,10,20,0.95) 100%)"
-            : "linear-gradient(160deg, rgba(99,102,241,0.10) 0%, rgba(139,92,246,0.06) 50%, rgba(8,8,18,0.96) 100%)"
+            ? "linear-gradient(155deg, rgba(99,102,241,0.16) 0%, rgba(139,92,246,0.09) 45%, rgba(8,8,18,0.97) 100%)"
+            : "linear-gradient(155deg, rgba(99,102,241,0.11) 0%, rgba(139,92,246,0.06) 45%, rgba(6,6,16,0.97) 100%)"
           : hovered
-            ? "linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)"
-            : "linear-gradient(160deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
+            ? "linear-gradient(155deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)"
+            : "linear-gradient(155deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
         border: f
           ? hovered
-            ? "1px solid rgba(99,102,241,0.45)"
-            : "1px solid rgba(99,102,241,0.28)"
+            ? "1px solid rgba(99,102,241,0.50)"
+            : "1px solid rgba(99,102,241,0.30)"
           : hovered
-            ? "1px solid rgba(255,255,255,0.18)"
+            ? "1px solid rgba(255,255,255,0.20)"
             : "1px solid rgba(255,255,255,0.09)",
         boxShadow: f
           ? hovered
-            ? "inset 0 1px 0 rgba(255,255,255,0.12), 0 20px 50px rgba(0,0,0,0.40), 0 0 40px rgba(99,102,241,0.12)"
-            : "inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 32px rgba(0,0,0,0.35), 0 0 24px rgba(99,102,241,0.08)"
+            ? "inset 0 1px 0 rgba(255,255,255,0.14), 0 24px 56px rgba(0,0,0,0.42), 0 0 48px rgba(99,102,241,0.14)"
+            : "inset 0 1px 0 rgba(255,255,255,0.09), 0 14px 36px rgba(0,0,0,0.38), 0 0 28px rgba(99,102,241,0.09)"
           : hovered
-            ? "inset 0 1px 0 rgba(255,255,255,0.10), 0 16px 40px rgba(0,0,0,0.35)"
-            : "inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 24px rgba(0,0,0,0.25)",
-        transform: hovered ? "translateY(-6px)" : "translateY(0)",
+            ? "inset 0 1px 0 rgba(255,255,255,0.11), 0 18px 44px rgba(0,0,0,0.36)"
+            : "inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 24px rgba(0,0,0,0.26)",
+        transform: hovered ? "translateY(-5px)" : "translateY(0)",
         transition: "all 280ms cubic-bezier(0.22,1,0.36,1)",
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
+        backdropFilter: "blur(22px)",
+        WebkitBackdropFilter: "blur(22px)",
       }}
     >
-      {/* Top shimmer */}
+      {/* Top edge reflection */}
       <span aria-hidden="true" style={{
-        position: "absolute", top: 0, left: 0, right: 0, height: "1px",
+        position: "absolute", top: 0, left: 0, right: 0,
+        height: hovered ? "1px" : "1px",
         background: f
-          ? "linear-gradient(to right, transparent, rgba(129,140,248,0.50), transparent)"
-          : "linear-gradient(to right, transparent, rgba(255,255,255,0.18), transparent)",
+          ? `linear-gradient(to right, transparent, rgba(129,140,248,${hovered ? 0.65 : 0.45}), transparent)`
+          : `linear-gradient(to right, transparent, rgba(255,255,255,${hovered ? 0.24 : 0.14}), transparent)`,
+        transition: "background 280ms ease",
         pointerEvents: "none",
       }} />
 
-      {/* Background pattern */}
-      <CardPattern featured={f} />
+      {/* System texture */}
+      <CardTexture featured={f} id={plan.id} />
 
-      {/* Top accent glow */}
+      {/* Top accent glow — featured only */}
       {f && (
         <div aria-hidden="true" style={{
-          position: "absolute", top: "-40px", right: "-20px",
-          width: "160px", height: "160px", borderRadius: "50%",
-          background: "radial-gradient(ellipse, rgba(99,102,241,0.18) 0%, transparent 70%)",
+          position: "absolute", top: "-50px", right: "-30px",
+          width: "180px", height: "180px", borderRadius: "50%",
+          background: `radial-gradient(ellipse, rgba(99,102,241,${hovered ? 0.22 : 0.15}) 0%, transparent 70%)`,
+          transition: "background 280ms ease",
           pointerEvents: "none",
         }} />
       )}
 
-      {/* Label + badge */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+      {/* Label row */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "18px" }}>
         <span style={{
-          fontSize: "10px", fontWeight: 600, letterSpacing: "0.10em",
+          fontSize: "10px", fontWeight: 600, letterSpacing: "0.11em",
           textTransform: "uppercase",
-          color: f ? "rgba(165,180,252,0.80)" : "rgba(255,255,255,0.45)",
+          color: f ? "rgba(165,180,252,0.80)" : "rgba(255,255,255,0.42)",
         }}>
           {plan.label}
         </span>
         {f && (
           <span style={{
-            fontSize: "10px", fontWeight: 600, letterSpacing: "0.06em",
+            fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.07em",
             textTransform: "uppercase",
-            padding: "3px 9px", borderRadius: "99px",
-            background: "rgba(99,102,241,0.18)",
-            border: "1px solid rgba(99,102,241,0.35)",
-            color: "rgba(165,180,252,0.90)",
+            padding: "3px 10px", borderRadius: "99px",
+            background: "rgba(99,102,241,0.20)",
+            border: "1px solid rgba(99,102,241,0.38)",
+            color: "rgba(165,180,252,0.92)",
           }}>
             Most Common
           </span>
@@ -218,73 +254,76 @@ function PlanCard({ plan }: { plan: typeof PLANS[0] }) {
 
       {/* Title */}
       <h3 style={{
-        fontSize: "20px", fontWeight: 600, letterSpacing: "-0.02em",
-        color: "#f5f5f7", margin: "0 0 6px",
+        fontSize: "19px", fontWeight: 600, letterSpacing: "-0.022em",
+        color: "#f5f5f7", margin: "0 0 8px",
         position: "relative", zIndex: 1,
       }}>
         {plan.title}
       </h3>
 
-      {/* Investment */}
+      {/* Investment — hero element */}
       <div style={{
-        fontSize: "32px", fontWeight: 700, letterSpacing: "-0.03em",
-        color: f ? "rgba(199,210,254,0.96)" : "rgba(245,245,247,0.96)",
-        margin: "0 0 16px",
+        fontSize: "30px", fontWeight: 700, letterSpacing: "-0.032em",
+        color: f ? "rgba(199,210,254,0.97)" : "rgba(245,245,247,0.95)",
+        margin: "0 0 10px",
         fontVariantNumeric: "tabular-nums",
         position: "relative", zIndex: 1,
+        lineHeight: 1.1,
       }}>
         {plan.investment}
       </div>
 
-      {/* Description */}
+      {/* Value line */}
       <p style={{
-        fontSize: "13px", fontWeight: 400, lineHeight: 1.65,
-        color: "rgba(255,255,255,0.70)", margin: "0 0 20px",
+        fontSize: "13px", fontWeight: 400, lineHeight: 1.6,
+        color: "rgba(255,255,255,0.68)", margin: "0 0 20px",
         position: "relative", zIndex: 1,
       }}>
-        {plan.description}
+        {plan.valueLine}
       </p>
 
       {/* Divider */}
       <div style={{
         height: "1px",
-        background: f ? "rgba(99,102,241,0.18)" : "rgba(255,255,255,0.07)",
+        background: f
+          ? "linear-gradient(to right, rgba(99,102,241,0.22), rgba(139,92,246,0.12), transparent)"
+          : "rgba(255,255,255,0.07)",
         margin: "0 0 20px",
       }} />
 
       {/* Best for */}
-      <div style={{ marginBottom: "20px", position: "relative", zIndex: 1 }}>
+      <div style={{ marginBottom: "18px", position: "relative", zIndex: 1 }}>
         <span style={{
-          fontSize: "10px", fontWeight: 600, letterSpacing: "0.08em",
+          fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.09em",
           textTransform: "uppercase",
-          color: f ? "rgba(165,180,252,0.60)" : "rgba(255,255,255,0.35)",
+          color: f ? "rgba(165,180,252,0.58)" : "rgba(255,255,255,0.32)",
           display: "block", marginBottom: "6px",
         }}>
           Best for
         </span>
         <p style={{
           fontSize: "12px", fontWeight: 400, lineHeight: 1.6,
-          color: "rgba(255,255,255,0.75)", margin: 0,
+          color: "rgba(255,255,255,0.72)", margin: 0,
         }}>
           {plan.bestFor}
         </p>
       </div>
 
       {/* Includes */}
-      <div style={{ marginBottom: "24px", position: "relative", zIndex: 1, flex: 1 }}>
+      <div style={{ marginBottom: "22px", position: "relative", zIndex: 1, flex: 1 }}>
         <span style={{
-          fontSize: "10px", fontWeight: 600, letterSpacing: "0.08em",
+          fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.09em",
           textTransform: "uppercase",
-          color: f ? "rgba(165,180,252,0.60)" : "rgba(255,255,255,0.35)",
+          color: f ? "rgba(165,180,252,0.58)" : "rgba(255,255,255,0.32)",
           display: "block", marginBottom: "10px",
         }}>
           Includes
         </span>
-        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
+        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "9px" }}>
           {plan.includes.map((item) => (
-            <li key={item} style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+            <li key={item} style={{ display: "flex", alignItems: "flex-start", gap: "9px" }}>
               <CheckIcon featured={f} />
-              <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.78)", fontWeight: 400, lineHeight: 1.5 }}>
+              <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.76)", fontWeight: 400, lineHeight: 1.5 }}>
                 {item}
               </span>
             </li>
@@ -295,7 +334,7 @@ function PlanCard({ plan }: { plan: typeof PLANS[0] }) {
       {/* Outcome */}
       <p style={{
         fontSize: "11px", fontWeight: 400, lineHeight: 1.6,
-        color: f ? "rgba(165,180,252,0.65)" : "rgba(255,255,255,0.40)",
+        color: f ? "rgba(165,180,252,0.62)" : "rgba(255,255,255,0.38)",
         margin: "0 0 20px",
         fontStyle: "italic",
         position: "relative", zIndex: 1,
@@ -311,18 +350,22 @@ function PlanCard({ plan }: { plan: typeof PLANS[0] }) {
           padding: "12px 20px", borderRadius: "12px",
           fontSize: "13px", fontWeight: 500, letterSpacing: "0.01em",
           textDecoration: "none",
-          color: f ? "rgba(255,255,255,0.96)" : "rgba(255,255,255,0.85)",
+          color: f ? "rgba(255,255,255,0.97)" : "rgba(255,255,255,0.82)",
           background: f
             ? hovered
               ? "linear-gradient(170deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%)"
               : "linear-gradient(170deg, #6366f1 0%, #4f46e5 100%)"
             : hovered
-              ? "rgba(255,255,255,0.12)"
+              ? "rgba(255,255,255,0.13)"
               : "rgba(255,255,255,0.07)",
           border: f
-            ? hovered ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(99,102,241,0.50)"
-            : hovered ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(255,255,255,0.12)",
-          boxShadow: f && hovered ? "0 6px 20px rgba(79,70,229,0.40)" : "none",
+            ? hovered ? "1px solid rgba(255,255,255,0.24)" : "1px solid rgba(99,102,241,0.52)"
+            : hovered ? "1px solid rgba(255,255,255,0.24)" : "1px solid rgba(255,255,255,0.13)",
+          boxShadow: f
+            ? hovered
+              ? "inset 0 1px 0 rgba(255,255,255,0.22), 0 6px 22px rgba(79,70,229,0.44)"
+              : "inset 0 1px 0 rgba(255,255,255,0.14)"
+            : "none",
           transition: "all 260ms cubic-bezier(0.22,1,0.36,1)",
           position: "relative", zIndex: 1,
         }}
@@ -343,26 +386,44 @@ function ComparisonDesktop() {
       borderRadius: "18px",
       background: "linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)",
       border: "1px solid rgba(255,255,255,0.08)",
-      backdropFilter: "blur(16px)",
-      WebkitBackdropFilter: "blur(16px)",
+      backdropFilter: "blur(18px)",
+      WebkitBackdropFilter: "blur(18px)",
       overflow: "hidden",
-      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 32px rgba(0,0,0,0.25)",
+      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 32px rgba(0,0,0,0.28)",
     }}>
+      {/* Intro note */}
+      <div style={{
+        padding: "14px 24px",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        background: "rgba(255,255,255,0.015)",
+      }}>
+        <p style={{
+          fontSize: "11.5px", fontWeight: 400, lineHeight: 1.6,
+          color: "rgba(255,255,255,0.42)", margin: 0, fontStyle: "italic",
+        }}>
+          Use this as a guide. Final scope depends on your goals, workflows, integrations, and timeline.
+        </p>
+      </div>
+
       {/* Header row */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "1.6fr 1fr 1fr 1fr",
-        padding: "16px 24px",
+        gridTemplateColumns: "1.7fr 1fr 1fr 1fr",
+        padding: "14px 24px",
         borderBottom: "1px solid rgba(255,255,255,0.07)",
         background: "rgba(255,255,255,0.02)",
       }}>
-        <span style={{ fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }}>
+        <span style={{
+          fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.09em",
+          textTransform: "uppercase", color: "rgba(255,255,255,0.32)",
+        }}>
           Category
         </span>
         {["Launch", "Growth", "Advanced"].map((col, i) => (
           <span key={col} style={{
-            fontSize: "11px", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase",
-            color: i === 1 ? "rgba(165,180,252,0.80)" : "rgba(255,255,255,0.50)",
+            fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.07em",
+            textTransform: "uppercase",
+            color: i === 1 ? "rgba(165,180,252,0.82)" : "rgba(255,255,255,0.48)",
             textAlign: "center",
           }}>
             {col}
@@ -376,25 +437,25 @@ function ComparisonDesktop() {
           key={row.category}
           style={{
             display: "grid",
-            gridTemplateColumns: "1.6fr 1fr 1fr 1fr",
-            padding: "14px 24px",
+            gridTemplateColumns: "1.7fr 1fr 1fr 1fr",
+            padding: "13px 24px",
             borderBottom: idx < COMPARISON_ROWS.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none",
             alignItems: "center",
           }}
         >
-          <span style={{ fontSize: "12px", fontWeight: 500, color: "rgba(255,255,255,0.65)" }}>
+          <span style={{ fontSize: "12px", fontWeight: 500, color: "rgba(255,255,255,0.62)" }}>
             {row.category}
           </span>
-          <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.55)", textAlign: "center", lineHeight: 1.5 }}>
+          <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.50)", textAlign: "center", lineHeight: 1.5 }}>
             {row.launch}
           </span>
           <span style={{
-            fontSize: "12px", color: "rgba(199,210,254,0.80)", textAlign: "center", lineHeight: 1.5,
-            fontWeight: 500,
+            fontSize: "12px", color: "rgba(199,210,254,0.82)", textAlign: "center",
+            lineHeight: 1.5, fontWeight: 500,
           }}>
             {row.growth}
           </span>
-          <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.55)", textAlign: "center", lineHeight: 1.5 }}>
+          <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.50)", textAlign: "center", lineHeight: 1.5 }}>
             {row.advanced}
           </span>
         </div>
@@ -406,7 +467,15 @@ function ComparisonDesktop() {
 /* ─── Comparison — Mobile ───────────────────────────────────────── */
 function ComparisonMobile() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      {/* Intro note */}
+      <p style={{
+        fontSize: "11.5px", fontWeight: 400, lineHeight: 1.6,
+        color: "rgba(255,255,255,0.40)", margin: "0 0 4px", fontStyle: "italic",
+      }}>
+        Use this as a guide. Final scope depends on your goals, workflows, integrations, and timeline.
+      </p>
+
       {COMPARISON_ROWS.map((row) => (
         <div
           key={row.category}
@@ -414,17 +483,17 @@ function ComparisonMobile() {
             borderRadius: "14px",
             background: "rgba(255,255,255,0.03)",
             border: "1px solid rgba(255,255,255,0.07)",
-            padding: "16px",
+            padding: "14px 16px",
           }}
         >
           <p style={{
-            fontSize: "11px", fontWeight: 600, letterSpacing: "0.08em",
-            textTransform: "uppercase", color: "rgba(255,255,255,0.40)",
-            margin: "0 0 12px",
+            fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.09em",
+            textTransform: "uppercase", color: "rgba(255,255,255,0.38)",
+            margin: "0 0 10px",
           }}>
             {row.category}
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
             {[
               { label: "Launch", value: row.launch, accent: false },
               { label: "Growth", value: row.growth, accent: true },
@@ -432,13 +501,15 @@ function ComparisonMobile() {
             ].map(({ label, value, accent }) => (
               <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px" }}>
                 <span style={{
-                  fontSize: "11px", fontWeight: 600, color: accent ? "rgba(165,180,252,0.75)" : "rgba(255,255,255,0.40)",
-                  minWidth: "60px", flexShrink: 0,
+                  fontSize: "11px", fontWeight: 600,
+                  color: accent ? "rgba(165,180,252,0.78)" : "rgba(255,255,255,0.38)",
+                  minWidth: "58px", flexShrink: 0,
                 }}>
                   {label}
                 </span>
                 <span style={{
-                  fontSize: "12px", color: accent ? "rgba(199,210,254,0.85)" : "rgba(255,255,255,0.65)",
+                  fontSize: "12px",
+                  color: accent ? "rgba(199,210,254,0.88)" : "rgba(255,255,255,0.62)",
                   textAlign: "right", lineHeight: 1.5,
                   fontWeight: accent ? 500 : 400,
                 }}>
@@ -463,33 +534,35 @@ export function InvestmentSection() {
       aria-label="Investment & Scope"
       style={{ position: "relative", padding: "100px 20px 120px" }}
     >
-      {/* Background glows */}
+      {/* Background — subtle radial behind Growth (center) */}
       <div aria-hidden="true" style={{
-        position: "absolute", left: "50%", top: "30%",
+        position: "absolute", left: "50%", top: "38%",
         transform: "translate(-50%, -50%)",
-        width: "800px", height: "500px", borderRadius: "9999px",
-        background: "radial-gradient(ellipse, rgba(99,102,241,0.06) 0%, transparent 65%)",
+        width: "700px", height: "480px", borderRadius: "9999px",
+        background: "radial-gradient(ellipse, rgba(99,102,241,0.07) 0%, transparent 65%)",
         pointerEvents: "none", zIndex: 0,
       }} />
+      {/* Faint horizontal light line near top of card area */}
       <div aria-hidden="true" style={{
-        position: "absolute", left: "50%", top: "0",
+        position: "absolute", left: "50%", top: "22%",
         transform: "translateX(-50%)",
-        width: "600px", height: "1px",
-        background: "linear-gradient(to right, transparent, rgba(255,255,255,0.06), transparent)",
+        width: "700px", height: "1px",
+        background: "linear-gradient(to right, transparent, rgba(255,255,255,0.055), transparent)",
         pointerEvents: "none", zIndex: 0,
       }} />
 
       <div style={{ maxWidth: "1050px", margin: "0 auto", position: "relative", zIndex: 1 }}>
 
-        {/* Section header */}
+        {/* ── Section header ── */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-          style={{ textAlign: "center", marginBottom: "64px" }}
+          style={{ textAlign: "center", marginBottom: "64px", maxWidth: "720px", margin: "0 auto 64px" }}
         >
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginBottom: "16px" }}>
+          {/* Eyebrow */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginBottom: "18px" }}>
             <span style={{ display: "inline-block", width: "20px", height: "1px", background: "rgba(129,140,248,0.50)" }} />
             <span style={{
               fontSize: "10px", fontWeight: 600, letterSpacing: "0.14em",
@@ -503,21 +576,21 @@ export function InvestmentSection() {
           <h2 style={{
             fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 500,
             letterSpacing: "-0.028em", lineHeight: 1.18,
-            color: "#f0f0f5", margin: "0 0 16px",
+            color: "#f0f0f5", margin: "0 0 18px",
           }}>
-            Choose the right system for your stage
+            Find the right system for your next stage
           </h2>
 
           <p style={{
             fontSize: "clamp(14px, 1.4vw, 16px)", fontWeight: 300,
-            lineHeight: 1.72, color: "rgba(255,255,255,0.70)",
-            maxWidth: "580px", margin: "0 auto",
+            lineHeight: 1.74, color: "rgba(255,255,255,0.68)",
+            maxWidth: "600px", margin: "0 auto",
           }}>
-            Every engagement is tailored, but these ranges help you understand what level of system fits your goals, complexity, and growth stage.
+            From focused launches to full-scale platforms, our engagement ranges help you understand what level of system fits your goals, complexity, and growth path.
           </p>
         </motion.div>
 
-        {/* Cards grid — desktop */}
+        {/* ── Cards — desktop (3 columns) ── */}
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -529,6 +602,7 @@ export function InvestmentSection() {
             gridTemplateColumns: "repeat(3, 1fr)",
             gap: "18px",
             marginBottom: "48px",
+            alignItems: "stretch",
           }}
         >
           {PLANS.map((plan) => (
@@ -536,7 +610,7 @@ export function InvestmentSection() {
           ))}
         </motion.div>
 
-        {/* Cards — mobile (Growth first) */}
+        {/* ── Cards — mobile (Growth first) ── */}
         <div
           className="investment-grid-mobile"
           style={{ display: "none", flexDirection: "column", gap: "16px", marginBottom: "48px" }}
@@ -546,43 +620,45 @@ export function InvestmentSection() {
           ))}
         </div>
 
-        {/* Comparison toggle */}
+        {/* ── Comparison toggle ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.18 }}
-          style={{ marginBottom: "32px" }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.16 }}
+          style={{ marginBottom: "36px" }}
         >
           <div style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}>
             <button
               onClick={() => setComparisonOpen((v) => !v)}
               style={{
                 display: "inline-flex", alignItems: "center", gap: "8px",
-                padding: "10px 20px", borderRadius: "12px",
+                padding: "10px 22px", borderRadius: "12px",
                 fontSize: "13px", fontWeight: 500,
-                color: "rgba(255,255,255,0.75)",
+                color: "rgba(255,255,255,0.72)",
                 background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.11)",
                 cursor: "pointer",
                 transition: "all 220ms ease",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.09)";
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.20)";
-                (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.92)";
+                const b = e.currentTarget as HTMLButtonElement;
+                b.style.background = "rgba(255,255,255,0.09)";
+                b.style.borderColor = "rgba(255,255,255,0.20)";
+                b.style.color = "rgba(255,255,255,0.92)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.05)";
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.12)";
-                (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.75)";
+                const b = e.currentTarget as HTMLButtonElement;
+                b.style.background = "rgba(255,255,255,0.05)";
+                b.style.borderColor = "rgba(255,255,255,0.11)";
+                b.style.color = "rgba(255,255,255,0.72)";
               }}
             >
               <svg
                 width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"
-                style={{ transform: comparisonOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 250ms ease" }}
+                style={{ transform: comparisonOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 260ms ease" }}
               >
                 <path d="M2.5 5L7 9.5L11.5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -593,60 +669,57 @@ export function InvestmentSection() {
           {/* Comparison panel */}
           <div style={{
             overflow: "hidden",
-            maxHeight: comparisonOpen ? "1200px" : "0",
+            maxHeight: comparisonOpen ? "1400px" : "0",
             opacity: comparisonOpen ? 1 : 0,
-            transition: "max-height 450ms cubic-bezier(0.22,1,0.36,1), opacity 300ms ease",
+            transition: "max-height 480ms cubic-bezier(0.22,1,0.36,1), opacity 320ms ease",
           }}>
-            {/* Desktop comparison */}
             <div className="comparison-desktop">
               <ComparisonDesktop />
             </div>
-            {/* Mobile comparison */}
             <div className="comparison-mobile" style={{ display: "none" }}>
               <ComparisonMobile />
             </div>
           </div>
         </motion.div>
 
-        {/* Final CTA */}
+        {/* ── Final CTA ── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.20 }}
           style={{
             borderRadius: "20px",
             padding: "40px 32px",
-            background: "linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)",
+            background: "linear-gradient(160deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.02) 100%)",
             border: "1px solid rgba(255,255,255,0.08)",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 32px rgba(0,0,0,0.20)",
+            backdropFilter: "blur(18px)",
+            WebkitBackdropFilter: "blur(18px)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.22)",
             textAlign: "center",
             position: "relative",
             overflow: "hidden",
           }}
         >
-          {/* Top shimmer */}
           <span aria-hidden="true" style={{
             position: "absolute", top: 0, left: 0, right: 0, height: "1px",
-            background: "linear-gradient(to right, transparent, rgba(255,255,255,0.14), transparent)",
+            background: "linear-gradient(to right, transparent, rgba(255,255,255,0.16), transparent)",
             pointerEvents: "none",
           }} />
 
           <h3 style={{
-            fontSize: "clamp(18px, 2.2vw, 24px)", fontWeight: 500,
+            fontSize: "clamp(18px, 2.2vw, 23px)", fontWeight: 500,
             letterSpacing: "-0.02em", color: "#f5f5f7",
             margin: "0 0 10px",
           }}>
-            Not sure where your project fits?
+            Need help choosing the right scope?
           </h3>
           <p style={{
-            fontSize: "14px", fontWeight: 300, lineHeight: 1.7,
-            color: "rgba(255,255,255,0.65)",
+            fontSize: "14px", fontWeight: 300, lineHeight: 1.72,
+            color: "rgba(255,255,255,0.62)",
             maxWidth: "480px", margin: "0 auto 28px",
           }}>
-            Book a free call and we&apos;ll help define the right scope, timeline, and investment range.
+            We&apos;ll help you map your goals, define the right system, and understand the investment range before you commit.
           </p>
           <a
             href="#contact"
@@ -655,22 +728,22 @@ export function InvestmentSection() {
               padding: "13px 28px", borderRadius: "14px",
               fontSize: "14px", fontWeight: 500, letterSpacing: "0.01em",
               textDecoration: "none",
-              color: "rgba(255,255,255,0.96)",
+              color: "rgba(255,255,255,0.97)",
               background: "linear-gradient(170deg, #6366f1 0%, #4f46e5 100%)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18), 0 6px 20px rgba(79,70,229,0.35)",
+              border: "1px solid rgba(255,255,255,0.13)",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.20), 0 6px 22px rgba(79,70,229,0.36)",
               transition: "all 260ms cubic-bezier(0.22,1,0.36,1)",
             }}
             onMouseEnter={(e) => {
               const el = e.currentTarget as HTMLAnchorElement;
               el.style.background = "linear-gradient(170deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%)";
-              el.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.28), 0 8px 28px rgba(79,70,229,0.50)";
+              el.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.28), 0 8px 28px rgba(79,70,229,0.52)";
               el.style.transform = "scale(1.02)";
             }}
             onMouseLeave={(e) => {
               const el = e.currentTarget as HTMLAnchorElement;
               el.style.background = "linear-gradient(170deg, #6366f1 0%, #4f46e5 100%)";
-              el.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.18), 0 6px 20px rgba(79,70,229,0.35)";
+              el.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.20), 0 6px 22px rgba(79,70,229,0.36)";
               el.style.transform = "scale(1)";
             }}
           >
@@ -691,8 +764,9 @@ export function InvestmentSection() {
           .comparison-mobile { display: block !important; }
         }
         @media (max-width: 767px) {
-          .investment-grid-mobile > * a[href="#contact"] {
+          .investment-grid-mobile a[href="#contact"] {
             width: 100% !important;
+            box-sizing: border-box !important;
           }
         }
       `}</style>
