@@ -10,15 +10,14 @@ const PLANS = [
     label: "Focused Start",
     title: "Launch System",
     investment: "$5k – $15k",
-    valueLine: "Validate an idea or automate one high-impact workflow.",
-    bestFor: "MVPs, first automations, and lean product builds.",
+    description: "For MVPs, first automations, or one focused workflow.",
     includes: [
       "Discovery & scope",
-      "Core workflow or product",
+      "Core build",
       "Essential integrations",
-      "Launch-ready delivery",
+      "Launch support",
     ],
-    outcome: "Move fast with a focused, controlled scope.",
+    outcome: "Fast validation with controlled scope.",
     cta: "Start a Project",
     featured: false,
   },
@@ -27,16 +26,14 @@ const PLANS = [
     label: "Most Common",
     title: "Growth System",
     investment: "$15k – $40k",
-    valueLine: "Connect workflows, dashboards, and AI-assisted processes.",
-    bestFor: "Growing teams ready to scale sales, marketing, or operations.",
+    description: "For connected workflows, dashboards, and AI-assisted operations.",
     includes: [
-      "Multi-workflow automation",
+      "Multi-workflow systems",
       "Dashboards or portals",
       "AI-assisted workflows",
-      "Third-party integrations",
-      "Launch support",
+      "Integrations",
     ],
-    outcome: "Build connected systems that reduce manual work.",
+    outcome: "Connected systems that reduce manual work.",
     cta: "Get a Proposal",
     featured: true,
   },
@@ -45,16 +42,14 @@ const PLANS = [
     label: "Custom Ecosystem",
     title: "Advanced System",
     investment: "$40k+",
-    valueLine: "Build scalable platforms with advanced automation.",
-    bestFor: "Complex web, mobile, AI, and operational ecosystems.",
+    description: "For complex platforms, automation ecosystems, and scalable infrastructure.",
     includes: [
       "Custom architecture",
       "AI automation systems",
-      "Web and mobile platforms",
+      "Web + mobile platforms",
       "Complex integrations",
-      "Scalable infrastructure",
     ],
-    outcome: "Design a system built for long-term growth.",
+    outcome: "Built for long-term scale.",
     cta: "Discuss Your System",
     featured: false,
   },
@@ -62,13 +57,13 @@ const PLANS = [
 
 const COMPARISON_ROWS = [
   {
-    category: "Typical scope",
-    launch: "One product or workflow",
-    growth: "Connected business systems",
-    advanced: "Full platform ecosystem",
+    category: "Scope",
+    launch: "One workflow or MVP",
+    growth: "Connected systems",
+    advanced: "Full ecosystem",
   },
   {
-    category: "Automation depth",
+    category: "Automation",
     launch: "Focused automation",
     growth: "Multi-step workflows",
     advanced: "Advanced AI operations",
@@ -77,23 +72,17 @@ const COMPARISON_ROWS = [
     category: "Integrations",
     launch: "Essential tools",
     growth: "Multiple platforms",
-    advanced: "Complex APIs and infrastructure",
+    advanced: "Complex APIs",
   },
   {
-    category: "Product complexity",
-    launch: "Lean MVP or workflow",
-    growth: "Portals, dashboards, workflows",
-    advanced: "Web, mobile, AI systems",
+    category: "Product",
+    launch: "Lean build",
+    growth: "Portals + dashboards",
+    advanced: "Web + mobile + AI",
   },
   {
-    category: "Delivery focus",
-    launch: "Speed and validation",
-    growth: "Scale and efficiency",
-    advanced: "Architecture and long-term growth",
-  },
-  {
-    category: "Scalability",
-    launch: "Expandable foundation",
+    category: "Scale",
+    launch: "Expandable base",
     growth: "Built to grow",
     advanced: "Designed for scale",
   },
@@ -102,150 +91,148 @@ const COMPARISON_ROWS = [
 /* ─── Check icon ─────────────────────────────────────────────────── */
 function CheckIcon({ featured }: { featured: boolean }) {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"
+    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"
       style={{ flexShrink: 0, marginTop: "2px" }}>
       <circle cx="7" cy="7" r="6.5"
-        fill={featured ? "rgba(99,102,241,0.20)" : "rgba(255,255,255,0.06)"}
-        stroke={featured ? "rgba(99,102,241,0.40)" : "rgba(255,255,255,0.14)"} />
+        fill={featured ? "rgba(99,102,241,0.18)" : "rgba(255,255,255,0.05)"}
+        stroke={featured ? "rgba(99,102,241,0.38)" : "rgba(255,255,255,0.13)"} />
       <path d="M4.5 7L6.2 8.7L9.5 5.3"
-        stroke={featured ? "rgba(165,180,252,0.95)" : "rgba(255,255,255,0.60)"}
+        stroke={featured ? "rgba(165,180,252,0.92)" : "rgba(255,255,255,0.55)"}
         strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-/* ─── Abstract system texture per card ──────────────────────────── */
-function CardTexture({ featured, id }: { featured: boolean; id: string }) {
-  const accent = featured ? "rgba(99,102,241," : "rgba(255,255,255,";
-  const op = featured ? 0.22 : 0.06;
+/* ─── Per-card AI system texture ─────────────────────────────────── */
+function CardTexture({ id, featured }: { id: string; featured: boolean }) {
+  const c = featured ? "rgba(99,102,241," : "rgba(255,255,255,";
+  const baseOp = featured ? 0.10 : 0.05;
 
   if (id === "launch") {
-    /* Signal path — faint curved line + dots */
     return (
-      <svg width="140" height="90" viewBox="0 0 140 90" fill="none" aria-hidden="true"
-        style={{ position: "absolute", top: 0, right: 0, opacity: op, pointerEvents: "none" }}>
-        <path d="M140 0 Q100 30 80 60 Q60 80 20 90" stroke={`${accent}1)`} strokeWidth="0.7" strokeLinecap="round" />
-        <circle cx="80" cy="60" r="2.5" fill={`${accent}0.8)`} />
-        <circle cx="110" cy="28" r="1.5" fill={`${accent}0.6)`} />
-        <circle cx="50" cy="76" r="1.5" fill={`${accent}0.6)`} />
+      <svg width="160" height="100" viewBox="0 0 160 100" fill="none" aria-hidden="true"
+        style={{ position: "absolute", top: 0, right: 0, opacity: baseOp, pointerEvents: "none" }}>
+        <path d="M160 0 Q120 25 95 55 Q70 80 30 100" stroke={`${c}1)`} strokeWidth="0.8" strokeLinecap="round" />
+        <circle cx="95" cy="55" r="2.5" fill={`${c}0.9)`} />
+        <circle cx="125" cy="25" r="1.5" fill={`${c}0.7)`} />
+        <circle cx="55" cy="80" r="1.5" fill={`${c}0.7)`} />
+        <line x1="95" y1="55" x2="115" y2="45" stroke={`${c}0.5)`} strokeWidth="0.5" strokeDasharray="2 3" />
+        <line x1="95" y1="55" x2="75" y2="68" stroke={`${c}0.5)`} strokeWidth="0.5" strokeDasharray="2 3" />
       </svg>
     );
   }
   if (id === "growth") {
-    /* Concentric arcs — system core */
     return (
-      <svg width="130" height="90" viewBox="0 0 130 90" fill="none" aria-hidden="true"
-        style={{ position: "absolute", top: 0, right: 0, opacity: op, pointerEvents: "none" }}>
-        <circle cx="115" cy="10" r="50" stroke={`${accent}1)`} strokeWidth="0.6" />
-        <circle cx="115" cy="10" r="34" stroke={`${accent}1)`} strokeWidth="0.5" />
-        <circle cx="115" cy="10" r="18" stroke={`${accent}1)`} strokeWidth="0.4" />
-        <circle cx="115" cy="10" r="5" fill={`${accent}0.7)`} />
-        <line x1="65" y1="10" x2="110" y2="10" stroke={`${accent}0.5)`} strokeWidth="0.5" strokeDasharray="3 4" />
+      <svg width="150" height="100" viewBox="0 0 150 100" fill="none" aria-hidden="true"
+        style={{ position: "absolute", top: 0, right: 0, opacity: baseOp, pointerEvents: "none" }}>
+        <circle cx="130" cy="12" r="55" stroke={`${c}1)`} strokeWidth="0.7" />
+        <circle cx="130" cy="12" r="38" stroke={`${c}1)`} strokeWidth="0.55" />
+        <circle cx="130" cy="12" r="22" stroke={`${c}1)`} strokeWidth="0.45" />
+        <circle cx="130" cy="12" r="7" stroke={`${c}1)`} strokeWidth="0.4" />
+        <circle cx="130" cy="12" r="2.5" fill={`${c}0.8)`} />
+        <line x1="75" y1="12" x2="123" y2="12" stroke={`${c}0.5)`} strokeWidth="0.5" strokeDasharray="3 4" />
       </svg>
     );
   }
   /* advanced — grid fragment */
   return (
-    <svg width="130" height="90" viewBox="0 0 130 90" fill="none" aria-hidden="true"
-      style={{ position: "absolute", top: 0, right: 0, opacity: op, pointerEvents: "none" }}>
-      {[0, 20, 40, 60, 80, 100, 120].map((x) => (
-        <line key={`v${x}`} x1={x} y1="0" x2={x} y2="90" stroke={`${accent}1)`} strokeWidth="0.4" />
+    <svg width="150" height="100" viewBox="0 0 150 100" fill="none" aria-hidden="true"
+      style={{ position: "absolute", top: 0, right: 0, opacity: baseOp, pointerEvents: "none" }}>
+      {[0, 25, 50, 75, 100, 125, 150].map((x) => (
+        <line key={`v${x}`} x1={x} y1="0" x2={x} y2="100" stroke={`${c}1)`} strokeWidth="0.4" />
       ))}
-      {[0, 20, 40, 60, 80].map((y) => (
-        <line key={`h${y}`} x1="0" y1={y} x2="130" y2={y} stroke={`${accent}1)`} strokeWidth="0.4" />
+      {[0, 25, 50, 75, 100].map((y) => (
+        <line key={`h${y}`} x1="0" y1={y} x2="150" y2={y} stroke={`${c}1)`} strokeWidth="0.4" />
       ))}
-      <circle cx="80" cy="40" r="4" fill={`${accent}0.6)`} />
-      <circle cx="40" cy="20" r="2" fill={`${accent}0.4)`} />
-      <circle cx="100" cy="60" r="2" fill={`${accent}0.4)`} />
+      <circle cx="100" cy="50" r="4.5" fill={`${c}0.7)`} />
+      <circle cx="50" cy="25" r="2.5" fill={`${c}0.5)`} />
+      <circle cx="125" cy="75" r="2" fill={`${c}0.5)`} />
+      <line x1="50" y1="25" x2="100" y2="50" stroke={`${c}0.4)`} strokeWidth="0.5" />
+      <line x1="100" y1="50" x2="125" y2="75" stroke={`${c}0.4)`} strokeWidth="0.5" />
     </svg>
   );
 }
 
 /* ─── Plan Card ─────────────────────────────────────────────────── */
 function PlanCard({ plan }: { plan: typeof PLANS[0] }) {
-  const [hovered, setHovered] = useState(false);
+  const [hov, setHov] = useState(false);
   const f = plan.featured;
 
   return (
     <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
       style={{
         position: "relative",
-        borderRadius: "22px",
-        padding: "28px 26px 26px",
+        borderRadius: "20px",
+        padding: "26px 24px 24px",
         background: f
-          ? hovered
-            ? "linear-gradient(155deg, rgba(99,102,241,0.16) 0%, rgba(139,92,246,0.09) 45%, rgba(8,8,18,0.97) 100%)"
-            : "linear-gradient(155deg, rgba(99,102,241,0.11) 0%, rgba(139,92,246,0.06) 45%, rgba(6,6,16,0.97) 100%)"
-          : hovered
-            ? "linear-gradient(155deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%)"
-            : "linear-gradient(155deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
+          ? hov
+            ? "linear-gradient(150deg,rgba(99,102,241,0.15) 0%,rgba(139,92,246,0.08) 40%,rgba(7,7,17,0.97) 100%)"
+            : "linear-gradient(150deg,rgba(99,102,241,0.10) 0%,rgba(139,92,246,0.05) 40%,rgba(5,5,14,0.97) 100%)"
+          : hov
+            ? "linear-gradient(150deg,rgba(255,255,255,0.07) 0%,rgba(255,255,255,0.025) 100%)"
+            : "linear-gradient(150deg,rgba(255,255,255,0.045) 0%,rgba(255,255,255,0.015) 100%)",
         border: f
-          ? hovered
-            ? "1px solid rgba(99,102,241,0.50)"
-            : "1px solid rgba(99,102,241,0.30)"
-          : hovered
-            ? "1px solid rgba(255,255,255,0.20)"
-            : "1px solid rgba(255,255,255,0.09)",
+          ? hov ? "1px solid rgba(99,102,241,0.48)" : "1px solid rgba(99,102,241,0.28)"
+          : hov ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(255,255,255,0.08)",
         boxShadow: f
-          ? hovered
-            ? "inset 0 1px 0 rgba(255,255,255,0.14), 0 24px 56px rgba(0,0,0,0.42), 0 0 48px rgba(99,102,241,0.14)"
-            : "inset 0 1px 0 rgba(255,255,255,0.09), 0 14px 36px rgba(0,0,0,0.38), 0 0 28px rgba(99,102,241,0.09)"
-          : hovered
-            ? "inset 0 1px 0 rgba(255,255,255,0.11), 0 18px 44px rgba(0,0,0,0.36)"
-            : "inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 24px rgba(0,0,0,0.26)",
-        transform: hovered ? "translateY(-5px)" : "translateY(0)",
-        transition: "all 280ms cubic-bezier(0.22,1,0.36,1)",
+          ? hov
+            ? "inset 0 1px 0 rgba(255,255,255,0.13),0 20px 52px rgba(0,0,0,0.42),0 0 44px rgba(99,102,241,0.12)"
+            : "inset 0 1px 0 rgba(255,255,255,0.08),0 12px 32px rgba(0,0,0,0.36),0 0 24px rgba(99,102,241,0.08)"
+          : hov
+            ? "inset 0 1px 0 rgba(255,255,255,0.10),0 16px 40px rgba(0,0,0,0.34)"
+            : "inset 0 1px 0 rgba(255,255,255,0.05),0 6px 20px rgba(0,0,0,0.24)",
+        transform: hov ? "translateY(-5px)" : "translateY(0)",
+        transition: "all 270ms cubic-bezier(0.22,1,0.36,1)",
         overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        backdropFilter: "blur(22px)",
-        WebkitBackdropFilter: "blur(22px)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
       }}
     >
       {/* Top edge reflection */}
       <span aria-hidden="true" style={{
-        position: "absolute", top: 0, left: 0, right: 0,
-        height: hovered ? "1px" : "1px",
+        position: "absolute", top: 0, left: 0, right: 0, height: "1px",
         background: f
-          ? `linear-gradient(to right, transparent, rgba(129,140,248,${hovered ? 0.65 : 0.45}), transparent)`
-          : `linear-gradient(to right, transparent, rgba(255,255,255,${hovered ? 0.24 : 0.14}), transparent)`,
-        transition: "background 280ms ease",
+          ? `linear-gradient(to right,transparent,rgba(129,140,248,${hov ? 0.60 : 0.40}),transparent)`
+          : `linear-gradient(to right,transparent,rgba(255,255,255,${hov ? 0.22 : 0.12}),transparent)`,
+        transition: "background 270ms ease",
         pointerEvents: "none",
       }} />
 
       {/* System texture */}
-      <CardTexture featured={f} id={plan.id} />
+      <CardTexture id={plan.id} featured={f} />
 
-      {/* Top accent glow — featured only */}
+      {/* Featured corner glow */}
       {f && (
         <div aria-hidden="true" style={{
-          position: "absolute", top: "-50px", right: "-30px",
-          width: "180px", height: "180px", borderRadius: "50%",
-          background: `radial-gradient(ellipse, rgba(99,102,241,${hovered ? 0.22 : 0.15}) 0%, transparent 70%)`,
-          transition: "background 280ms ease",
+          position: "absolute", top: "-45px", right: "-25px",
+          width: "170px", height: "170px", borderRadius: "50%",
+          background: `radial-gradient(ellipse,rgba(99,102,241,${hov ? 0.20 : 0.13}) 0%,transparent 70%)`,
+          transition: "background 270ms ease",
           pointerEvents: "none",
         }} />
       )}
 
-      {/* Label row */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "18px" }}>
+      {/* Label + badge */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
         <span style={{
-          fontSize: "10px", fontWeight: 600, letterSpacing: "0.11em",
+          fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.12em",
           textTransform: "uppercase",
-          color: f ? "rgba(165,180,252,0.80)" : "rgba(255,255,255,0.42)",
+          color: f ? "rgba(165,180,252,0.78)" : "rgba(255,255,255,0.40)",
         }}>
           {plan.label}
         </span>
         {f && (
           <span style={{
-            fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.07em",
+            fontSize: "9px", fontWeight: 600, letterSpacing: "0.07em",
             textTransform: "uppercase",
-            padding: "3px 10px", borderRadius: "99px",
-            background: "rgba(99,102,241,0.20)",
-            border: "1px solid rgba(99,102,241,0.38)",
-            color: "rgba(165,180,252,0.92)",
+            padding: "3px 9px", borderRadius: "99px",
+            background: "rgba(99,102,241,0.18)",
+            border: "1px solid rgba(99,102,241,0.36)",
+            color: "rgba(165,180,252,0.90)",
           }}>
             Most Common
           </span>
@@ -254,8 +241,8 @@ function PlanCard({ plan }: { plan: typeof PLANS[0] }) {
 
       {/* Title */}
       <h3 style={{
-        fontSize: "19px", fontWeight: 600, letterSpacing: "-0.022em",
-        color: "#f5f5f7", margin: "0 0 8px",
+        fontSize: "18px", fontWeight: 600, letterSpacing: "-0.02em",
+        color: "#f5f5f7", margin: "0 0 6px",
         position: "relative", zIndex: 1,
       }}>
         {plan.title}
@@ -263,67 +250,41 @@ function PlanCard({ plan }: { plan: typeof PLANS[0] }) {
 
       {/* Investment — hero element */}
       <div style={{
-        fontSize: "30px", fontWeight: 700, letterSpacing: "-0.032em",
-        color: f ? "rgba(199,210,254,0.97)" : "rgba(245,245,247,0.95)",
-        margin: "0 0 10px",
+        fontSize: "28px", fontWeight: 700, letterSpacing: "-0.03em",
+        color: f ? "rgba(199,210,254,0.97)" : "rgba(245,245,247,0.94)",
+        margin: "0 0 12px",
         fontVariantNumeric: "tabular-nums",
-        position: "relative", zIndex: 1,
         lineHeight: 1.1,
+        position: "relative", zIndex: 1,
       }}>
         {plan.investment}
       </div>
 
-      {/* Value line */}
+      {/* Description */}
       <p style={{
-        fontSize: "13px", fontWeight: 400, lineHeight: 1.6,
-        color: "rgba(255,255,255,0.68)", margin: "0 0 20px",
+        fontSize: "12.5px", fontWeight: 400, lineHeight: 1.62,
+        color: "rgba(255,255,255,0.65)", margin: "0 0 18px",
         position: "relative", zIndex: 1,
       }}>
-        {plan.valueLine}
+        {plan.description}
       </p>
 
       {/* Divider */}
       <div style={{
         height: "1px",
         background: f
-          ? "linear-gradient(to right, rgba(99,102,241,0.22), rgba(139,92,246,0.12), transparent)"
+          ? "linear-gradient(to right,rgba(99,102,241,0.20),rgba(139,92,246,0.10),transparent)"
           : "rgba(255,255,255,0.07)",
-        margin: "0 0 20px",
+        margin: "0 0 18px",
       }} />
 
-      {/* Best for */}
-      <div style={{ marginBottom: "18px", position: "relative", zIndex: 1 }}>
-        <span style={{
-          fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.09em",
-          textTransform: "uppercase",
-          color: f ? "rgba(165,180,252,0.58)" : "rgba(255,255,255,0.32)",
-          display: "block", marginBottom: "6px",
-        }}>
-          Best for
-        </span>
-        <p style={{
-          fontSize: "12px", fontWeight: 400, lineHeight: 1.6,
-          color: "rgba(255,255,255,0.72)", margin: 0,
-        }}>
-          {plan.bestFor}
-        </p>
-      </div>
-
       {/* Includes */}
-      <div style={{ marginBottom: "22px", position: "relative", zIndex: 1, flex: 1 }}>
-        <span style={{
-          fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.09em",
-          textTransform: "uppercase",
-          color: f ? "rgba(165,180,252,0.58)" : "rgba(255,255,255,0.32)",
-          display: "block", marginBottom: "10px",
-        }}>
-          Includes
-        </span>
-        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "9px" }}>
+      <div style={{ marginBottom: "20px", position: "relative", zIndex: 1, flex: 1 }}>
+        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
           {plan.includes.map((item) => (
-            <li key={item} style={{ display: "flex", alignItems: "flex-start", gap: "9px" }}>
+            <li key={item} style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
               <CheckIcon featured={f} />
-              <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.76)", fontWeight: 400, lineHeight: 1.5 }}>
+              <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.72)", fontWeight: 400, lineHeight: 1.5 }}>
                 {item}
               </span>
             </li>
@@ -333,11 +294,13 @@ function PlanCard({ plan }: { plan: typeof PLANS[0] }) {
 
       {/* Outcome */}
       <p style={{
-        fontSize: "11px", fontWeight: 400, lineHeight: 1.6,
-        color: f ? "rgba(165,180,252,0.62)" : "rgba(255,255,255,0.38)",
-        margin: "0 0 20px",
+        fontSize: "11px", fontWeight: 400, lineHeight: 1.55,
+        color: f ? "rgba(165,180,252,0.58)" : "rgba(255,255,255,0.36)",
+        margin: "0 0 18px",
         fontStyle: "italic",
         position: "relative", zIndex: 1,
+        paddingTop: "12px",
+        borderTop: f ? "1px solid rgba(99,102,241,0.10)" : "1px solid rgba(255,255,255,0.05)",
       }}>
         {plan.outcome}
       </p>
@@ -347,31 +310,29 @@ function PlanCard({ plan }: { plan: typeof PLANS[0] }) {
         href="#contact"
         style={{
           display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
-          padding: "12px 20px", borderRadius: "12px",
+          padding: "11px 18px", borderRadius: "11px",
           fontSize: "13px", fontWeight: 500, letterSpacing: "0.01em",
           textDecoration: "none",
-          color: f ? "rgba(255,255,255,0.97)" : "rgba(255,255,255,0.82)",
+          color: f ? "rgba(255,255,255,0.97)" : "rgba(255,255,255,0.80)",
           background: f
-            ? hovered
-              ? "linear-gradient(170deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%)"
-              : "linear-gradient(170deg, #6366f1 0%, #4f46e5 100%)"
-            : hovered
-              ? "rgba(255,255,255,0.13)"
-              : "rgba(255,255,255,0.07)",
+            ? hov
+              ? "linear-gradient(170deg,#818cf8 0%,#6366f1 50%,#4f46e5 100%)"
+              : "linear-gradient(170deg,#6366f1 0%,#4f46e5 100%)"
+            : hov ? "rgba(255,255,255,0.11)" : "rgba(255,255,255,0.06)",
           border: f
-            ? hovered ? "1px solid rgba(255,255,255,0.24)" : "1px solid rgba(99,102,241,0.52)"
-            : hovered ? "1px solid rgba(255,255,255,0.24)" : "1px solid rgba(255,255,255,0.13)",
+            ? hov ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(99,102,241,0.50)"
+            : hov ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(255,255,255,0.11)",
           boxShadow: f
-            ? hovered
-              ? "inset 0 1px 0 rgba(255,255,255,0.22), 0 6px 22px rgba(79,70,229,0.44)"
-              : "inset 0 1px 0 rgba(255,255,255,0.14)"
+            ? hov
+              ? "inset 0 1px 0 rgba(255,255,255,0.20),0 5px 18px rgba(79,70,229,0.42)"
+              : "inset 0 1px 0 rgba(255,255,255,0.12)"
             : "none",
-          transition: "all 260ms cubic-bezier(0.22,1,0.36,1)",
+          transition: "all 250ms cubic-bezier(0.22,1,0.36,1)",
           position: "relative", zIndex: 1,
         }}
       >
         {plan.cta}
-        <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <svg width="11" height="11" viewBox="0 0 14 14" fill="none" aria-hidden="true">
           <path d="M3 7H11M11 7L7.5 3.5M11 7L7.5 10.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </a>
@@ -379,51 +340,46 @@ function PlanCard({ plan }: { plan: typeof PLANS[0] }) {
   );
 }
 
-/* ─── Comparison — Desktop ──────────────────────────────────────── */
+/* ─── Comparison Matrix — Desktop ───────────────────────────────── */
 function ComparisonDesktop() {
   return (
     <div style={{
-      borderRadius: "18px",
-      background: "linear-gradient(160deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)",
+      borderRadius: "16px",
+      background: "linear-gradient(160deg,rgba(255,255,255,0.04) 0%,rgba(255,255,255,0.015) 100%)",
       border: "1px solid rgba(255,255,255,0.08)",
       backdropFilter: "blur(18px)",
       WebkitBackdropFilter: "blur(18px)",
       overflow: "hidden",
-      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 32px rgba(0,0,0,0.28)",
+      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05),0 8px 32px rgba(0,0,0,0.26)",
     }}>
-      {/* Intro note */}
+      {/* Helper text */}
       <div style={{
-        padding: "14px 24px",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-        background: "rgba(255,255,255,0.015)",
+        padding: "13px 22px",
+        borderBottom: "1px solid rgba(255,255,255,0.055)",
+        background: "rgba(255,255,255,0.012)",
       }}>
         <p style={{
-          fontSize: "11.5px", fontWeight: 400, lineHeight: 1.6,
-          color: "rgba(255,255,255,0.42)", margin: 0, fontStyle: "italic",
+          fontSize: "11px", fontWeight: 400, lineHeight: 1.55,
+          color: "rgba(255,255,255,0.38)", margin: 0, fontStyle: "italic",
         }}>
-          Use this as a guide. Final scope depends on your goals, workflows, integrations, and timeline.
+          A quick way to compare scope, automation depth, and system complexity.
         </p>
       </div>
 
-      {/* Header row */}
+      {/* Column headers */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "1.7fr 1fr 1fr 1fr",
-        padding: "14px 24px",
+        gridTemplateColumns: "1.6fr 1fr 1fr 1fr",
+        padding: "12px 22px",
         borderBottom: "1px solid rgba(255,255,255,0.07)",
-        background: "rgba(255,255,255,0.02)",
+        background: "rgba(255,255,255,0.018)",
       }}>
-        <span style={{
-          fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.09em",
-          textTransform: "uppercase", color: "rgba(255,255,255,0.32)",
-        }}>
-          Category
-        </span>
+        <span style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: "rgba(255,255,255,0.28)" }} />
         {["Launch", "Growth", "Advanced"].map((col, i) => (
           <span key={col} style={{
-            fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.07em",
+            fontSize: "10px", fontWeight: 600, letterSpacing: "0.08em",
             textTransform: "uppercase",
-            color: i === 1 ? "rgba(165,180,252,0.82)" : "rgba(255,255,255,0.48)",
+            color: i === 1 ? "rgba(165,180,252,0.82)" : "rgba(255,255,255,0.45)",
             textAlign: "center",
           }}>
             {col}
@@ -431,31 +387,31 @@ function ComparisonDesktop() {
         ))}
       </div>
 
-      {/* Data rows */}
+      {/* Rows */}
       {COMPARISON_ROWS.map((row, idx) => (
         <div
           key={row.category}
           style={{
             display: "grid",
-            gridTemplateColumns: "1.7fr 1fr 1fr 1fr",
-            padding: "13px 24px",
-            borderBottom: idx < COMPARISON_ROWS.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none",
+            gridTemplateColumns: "1.6fr 1fr 1fr 1fr",
+            padding: "12px 22px",
+            borderBottom: idx < COMPARISON_ROWS.length - 1 ? "1px solid rgba(255,255,255,0.045)" : "none",
             alignItems: "center",
           }}
         >
-          <span style={{ fontSize: "12px", fontWeight: 500, color: "rgba(255,255,255,0.62)" }}>
+          <span style={{ fontSize: "11.5px", fontWeight: 500, color: "rgba(255,255,255,0.58)" }}>
             {row.category}
           </span>
-          <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.50)", textAlign: "center", lineHeight: 1.5 }}>
+          <span style={{ fontSize: "11.5px", color: "rgba(255,255,255,0.48)", textAlign: "center", lineHeight: 1.5 }}>
             {row.launch}
           </span>
           <span style={{
-            fontSize: "12px", color: "rgba(199,210,254,0.82)", textAlign: "center",
+            fontSize: "11.5px", color: "rgba(199,210,254,0.82)", textAlign: "center",
             lineHeight: 1.5, fontWeight: 500,
           }}>
             {row.growth}
           </span>
-          <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.50)", textAlign: "center", lineHeight: 1.5 }}>
+          <span style={{ fontSize: "11.5px", color: "rgba(255,255,255,0.48)", textAlign: "center", lineHeight: 1.5 }}>
             {row.advanced}
           </span>
         </div>
@@ -467,49 +423,48 @@ function ComparisonDesktop() {
 /* ─── Comparison — Mobile ───────────────────────────────────────── */
 function ComparisonMobile() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-      {/* Intro note */}
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
       <p style={{
-        fontSize: "11.5px", fontWeight: 400, lineHeight: 1.6,
-        color: "rgba(255,255,255,0.40)", margin: "0 0 4px", fontStyle: "italic",
+        fontSize: "11px", fontWeight: 400, lineHeight: 1.55,
+        color: "rgba(255,255,255,0.38)", margin: "0 0 6px", fontStyle: "italic",
       }}>
-        Use this as a guide. Final scope depends on your goals, workflows, integrations, and timeline.
+        A quick way to compare scope, automation depth, and system complexity.
       </p>
 
       {COMPARISON_ROWS.map((row) => (
         <div
           key={row.category}
           style={{
-            borderRadius: "14px",
+            borderRadius: "12px",
             background: "rgba(255,255,255,0.03)",
             border: "1px solid rgba(255,255,255,0.07)",
-            padding: "14px 16px",
+            padding: "13px 14px",
           }}
         >
           <p style={{
-            fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.09em",
-            textTransform: "uppercase", color: "rgba(255,255,255,0.38)",
-            margin: "0 0 10px",
+            fontSize: "10px", fontWeight: 600, letterSpacing: "0.09em",
+            textTransform: "uppercase", color: "rgba(255,255,255,0.36)",
+            margin: "0 0 9px",
           }}>
             {row.category}
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: "7px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {[
               { label: "Launch", value: row.launch, accent: false },
               { label: "Growth", value: row.growth, accent: true },
               { label: "Advanced", value: row.advanced, accent: false },
             ].map(({ label, value, accent }) => (
-              <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px" }}>
+              <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px" }}>
                 <span style={{
-                  fontSize: "11px", fontWeight: 600,
-                  color: accent ? "rgba(165,180,252,0.78)" : "rgba(255,255,255,0.38)",
-                  minWidth: "58px", flexShrink: 0,
+                  fontSize: "10.5px", fontWeight: 600,
+                  color: accent ? "rgba(165,180,252,0.75)" : "rgba(255,255,255,0.36)",
+                  minWidth: "56px", flexShrink: 0,
                 }}>
                   {label}
                 </span>
                 <span style={{
-                  fontSize: "12px",
-                  color: accent ? "rgba(199,210,254,0.88)" : "rgba(255,255,255,0.62)",
+                  fontSize: "11.5px",
+                  color: accent ? "rgba(199,210,254,0.86)" : "rgba(255,255,255,0.60)",
                   textAlign: "right", lineHeight: 1.5,
                   fontWeight: accent ? 500 : 400,
                 }}>
@@ -532,76 +487,75 @@ export function InvestmentSection() {
     <section
       id="investment"
       aria-label="Investment & Scope"
-      style={{ position: "relative", padding: "100px 20px 120px" }}
+      style={{ position: "relative", padding: "96px 20px 112px" }}
     >
-      {/* Background — subtle radial behind Growth (center) */}
+      {/* Subtle radial glow centered behind Growth card */}
       <div aria-hidden="true" style={{
-        position: "absolute", left: "50%", top: "38%",
-        transform: "translate(-50%, -50%)",
-        width: "700px", height: "480px", borderRadius: "9999px",
-        background: "radial-gradient(ellipse, rgba(99,102,241,0.07) 0%, transparent 65%)",
+        position: "absolute", left: "50%", top: "40%",
+        transform: "translate(-50%,-50%)",
+        width: "680px", height: "460px", borderRadius: "9999px",
+        background: "radial-gradient(ellipse,rgba(99,102,241,0.065) 0%,transparent 65%)",
         pointerEvents: "none", zIndex: 0,
       }} />
-      {/* Faint horizontal light line near top of card area */}
+      {/* Faint horizontal light line */}
       <div aria-hidden="true" style={{
-        position: "absolute", left: "50%", top: "22%",
+        position: "absolute", left: "50%", top: "24%",
         transform: "translateX(-50%)",
-        width: "700px", height: "1px",
-        background: "linear-gradient(to right, transparent, rgba(255,255,255,0.055), transparent)",
+        width: "680px", height: "1px",
+        background: "linear-gradient(to right,transparent,rgba(255,255,255,0.05),transparent)",
         pointerEvents: "none", zIndex: 0,
       }} />
 
       <div style={{ maxWidth: "1050px", margin: "0 auto", position: "relative", zIndex: 1 }}>
 
-        {/* ── Section header ── */}
+        {/* ── Header ── */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 22 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-          style={{ textAlign: "center", marginBottom: "64px", maxWidth: "720px", margin: "0 auto 64px" }}
+          transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
+          style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 60px" }}
         >
-          {/* Eyebrow */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginBottom: "18px" }}>
-            <span style={{ display: "inline-block", width: "20px", height: "1px", background: "rgba(129,140,248,0.50)" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginBottom: "16px" }}>
+            <span style={{ display: "inline-block", width: "18px", height: "1px", background: "rgba(129,140,248,0.48)" }} />
             <span style={{
-              fontSize: "10px", fontWeight: 600, letterSpacing: "0.14em",
-              textTransform: "uppercase", color: "rgba(129,140,248,0.75)",
+              fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.14em",
+              textTransform: "uppercase", color: "rgba(129,140,248,0.72)",
             }}>
               Investment &amp; Scope
             </span>
-            <span style={{ display: "inline-block", width: "20px", height: "1px", background: "rgba(129,140,248,0.50)" }} />
+            <span style={{ display: "inline-block", width: "18px", height: "1px", background: "rgba(129,140,248,0.48)" }} />
           </div>
 
           <h2 style={{
-            fontSize: "clamp(26px, 3.5vw, 42px)", fontWeight: 500,
+            fontSize: "clamp(24px, 3.2vw, 40px)", fontWeight: 500,
             letterSpacing: "-0.028em", lineHeight: 1.18,
-            color: "#f0f0f5", margin: "0 0 18px",
+            color: "#f0f0f5", margin: "0 0 16px",
           }}>
-            Find the right system for your next stage
+            Choose the right system level
           </h2>
 
           <p style={{
-            fontSize: "clamp(14px, 1.4vw, 16px)", fontWeight: 300,
-            lineHeight: 1.74, color: "rgba(255,255,255,0.68)",
-            maxWidth: "600px", margin: "0 auto",
+            fontSize: "clamp(13.5px, 1.35vw, 15.5px)", fontWeight: 300,
+            lineHeight: 1.72, color: "rgba(255,255,255,0.65)",
+            maxWidth: "560px", margin: "0 auto",
           }}>
-            From focused launches to full-scale platforms, our engagement ranges help you understand what level of system fits your goals, complexity, and growth path.
+            Clear engagement ranges for AI systems, custom software, and mobile products — tailored to your scope, complexity, and goals.
           </p>
         </motion.div>
 
-        {/* ── Cards — desktop (3 columns) ── */}
+        {/* ── Cards — desktop ── */}
         <motion.div
-          initial={{ opacity: 0, y: 28 }}
+          initial={{ opacity: 0, y: 26 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.10 }}
-          className="investment-grid"
+          transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+          className="inv-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "18px",
-            marginBottom: "48px",
+            gridTemplateColumns: "repeat(3,1fr)",
+            gap: "16px",
+            marginBottom: "44px",
             alignItems: "stretch",
           }}
         >
@@ -612,8 +566,8 @@ export function InvestmentSection() {
 
         {/* ── Cards — mobile (Growth first) ── */}
         <div
-          className="investment-grid-mobile"
-          style={{ display: "none", flexDirection: "column", gap: "16px", marginBottom: "48px" }}
+          className="inv-grid-mobile"
+          style={{ display: "none", flexDirection: "column", gap: "14px", marginBottom: "44px" }}
         >
           {[PLANS[1], PLANS[0], PLANS[2]].map((plan) => (
             <PlanCard key={plan.id} plan={plan} />
@@ -622,43 +576,43 @@ export function InvestmentSection() {
 
         {/* ── Comparison toggle ── */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.16 }}
-          style={{ marginBottom: "36px" }}
+          transition={{ duration: 0.60, ease: [0.22, 1, 0.36, 1], delay: 0.14 }}
+          style={{ marginBottom: "32px" }}
         >
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "22px" }}>
             <button
               onClick={() => setComparisonOpen((v) => !v)}
               style={{
-                display: "inline-flex", alignItems: "center", gap: "8px",
-                padding: "10px 22px", borderRadius: "12px",
-                fontSize: "13px", fontWeight: 500,
-                color: "rgba(255,255,255,0.72)",
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.11)",
+                display: "inline-flex", alignItems: "center", gap: "7px",
+                padding: "9px 20px", borderRadius: "11px",
+                fontSize: "12.5px", fontWeight: 500,
+                color: "rgba(255,255,255,0.68)",
+                background: "rgba(255,255,255,0.045)",
+                border: "1px solid rgba(255,255,255,0.10)",
                 cursor: "pointer",
-                transition: "all 220ms ease",
+                transition: "all 200ms ease",
                 backdropFilter: "blur(10px)",
                 WebkitBackdropFilter: "blur(10px)",
               }}
               onMouseEnter={(e) => {
                 const b = e.currentTarget as HTMLButtonElement;
-                b.style.background = "rgba(255,255,255,0.09)";
-                b.style.borderColor = "rgba(255,255,255,0.20)";
-                b.style.color = "rgba(255,255,255,0.92)";
+                b.style.background = "rgba(255,255,255,0.08)";
+                b.style.borderColor = "rgba(255,255,255,0.18)";
+                b.style.color = "rgba(255,255,255,0.90)";
               }}
               onMouseLeave={(e) => {
                 const b = e.currentTarget as HTMLButtonElement;
-                b.style.background = "rgba(255,255,255,0.05)";
-                b.style.borderColor = "rgba(255,255,255,0.11)";
-                b.style.color = "rgba(255,255,255,0.72)";
+                b.style.background = "rgba(255,255,255,0.045)";
+                b.style.borderColor = "rgba(255,255,255,0.10)";
+                b.style.color = "rgba(255,255,255,0.68)";
               }}
             >
               <svg
-                width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"
-                style={{ transform: comparisonOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 260ms ease" }}
+                width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"
+                style={{ transform: comparisonOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 250ms ease" }}
               >
                 <path d="M2.5 5L7 9.5L11.5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -669,14 +623,14 @@ export function InvestmentSection() {
           {/* Comparison panel */}
           <div style={{
             overflow: "hidden",
-            maxHeight: comparisonOpen ? "1400px" : "0",
+            maxHeight: comparisonOpen ? "1200px" : "0",
             opacity: comparisonOpen ? 1 : 0,
-            transition: "max-height 480ms cubic-bezier(0.22,1,0.36,1), opacity 320ms ease",
+            transition: "max-height 460ms cubic-bezier(0.22,1,0.36,1),opacity 300ms ease",
           }}>
-            <div className="comparison-desktop">
+            <div className="inv-comparison-desktop">
               <ComparisonDesktop />
             </div>
-            <div className="comparison-mobile" style={{ display: "none" }}>
+            <div className="inv-comparison-mobile" style={{ display: "none" }}>
               <ComparisonMobile />
             </div>
           </div>
@@ -684,18 +638,18 @@ export function InvestmentSection() {
 
         {/* ── Final CTA ── */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.20 }}
+          transition={{ duration: 0.60, ease: [0.22, 1, 0.36, 1], delay: 0.18 }}
           style={{
-            borderRadius: "20px",
-            padding: "40px 32px",
-            background: "linear-gradient(160deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.02) 100%)",
+            borderRadius: "18px",
+            padding: "36px 28px",
+            background: "linear-gradient(160deg,rgba(255,255,255,0.04) 0%,rgba(255,255,255,0.018) 100%)",
             border: "1px solid rgba(255,255,255,0.08)",
             backdropFilter: "blur(18px)",
             WebkitBackdropFilter: "blur(18px)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 32px rgba(0,0,0,0.22)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.055),0 8px 28px rgba(0,0,0,0.20)",
             textAlign: "center",
             position: "relative",
             overflow: "hidden",
@@ -703,68 +657,68 @@ export function InvestmentSection() {
         >
           <span aria-hidden="true" style={{
             position: "absolute", top: 0, left: 0, right: 0, height: "1px",
-            background: "linear-gradient(to right, transparent, rgba(255,255,255,0.16), transparent)",
+            background: "linear-gradient(to right,transparent,rgba(255,255,255,0.14),transparent)",
             pointerEvents: "none",
           }} />
 
           <h3 style={{
-            fontSize: "clamp(18px, 2.2vw, 23px)", fontWeight: 500,
+            fontSize: "clamp(17px, 2vw, 22px)", fontWeight: 500,
             letterSpacing: "-0.02em", color: "#f5f5f7",
-            margin: "0 0 10px",
+            margin: "0 0 8px",
           }}>
-            Need help choosing the right scope?
+            Want help choosing the right scope?
           </h3>
           <p style={{
-            fontSize: "14px", fontWeight: 300, lineHeight: 1.72,
-            color: "rgba(255,255,255,0.62)",
-            maxWidth: "480px", margin: "0 auto 28px",
+            fontSize: "13.5px", fontWeight: 300, lineHeight: 1.68,
+            color: "rgba(255,255,255,0.58)",
+            maxWidth: "420px", margin: "0 auto 24px",
           }}>
-            We&apos;ll help you map your goals, define the right system, and understand the investment range before you commit.
+            We&apos;ll help you define the best approach before you commit.
           </p>
           <a
             href="#contact"
             style={{
-              display: "inline-flex", alignItems: "center", gap: "8px",
-              padding: "13px 28px", borderRadius: "14px",
-              fontSize: "14px", fontWeight: 500, letterSpacing: "0.01em",
+              display: "inline-flex", alignItems: "center", gap: "7px",
+              padding: "12px 26px", borderRadius: "13px",
+              fontSize: "13.5px", fontWeight: 500, letterSpacing: "0.01em",
               textDecoration: "none",
               color: "rgba(255,255,255,0.97)",
-              background: "linear-gradient(170deg, #6366f1 0%, #4f46e5 100%)",
-              border: "1px solid rgba(255,255,255,0.13)",
-              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.20), 0 6px 22px rgba(79,70,229,0.36)",
-              transition: "all 260ms cubic-bezier(0.22,1,0.36,1)",
+              background: "linear-gradient(170deg,#6366f1 0%,#4f46e5 100%)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18),0 5px 18px rgba(79,70,229,0.34)",
+              transition: "all 250ms cubic-bezier(0.22,1,0.36,1)",
             }}
             onMouseEnter={(e) => {
               const el = e.currentTarget as HTMLAnchorElement;
-              el.style.background = "linear-gradient(170deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%)";
-              el.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.28), 0 8px 28px rgba(79,70,229,0.52)";
+              el.style.background = "linear-gradient(170deg,#818cf8 0%,#6366f1 50%,#4f46e5 100%)";
+              el.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.26),0 7px 24px rgba(79,70,229,0.50)";
               el.style.transform = "scale(1.02)";
             }}
             onMouseLeave={(e) => {
               const el = e.currentTarget as HTMLAnchorElement;
-              el.style.background = "linear-gradient(170deg, #6366f1 0%, #4f46e5 100%)";
-              el.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.20), 0 6px 22px rgba(79,70,229,0.36)";
+              el.style.background = "linear-gradient(170deg,#6366f1 0%,#4f46e5 100%)";
+              el.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.18),0 5px 18px rgba(79,70,229,0.34)";
               el.style.transform = "scale(1)";
             }}
           >
             Book a Free Call
-            <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <path d="M3 7H11M11 7L7.5 3.5M11 7L7.5 10.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </a>
         </motion.div>
       </div>
 
-      {/* Responsive styles */}
+      {/* Responsive */}
       <style>{`
         @media (max-width: 899px) {
-          .investment-grid { display: none !important; }
-          .investment-grid-mobile { display: flex !important; }
-          .comparison-desktop { display: none !important; }
-          .comparison-mobile { display: block !important; }
+          .inv-grid { display: none !important; }
+          .inv-grid-mobile { display: flex !important; }
+          .inv-comparison-desktop { display: none !important; }
+          .inv-comparison-mobile { display: block !important; }
         }
         @media (max-width: 767px) {
-          .investment-grid-mobile a[href="#contact"] {
+          .inv-grid-mobile a[href="#contact"] {
             width: 100% !important;
             box-sizing: border-box !important;
           }
