@@ -587,12 +587,12 @@ export function InvestmentSection() {
           ))}
         </motion.div>
 
-        {/* ─── Tier cards: mobile (Growth first) ─── */}
+        {/* ─── Tier cards: mobile (natural order — Growth stays in middle) ─── */}
         <div
           className="inv-grid-mobile"
           style={{ display: "none", flexDirection: "column", gap: "20px", marginBottom: "44px" }}
         >
-          {[TIERS[1], TIERS[0], TIERS[2]].map((tier) => (
+          {TIERS.map((tier) => (
             <TierCard key={tier.id} tier={tier} />
           ))}
         </div>
