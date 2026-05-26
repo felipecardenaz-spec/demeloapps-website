@@ -687,7 +687,7 @@ export function Pricing() {
             <span style={{
               fontSize: "10px", fontWeight: 600,
               letterSpacing: "0.14em", textTransform: "uppercase",
-              color: "rgba(129,140,248,0.70)",
+              color: "rgba(129,140,248,0.75)",
             }}>
               Investment &amp; Scope
             </span>

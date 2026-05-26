@@ -9,28 +9,28 @@ const STEPS = [
     id: "define",
     index: "01",
     title: "Understand & Define",
-    description: "We map your workflows and define the right system.",
+    description: "We learn how your team operates, map your workflows, and define the right system to solve the right problem.",
     visual: "define" as const,
   },
   {
     id: "design",
     index: "02",
     title: "System Design",
-    description: "We structure flows, architecture, and user experience.",
+    description: "We design system architecture, data flows, and user experience with scalability in mind.",
     visual: "design" as const,
   },
   {
     id: "build",
     index: "03",
     title: "Build & Integrate",
-    description: "We develop, connect tools, and bring everything together.",
+    description: "We develop the system, integrate your tools, and connect every part into a unified workflow.",
     visual: "build" as const,
   },
   {
     id: "launch",
     index: "04",
     title: "Launch & Optimize",
-    description: "We deploy, monitor, and refine based on real usage.",
+    description: "We deploy to production, monitor performance, and refine based on real-world usage data.",
     visual: "launch" as const,
   },
 ] as const;
@@ -410,7 +410,7 @@ function MobileNode({ step, t, index: nodeIndex, total }: {
           <div>
             <span style={{
               fontSize: "9px", fontWeight: 600, letterSpacing: "0.12em",
-              color: "rgba(165,180,252,0.60)", fontFamily: "monospace",
+              color: "rgba(129,140,248,0.75)", fontFamily: "monospace",
               display: "block", marginBottom: "6px",
             }}>
               {step.index}
@@ -457,15 +457,42 @@ export function HowItWorks() {
   }, []);
 
   useEffect(() => {
-    let raf: number;
+    const el = sectionRef.current;
+    if (!el) return;
+
+    let rafId = 0;
     let start: number | null = null;
+    let isVisible = false;
+
     const loop = (ts: number) => {
       if (!start) start = ts;
       setT((ts - start) / 1000);
-      raf = requestAnimationFrame(loop);
+      rafId = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
+
+    const resume = () => {
+      if (!isVisible || document.hidden) return;
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(loop);
+    };
+
+    const pause = () => cancelAnimationFrame(rafId);
+
+    const io = new IntersectionObserver(([e]) => {
+      isVisible = e.isIntersecting;
+      if (isVisible) resume(); else pause();
+    }, { threshold: 0 });
+
+    io.observe(el);
+
+    const onVis = () => { if (document.hidden) pause(); else resume(); };
+    document.addEventListener("visibilitychange", onVis);
+
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(rafId);
+      document.removeEventListener("visibilitychange", onVis);
+    };
   }, []);
 
   const isDimmed = (id: string) => activeId !== null && activeId !== id;
@@ -531,7 +558,7 @@ export function HowItWorks() {
             <span style={{
               fontSize: "10px", fontWeight: 600,
               letterSpacing: "0.14em", textTransform: "uppercase",
-              color: "rgba(129,140,248,0.70)",
+              color: "rgba(129,140,248,0.75)",
             }}>
               Clear Process, Structured Execution
             </span>

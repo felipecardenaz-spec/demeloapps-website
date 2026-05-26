@@ -261,14 +261,14 @@ function SupportVisualBottom({ variant }: { variant: "software" | "mobile" }) {
 
   return (
     <div style={{
-      height: "64px",
+      height: "48px",
       borderRadius: "10px",
       background: `linear-gradient(135deg, rgba(255,255,255,0.03) 0%, ${color}0.06) 100%)`,
       border: "1px solid rgba(255,255,255,0.07)",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      marginBottom: "16px",
+      marginBottom: "10px",
       overflow: "hidden",
       position: "relative",
     }}>
@@ -277,7 +277,7 @@ function SupportVisualBottom({ variant }: { variant: "software" | "mobile" }) {
         inset: 0,
         background: `radial-gradient(ellipse at 50% 100%, ${color}0.12) 0%, transparent 70%)`,
       }} />
-      <svg width="80" height="40" viewBox="0 0 80 40" fill="none" aria-hidden="true" style={{ position: "relative" }}>
+      <svg width="68" height="34" viewBox="0 0 80 40" fill="none" aria-hidden="true" style={{ position: "relative" }}>
         <circle cx="40" cy="20" r="14" fill={`${color}0.10)`} stroke={`${color}0.25)`} strokeWidth="0.8" />
         <circle cx="40" cy="20" r="8" fill={`${color}0.18)`} stroke={`${color}0.35)`} strokeWidth="0.8" />
         <circle cx="40" cy="20" r="3" fill={`${color}0.70)`} />
@@ -389,6 +389,7 @@ function TransparentDeliveryCard({ title, description, delay, active }: { title:
       animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className="services-support-card-plain"
       style={{
         position: "relative",
         borderRadius: "16px",
@@ -496,7 +497,7 @@ function TransparentDeliveryCard({ title, description, delay, active }: { title:
       </div>
 
       {/* Text */}
-      <div style={{ position: "relative", zIndex: 1 }}>
+      <div style={{ position: "relative", zIndex: 1, textAlign: "center" }}>
         <h4 style={{
           fontSize: "14px",
           fontWeight: 600,
@@ -538,6 +539,7 @@ function SupportCard({
       animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className={bgImage ? "services-support-card" : "services-support-card-plain"}
       style={{
         position: "relative",
         borderRadius: "16px",
@@ -557,6 +559,10 @@ function SupportCard({
         transition: "all 280ms cubic-bezier(0.22,1,0.36,1)",
         overflow: "hidden",
         flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <span aria-hidden="true" style={{
@@ -607,7 +613,7 @@ function SupportCard({
           bottom: 0,
           left: 0,
           right: 0,
-          padding: "20px",
+          padding: "20px 20px 24px",
           zIndex: 1,
         }}>
           <h4 style={{
@@ -628,14 +634,14 @@ function SupportCard({
           <h4 style={{
             fontSize: "14px", fontWeight: 600, letterSpacing: "-0.01em",
             color: "#f5f5f7", margin: "0 0 6px",
-            position: "relative", zIndex: 1,
+            position: "relative", zIndex: 1, textAlign: "center",
           }}>
             {title}
           </h4>
           <p style={{
             fontSize: "12px", fontWeight: 400, lineHeight: 1.6,
             color: "rgba(255,255,255,0.80)", margin: 0,
-            position: "relative", zIndex: 1,
+            position: "relative", zIndex: 1, textAlign: "center",
           }}>
             {description}
           </p>
@@ -765,7 +771,7 @@ function ServiceBlock({ block, index }: { block: ServiceBlock; index: number }) 
             </span>
             <span style={{
               fontSize: "11px", fontWeight: 500, letterSpacing: "0.06em",
-              textTransform: "uppercase", color: "rgba(129,140,248,0.80)",
+              textTransform: "uppercase", color: "rgba(129,140,248,0.75)",
             }}>
               {block.eyebrow}
             </span>
@@ -822,7 +828,7 @@ function ServiceBlock({ block, index }: { block: ServiceBlock; index: number }) 
                 delay={0.34 + i * 0.10}
                 active={inView}
               bgImage={
-                card.title === "Streamline Operations" ? "/images/streamline-operations.png" :
+                card.title === "Operational Efficiency" ? "/images/streamline-operations.png" :
                 card.title === "Market Differentiation" ? "/images/mobileapps.png" :
                 undefined
               }
@@ -942,6 +948,12 @@ export function Services() {
         @media (max-width: 768px) {
           .services-grid {
             grid-template-columns: 1fr !important;
+          }
+          .services-support-card {
+            min-height: 280px;
+          }
+          .services-support-card-plain {
+            padding: 14px 16px !important;
           }
         }
         @media (min-width: 769px) and (max-width: 1024px) {

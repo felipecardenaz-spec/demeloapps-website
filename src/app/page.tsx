@@ -4,11 +4,11 @@ import { Stats } from "@/components/sections/stats";
 import { ImpactAreas } from "@/components/sections/impact-areas";
 import { Services } from "@/components/sections/services";
 import { HowItWorks } from "@/components/sections/how-it-works";
+import { WhyUs } from "@/components/sections/why-us";
+import { SelectedWork } from "@/components/sections/selected-work";
 import { InvestmentSection } from "@/components/sections/InvestmentSection";
+import { Footer } from "@/components/sections/footer";
 
-/**
- * Home Page — DeMeloApps
- */
 export default function HomePage() {
   return (
     <>
@@ -18,12 +18,10 @@ export default function HomePage() {
       <ImpactAreas />
       <Services />
       <HowItWorks />
+      <WhyUs />
+      <SelectedWork />
       <InvestmentSection />
-      {/* Future sections:
-          <Testimonials />
-          <CTA />
-          <Footer />
-      */}
+      <Footer />
     </>
   );
 }

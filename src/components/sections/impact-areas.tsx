@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 type ModuleId = "hero" | "marketing" | "sales" | "operations";
 
@@ -67,7 +67,7 @@ function HeroBlock({ t, isHovered, onHover }: {
       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "7px" }}>
           <Pulse t={t} />
-          <span style={{ fontSize: "9px", fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: "rgba(129,140,248,0.50)" }}>
+          <span style={{ fontSize: "9px", fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: "rgba(129,140,248,0.75)" }}>
             Core System
           </span>
         </div>
@@ -80,10 +80,10 @@ function HeroBlock({ t, isHovered, onHover }: {
         </h3>
         <p style={{
           fontSize: "13px", fontWeight: 300, lineHeight: 1.65,
-          color: "rgba(255,255,255,0.80)", margin: 0,
+          color: "rgba(255,255,255,0.88)", margin: 0,
           maxWidth: "340px",
         }}>
-          Automate marketing, sales, and operations with systems designed to execute consistently and efficiently.
+          Custom AI systems that automate marketing, sales, and operations. Built to execute reliably at scale.
         </p>
       </div>
 
@@ -99,9 +99,9 @@ function HeroBlock({ t, isHovered, onHover }: {
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "7px" }}>
             <Pulse t={t} />
-            <span style={{ fontSize: "11px", fontWeight: 500, color: "rgba(200,206,255,0.85)" }}>AI Automation System</span>
+            <span style={{ fontSize: "11px", fontWeight: 500, color: "rgba(224,231,255,0.96)" }}>AI Automation System</span>
           </div>
-          <span style={{ fontSize: "8.5px", fontWeight: 600, color: "rgba(129,140,248,0.45)", letterSpacing: "0.08em", textTransform: "uppercase" }}>Active</span>
+          <span style={{ fontSize: "8.5px", fontWeight: 600, color: "rgba(129,140,248,0.75)", letterSpacing: "0.08em", textTransform: "uppercase" }}>Active</span>
         </div>
 
         {/* Three nodes */}
@@ -118,8 +118,8 @@ function HeroBlock({ t, isHovered, onHover }: {
               border: "1px solid rgba(255,255,255,0.05)",
               display: "flex", flexDirection: "column", gap: "5px",
             }}>
-              <span style={{ fontSize: "9px", fontWeight: 600, color: "rgba(175,182,215,0.65)", letterSpacing: "0.03em" }}>{node.label}</span>
-              <span style={{ fontSize: "8px", color: "rgba(130,138,190,0.35)", lineHeight: 1.4 }}>{node.sub}</span>
+              <span style={{ fontSize: "9px", fontWeight: 600, color: "rgba(245,245,247,0.92)", letterSpacing: "0.03em" }}>{node.label}</span>
+              <span style={{ fontSize: "8px", color: "rgba(255,255,255,0.82)", lineHeight: 1.4 }}>{node.sub}</span>
               <FlowDot t={t} offset={i * 0.33} />
             </div>
           ))}
@@ -137,7 +137,7 @@ function HeroBlock({ t, isHovered, onHover }: {
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ flexShrink: 0 }}>
               <path d="M1.5 5L3.8 7.5L8.5 2.5" stroke="rgba(129,140,248,0.50)" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <span style={{ fontSize: "12px", fontWeight: 300, color: "rgba(175,182,215,0.55)" }}>{point}</span>
+            <span style={{ fontSize: "12px", fontWeight: 300, color: "rgba(255,255,255,0.86)" }}>{point}</span>
           </div>
         ))}
       </div>
@@ -155,8 +155,8 @@ function HeroBlock({ t, isHovered, onHover }: {
             border: "1px solid rgba(129,140,248,0.09)",
             display: "flex", flexDirection: "column", gap: "3px",
           }}>
-            <span style={{ fontSize: "20px", fontWeight: 600, color: "rgba(200,206,255,0.90)", letterSpacing: "-0.03em", lineHeight: 1 }}>{m.value}</span>
-            <span style={{ fontSize: "9px", color: "rgba(130,138,190,0.42)", letterSpacing: "0.02em" }}>{m.label}</span>
+            <span style={{ fontSize: "20px", fontWeight: 600, color: "rgba(224,231,255,0.98)", letterSpacing: "-0.03em", lineHeight: 1 }}>{m.value}</span>
+            <span style={{ fontSize: "9px", color: "rgba(255,255,255,0.82)", letterSpacing: "0.02em" }}>{m.label}</span>
           </div>
         ))}
       </div>
@@ -222,20 +222,20 @@ function Module({
 
       {/* Text */}
       <div style={{ display: "flex", flexDirection: "column", gap: "8px", flex: horizontal ? "0 0 auto" : undefined, maxWidth: horizontal ? "220px" : undefined }}>
-        <span style={{ fontSize: "8.5px", fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: "rgba(129,140,248,0.42)" }}>
+        <span style={{ fontSize: "8.5px", fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: "rgba(129,140,248,0.75)" }}>
           {eyebrow}
         </span>
         <h4 style={{ fontSize: "14.5px", fontWeight: 500, letterSpacing: "-0.016em", color: "#f0f0f5", margin: 0, lineHeight: 1.3 }}>
           {title}
         </h4>
-        <p style={{ fontSize: "12px", fontWeight: 300, color: "rgba(255,255,255,0.80)", margin: 0, lineHeight: 1.60 }}>
+        <p style={{ fontSize: "12px", fontWeight: 300, color: "rgba(255,255,255,0.88)", margin: 0, lineHeight: 1.60 }}>
           {description}
         </p>
         <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "2px" }}>
           {points.map((p) => (
             <span key={p} style={{
               fontSize: "9px", fontWeight: 500,
-              color: "rgba(165,180,252,0.50)",
+              color: "rgba(129,140,248,0.75)",
               padding: "2px 8px",
               borderRadius: "4px",
               background: "rgba(99,102,241,0.06)",
@@ -271,7 +271,7 @@ function MarketingVisual({ t }: { t: number }) {
                 border: isA ? "1px solid rgba(129,140,248,0.28)" : "1px solid rgba(255,255,255,0.04)",
                 transition: "all 350ms ease",
               }}>
-                <span style={{ fontSize: "8.5px", fontWeight: 500, color: isA ? "rgba(200,206,255,0.90)" : "rgba(140,148,190,0.35)", transition: "color 350ms ease" }}>{s}</span>
+                <span style={{ fontSize: "8.5px", fontWeight: 500, color: isA ? "rgba(224,231,255,0.98)" : "rgba(255,255,255,0.80)", transition: "color 350ms ease" }}>{s}</span>
               </div>
               {i < steps.length - 1 && (
                 <svg width="6" height="6" viewBox="0 0 6 6" fill="none">
@@ -300,7 +300,7 @@ function SalesVisual({ t }: { t: number }) {
         const w = s.pct * (0.88 + 0.12 * Math.abs(Math.sin(t * 0.35 + i * 0.7)));
         return (
           <div key={s.label} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ fontSize: "8px", color: "rgba(140,148,190,0.40)", width: "48px", flexShrink: 0 }}>{s.label}</span>
+            <span style={{ fontSize: "8px", color: "rgba(255,255,255,0.85)", width: "48px", flexShrink: 0 }}>{s.label}</span>
             <div style={{ flex: 1, height: "3px", borderRadius: "2px", background: "rgba(255,255,255,0.04)", overflow: "hidden" }}>
               <div style={{
                 height: "100%", width: `${w}%`, borderRadius: "2px",
@@ -343,7 +343,7 @@ function OpsVisual({ t }: { t: number }) {
             </div>
             <span style={{
               fontSize: "9px",
-              color: task.done ? "rgba(175,182,215,0.40)" : isRunning ? "rgba(200,206,255,0.75)" : "rgba(130,138,190,0.30)",
+              color: task.done ? "rgba(255,255,255,0.75)" : isRunning ? "rgba(224,231,255,0.94)" : "rgba(255,255,255,0.80)",
               textDecoration: task.done ? "line-through" : "none",
             }}>{task.label}</span>
           </div>
@@ -375,16 +375,16 @@ function MobileCard({ eyebrow, title, description, points, visual }: {
         pointerEvents: "none",
       }} />
       <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-        <span style={{ fontSize: "8.5px", fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: "rgba(129,140,248,0.42)" }}>{eyebrow}</span>
+        <span style={{ fontSize: "8.5px", fontWeight: 600, letterSpacing: "0.10em", textTransform: "uppercase", color: "rgba(129,140,248,0.75)" }}>{eyebrow}</span>
         <h4 style={{ fontSize: "15px", fontWeight: 500, letterSpacing: "-0.016em", color: "#f0f0f5", margin: 0, lineHeight: 1.3 }}>{title}</h4>
-        <p style={{ fontSize: "12.5px", fontWeight: 300, color: "rgba(255,255,255,0.80)", margin: 0, lineHeight: 1.60 }}>{description}</p>
+        <p style={{ fontSize: "12.5px", fontWeight: 300, color: "rgba(255,255,255,0.88)", margin: 0, lineHeight: 1.60 }}>{description}</p>
       </div>
       {visual}
       <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
         {points.map((p) => (
           <span key={p} style={{
             fontSize: "9px", fontWeight: 500,
-            color: "rgba(165,180,252,0.50)",
+            color: "rgba(129,140,248,0.75)",
             padding: "2px 8px", borderRadius: "4px",
             background: "rgba(99,102,241,0.06)",
             border: "1px solid rgba(129,140,248,0.09)",
@@ -400,6 +400,7 @@ export function ImpactAreas() {
   const [t, setT] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [hovered, setHovered] = useState<ModuleId | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 900);
@@ -409,23 +410,50 @@ export function ImpactAreas() {
   }, []);
 
   useEffect(() => {
-    let raf: number;
+    const el = sectionRef.current;
+    if (!el) return;
+
+    let rafId = 0;
     let start: number | null = null;
+    let isVisible = false;
+
     const loop = (ts: number) => {
       if (!start) start = ts;
       setT((ts - start) / 1000);
-      raf = requestAnimationFrame(loop);
+      rafId = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
-  }, []);
+
+    const resume = () => {
+      if (!isVisible || document.hidden) return;
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(loop);
+    };
+
+    const pause = () => cancelAnimationFrame(rafId);
+
+    const io = new IntersectionObserver(([e]) => {
+      isVisible = e.isIntersecting;
+      if (isVisible) resume(); else pause();
+    }, { threshold: 0 });
+
+    io.observe(el);
+
+    const onVis = () => { if (document.hidden) pause(); else resume(); };
+    document.addEventListener("visibilitychange", onVis);
+
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(rafId);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [isMobile]);
 
   const isDimmed = (id: ModuleId) => hovered !== null && hovered !== id;
 
   /* ── Mobile ── */
   if (isMobile) {
     return (
-      <section aria-label="AI Systems for Business Operations" style={{ padding: "60px 20px 80px", position: "relative" }}>
+      <section ref={sectionRef} aria-label="AI Systems for Business Operations" style={{ padding: "60px 20px 80px", position: "relative" }}>
         <div aria-hidden="true" style={{
           position: "absolute", left: "50%", top: "25%", transform: "translate(-50%,-50%)",
           width: "500px", height: "300px", borderRadius: "9999px",
@@ -435,14 +463,14 @@ export function ImpactAreas() {
         <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: "28px" }}>
           {/* Header */}
           <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "8px" }}>
-            <p style={{ fontSize: "9px", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(129,140,248,0.44)", margin: 0 }}>
+            <p style={{ fontSize: "9px", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(129,140,248,0.75)", margin: 0 }}>
               AI Systems for Business Operations
             </p>
             <h2 style={{ fontSize: "clamp(22px,6vw,28px)", fontWeight: 400, letterSpacing: "-0.022em", lineHeight: 1.22, color: "#f0f0f5", margin: 0 }}>
               Operate faster.<br />Do more with less.
             </h2>
-            <p style={{ fontSize: "13px", fontWeight: 300, lineHeight: 1.65, color: "rgba(255,255,255,0.80)", margin: 0 }}>
-              We design AI-powered systems that automate workflows and improve how your business runs.
+            <p style={{ fontSize: "13px", fontWeight: 300, lineHeight: 1.65, color: "rgba(255,255,255,0.88)", margin: 0 }}>
+              We build AI-powered automation systems that remove bottlenecks, reduce manual work, and help your business run more efficiently.
             </p>
           </div>
 
@@ -450,7 +478,7 @@ export function ImpactAreas() {
           <MobileCard
             eyebrow="Core System"
             title="AI Systems That Replace Manual Work"
-            description="Automate marketing, sales, and operations with systems built to execute consistently."
+            description="Custom AI systems that automate marketing, sales, and operations. Built for reliable, consistent execution."
             points={["Automate execution", "Reduce manual tasks", "Improve response speed"]}
             visual={
               <div style={{ display: "flex", gap: "8px" }}>
@@ -460,8 +488,8 @@ export function ImpactAreas() {
                     background: "rgba(99,102,241,0.05)", border: "1px solid rgba(129,140,248,0.09)",
                     display: "flex", flexDirection: "column", gap: "2px",
                   }}>
-                    <span style={{ fontSize: "18px", fontWeight: 600, color: "rgba(200,206,255,0.88)", letterSpacing: "-0.03em", lineHeight: 1 }}>{m.value}</span>
-                    <span style={{ fontSize: "8.5px", color: "rgba(130,138,190,0.40)" }}>{m.label}</span>
+                    <span style={{ fontSize: "18px", fontWeight: 600, color: "rgba(224,231,255,0.98)", letterSpacing: "-0.03em", lineHeight: 1 }}>{m.value}</span>
+                    <span style={{ fontSize: "8.5px", color: "rgba(255,255,255,0.82)" }}>{m.label}</span>
                   </div>
                 ))}
               </div>
@@ -498,7 +526,7 @@ export function ImpactAreas() {
 
   /* ── Desktop ── */
   return (
-    <section aria-label="AI Systems for Business Operations" style={{ padding: "80px 20px 100px", position: "relative" }}>
+    <section ref={sectionRef} aria-label="AI Systems for Business Operations" style={{ padding: "80px 20px 100px", position: "relative" }}>
       <div aria-hidden="true" style={{
         position: "absolute", left: "50%", top: "35%", transform: "translate(-50%,-50%)",
         width: "800px", height: "400px", borderRadius: "9999px",
@@ -510,14 +538,14 @@ export function ImpactAreas() {
 
         {/* Header */}
         <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "10px", maxWidth: "560px", margin: "0 auto" }}>
-          <p style={{ fontSize: "9px", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(129,140,248,0.44)", margin: 0 }}>
+          <p style={{ fontSize: "9px", fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(129,140,248,0.75)", margin: 0 }}>
             AI Systems for Business Operations
           </p>
           <h2 style={{ fontSize: "clamp(24px,2.8vw,36px)", fontWeight: 400, letterSpacing: "-0.025em", lineHeight: 1.18, color: "#f0f0f5", margin: 0 }}>
-            Operate faster. Do more with less.
+            Operate faster.<br />Do more with less.
           </h2>
-          <p style={{ fontSize: "clamp(13px,1.2vw,14.5px)", fontWeight: 300, lineHeight: 1.68, color: "rgba(255,255,255,0.80)", margin: 0 }}>
-            We design AI-powered systems that automate workflows and improve how your business runs.
+          <p style={{ fontSize: "clamp(13px,1.2vw,14.5px)", fontWeight: 300, lineHeight: 1.68, color: "rgba(255,255,255,0.88)", margin: 0 }}>
+            We build AI-powered automation systems that remove bottlenecks, reduce manual work, and help your business run more efficiently.
           </p>
         </div>
 

@@ -20,85 +20,30 @@ const METRIC_POOL = [
   { value: 22,  unit: "%",  prefix: "−", label: "operational overhead", icon: "status" },
 ];
 
-/* ─── Orbital card layout ────────────────────────────────────────── */
-// Cards orbit around the hero content block.
-// Positions are % of the 1000px content container.
-// The hero text sits roughly in the horizontal center (30%–70%) and
-// vertically from ~15% to ~65%. Cards are placed around that zone.
-//
-// Desktop: 8 cards in a loose elliptical orbit
-// Each card has a slow individual drift (orbitR px, orbitDur seconds)
+/* ─── Card layout — ellipse around the hero text ────────────────── */
+// Ellipse center: (50%, 48%). rx≈40%, ry≈28%. Gap between content and cards.
 const CARDS_DESKTOP = [
-  // Upper-left cluster
-  { id: "c1", cx: "5%",  cy: "18%", orbitR: 12, orbitDur: 18, orbitPhase: 0.00, pFactor: 0.50, bOff: 0.0, mOff: 0 },
-  { id: "c2", cx: "14%", cy: "52%", orbitR: 10, orbitDur: 22, orbitPhase: 0.60, pFactor: 0.60, bOff: 1.8, mOff: 3 },
-  // Upper-right cluster
-  { id: "c3", cx: "76%", cy: "14%", orbitR: 11, orbitDur: 20, orbitPhase: 0.25, pFactor: 0.55, bOff: 3.2, mOff: 1 },
-  { id: "c4", cx: "80%", cy: "44%", orbitR: 13, orbitDur: 24, orbitPhase: 0.75, pFactor: 0.45, bOff: 5.0, mOff: 2 },
-  // Lower-left cluster
-  { id: "c5", cx: "4%",  cy: "72%", orbitR: 10, orbitDur: 19, orbitPhase: 0.40, pFactor: 0.65, bOff: 2.4, mOff: 4 },
-  { id: "c6", cx: "20%", cy: "82%", orbitR: 12, orbitDur: 23, orbitPhase: 0.15, pFactor: 0.40, bOff: 4.1, mOff: 7 },
-  // Lower-right cluster
-  { id: "c7", cx: "72%", cy: "76%", orbitR: 11, orbitDur: 21, orbitPhase: 0.55, pFactor: 0.55, bOff: 0.9, mOff: 5 },
-  { id: "c8", cx: "82%", cy: "64%", orbitR: 9,  orbitDur: 17, orbitPhase: 0.85, pFactor: 0.70, bOff: 3.6, mOff: 6 },
+  // Top pair — above the headline, flanking center
+  { id: "c1", cx: "21%", cy: "14%", orbitR: 8,  orbitDur: 18, orbitPhase: 0.00, pFactor: 0.28, bOff: 0.0, mOff: 0 },
+  { id: "c2", cx: "63%", cy: "14%", orbitR: 8,  orbitDur: 22, orbitPhase: 0.25, pFactor: 0.28, bOff: 1.8, mOff: 1 },
+  // Left column — left of the text block
+  { id: "c3", cx: "3%",  cy: "36%", orbitR: 10, orbitDur: 20, orbitPhase: 0.50, pFactor: 0.45, bOff: 3.2, mOff: 2 },
+  { id: "c4", cx: "3%",  cy: "53%", orbitR: 9,  orbitDur: 16, orbitPhase: 0.70, pFactor: 0.45, bOff: 2.4, mOff: 3 },
+  // Right column — right of the text block
+  { id: "c5", cx: "83%", cy: "36%", orbitR: 10, orbitDur: 24, orbitPhase: 0.75, pFactor: 0.45, bOff: 5.0, mOff: 4 },
+  { id: "c6", cx: "83%", cy: "53%", orbitR: 9,  orbitDur: 19, orbitPhase: 0.40, pFactor: 0.45, bOff: 4.1, mOff: 5 },
+  // Bottom pair — below the buttons, flanking center
+  { id: "c7", cx: "21%", cy: "74%", orbitR: 8,  orbitDur: 21, orbitPhase: 0.15, pFactor: 0.28, bOff: 0.9, mOff: 6 },
+  { id: "c8", cx: "63%", cy: "74%", orbitR: 8,  orbitDur: 17, orbitPhase: 0.85, pFactor: 0.28, bOff: 3.6, mOff: 7 },
 ];
 
-// Mobile: 4 cards, placed at the sides so they don't overlap the text
+// Mobile: 4 cards on the sides, not overlapping the text
 const CARDS_MOBILE = [
-  { id: "m1", cx: "1%",  cy: "20%", orbitR: 5, orbitDur: 20, orbitPhase: 0.00, pFactor: 0, bOff: 0.0, mOff: 0 },
-  { id: "m2", cx: "68%", cy: "16%", orbitR: 5, orbitDur: 24, orbitPhase: 0.25, pFactor: 0, bOff: 2.1, mOff: 1 },
-  { id: "m3", cx: "1%",  cy: "56%", orbitR: 5, orbitDur: 18, orbitPhase: 0.50, pFactor: 0, bOff: 4.3, mOff: 3 },
-  { id: "m4", cx: "70%", cy: "50%", orbitR: 5, orbitDur: 22, orbitPhase: 0.75, pFactor: 0, bOff: 1.5, mOff: 2 },
+  { id: "m1", cx: "1%",  cy: "18%", orbitR: 5, orbitDur: 20, orbitPhase: 0.00, pFactor: 0, bOff: 0.0, mOff: 0 },
+  { id: "m2", cx: "70%", cy: "14%", orbitR: 5, orbitDur: 24, orbitPhase: 0.25, pFactor: 0, bOff: 2.1, mOff: 1 },
+  { id: "m3", cx: "1%",  cy: "58%", orbitR: 5, orbitDur: 18, orbitPhase: 0.50, pFactor: 0, bOff: 4.3, mOff: 3 },
+  { id: "m4", cx: "70%", cy: "52%", orbitR: 5, orbitDur: 22, orbitPhase: 0.75, pFactor: 0, bOff: 1.5, mOff: 2 },
 ];
-
-/* ─── Connection paths ───────────────────────────────────────────── */
-// SVG 900×860 viewBox. Card anchor SVG coords (cx% × 900, cy% × 860):
-//   c1: (45,155)   c2: (126,447)  c3: (684,120)  c4: (720,378)
-//   c5: (36,619)   c6: (180,705)  c7: (648,654)  c8: (738,550)
-// Connections form a loose ring around the center (450,430)
-const CONNS_DESKTOP = [
-  // c1 → c3: top arc
-  { id: "k1", x0:  45, y0: 155, x1: 684, y1: 120, cpx: 360, cpy:  30, dur: 10.0, phase: 0.00, bDur: 8.0, bPh: 0.00 },
-  // c3 → c4: right drop
-  { id: "k2", x0: 684, y0: 120, x1: 720, y1: 378, cpx: 820, cpy: 249, dur:  8.5, phase: 0.20, bDur: 7.0, bPh: 0.30 },
-  // c4 → c8: right lower
-  { id: "k3", x0: 720, y0: 378, x1: 738, y1: 550, cpx: 840, cpy: 464, dur:  7.0, phase: 0.40, bDur: 9.0, bPh: 0.60 },
-  // c8 → c7: bottom right
-  { id: "k4", x0: 738, y0: 550, x1: 648, y1: 654, cpx: 760, cpy: 640, dur:  9.0, phase: 0.55, bDur: 6.5, bPh: 0.80 },
-  // c7 → c6: bottom arc
-  { id: "k5", x0: 648, y0: 654, x1: 180, y1: 705, cpx: 414, cpy: 800, dur: 11.0, phase: 0.65, bDur: 8.5, bPh: 0.10 },
-  // c6 → c5: bottom left
-  { id: "k6", x0: 180, y0: 705, x1:  36, y1: 619, cpx:  60, cpy: 700, dur:  8.0, phase: 0.75, bDur: 7.5, bPh: 0.45 },
-  // c5 → c2: left side
-  { id: "k7", x0:  36, y0: 619, x1: 126, y1: 447, cpx: -40, cpy: 533, dur:  9.5, phase: 0.85, bDur: 8.0, bPh: 0.70 },
-  // c2 → c1: left upper
-  { id: "k8", x0: 126, y0: 447, x1:  45, y1: 155, cpx: -30, cpy: 301, dur:  8.0, phase: 0.10, bDur: 7.0, bPh: 0.20 },
-];
-
-const CONNS_MOBILE = [
-  { id: "km1", x0:  9, y0: 172, x1: 612, y1: 138, cpx: 310, cpy:  60, dur: 10.0, phase: 0.00, bDur: 8.0, bPh: 0.00 },
-  { id: "km2", x0: 612, y0: 138, x1: 630, y1: 430, cpx: 740, cpy: 284, dur:  8.5, phase: 0.50, bDur: 7.0, bPh: 0.50 },
-];
-
-/* ─── Math helpers ───────────────────────────────────────────────── */
-function qBez(t: number, x0: number, y0: number, cpx: number, cpy: number, x1: number, y1: number) {
-  const m = 1 - t;
-  return { x: m*m*x0 + 2*m*t*cpx + t*t*x1, y: m*m*y0 + 2*m*t*cpy + t*t*y1 };
-}
-function qBezTangent(t: number, x0: number, y0: number, cpx: number, cpy: number, x1: number, y1: number) {
-  const m = 1 - t;
-  return { dx: 2*m*(cpx-x0) + 2*t*(x1-cpx), dy: 2*m*(cpy-y0) + 2*t*(y1-cpy) };
-}
-function cubicBez(t: number, x0: number, y0: number, cx1: number, cy1: number, cx2: number, cy2: number, x1: number, y1: number) {
-  const m = 1 - t;
-  return { x: m*m*m*x0+3*m*m*t*cx1+3*m*t*t*cx2+t*t*t*x1, y: m*m*m*y0+3*m*m*t*cy1+3*m*t*t*cy2+t*t*t*y1 };
-}
-function parseCubic(d: string) {
-  const p = d.replace(/[MC,]/g," ").trim().split(/\s+/).map(Number);
-  return { x0:p[0],y0:p[1],cx1:p[2],cy1:p[3],cx2:p[4],cy2:p[5],x1:p[6],y1:p[7] };
-}
-function eio(t: number) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
-function eioSoft(t: number) { const e = eio(t); return e + 0.035*Math.sin(e*Math.PI); }
 
 /* ─── Mini visualizations ────────────────────────────────────────── */
 function TrendLine({ t }: { t: number }) {
@@ -169,17 +114,6 @@ function MetricValue({ metric, t }: { metric: typeof METRIC_POOL[0]; t: number }
   );
 }
 
-/* ─── Signal capsule ─────────────────────────────────────────────── */
-function Signal({ cx, cy, angle, op, size }: { cx:number; cy:number; angle:number; op:number; size:number }) {
-  const len = size * 6;
-  const dx = Math.cos(angle)*len*0.5, dy = Math.sin(angle)*len*0.5;
-  return (
-    <line x1={cx-dx} y1={cy-dy} x2={cx+dx} y2={cy+dy}
-      stroke={`rgba(165,180,252,${op.toFixed(2)})`}
-      strokeWidth={size} strokeLinecap="round" filter="url(#glow)"/>
-  );
-}
-
 /* ─── Background SVG (full-width atmospheric layer) ─────────────── */
 function BgSvg({ t, isMobile }: { t: number; isMobile: boolean }) {
   const aiPulse = Math.max(0, Math.sin(t*0.22)*Math.sin(t*0.07));
@@ -228,14 +162,6 @@ function BgSvg({ t, isMobile }: { t: number; isMobile: boolean }) {
           strokeDasharray="4 8"/>
       ))}
 
-      {/* Faint grid — desktop only */}
-      {!isMobile && [180,360,540,720].map(x => (
-        <line key={`v${x}`} x1={x} y1="0" x2={x} y2="860" stroke="rgba(255,255,255,0.006)" strokeWidth="0.5"/>
-      ))}
-      {!isMobile && [215,430,645,760].map(y => (
-        <line key={`h${y}`} x1="0" y1={y} x2="900" y2={y} stroke="rgba(255,255,255,0.006)" strokeWidth="0.5"/>
-      ))}
-
       {/* Light streak every ~22s */}
       {(() => {
         const sp = (t/22)%1;
@@ -243,18 +169,6 @@ function BgSvg({ t, isMobile }: { t: number; isMobile: boolean }) {
         const so = Math.max(0, Math.sin(sp*Math.PI)*0.70);
         return <rect x={sx-80} y="0" width="160" height="860" fill="url(#streakGrad)" opacity={so} transform="skewX(-14)"/>;
       })()}
-
-      {/* Atmospheric flow paths */}
-      {!isMobile && [
-        { d:"M 40 580 C 180 440, 480 290, 820 150", dur:8.5,  ph:0.00, op:0.050 },
-        { d:"M 80 380 C 260 260, 540 420, 800 290", dur:11.5, ph:0.30, op:0.035 },
-        { d:"M 0  640 C 240 560, 590 530, 900 460", dur:14.0, ph:0.60, op:0.030 },
-        { d:"M 60 200 C 290 160, 570 240, 860 370", dur:10.5, ph:0.15, op:0.030 },
-        { d:"M 540 510 C 640 450, 750 470, 880 530", dur:7.5, ph:0.50, op:0.040 },
-      ].map((fp,i) => {
-        const b = fp.op*(0.55+0.45*Math.sin(t*0.44+fp.ph*10));
-        return <path key={i} d={fp.d} fill="none" stroke={`rgba(129,140,248,${b.toFixed(3)})`} strokeWidth="0.5" strokeLinecap="round"/>;
-      })}
 
       {/* AI pulse ring */}
       {(() => {
@@ -267,198 +181,179 @@ function BgSvg({ t, isMobile }: { t: number; isMobile: boolean }) {
   );
 }
 
-/* ─── Connection + signal layer (centered, 1000px wide) ─────────── */
-function ConnSvg({ t, conns, isMobile, msx, msy, focusIdx, focusInt }: {
-  t: number;
-  conns: typeof CONNS_DESKTOP;
-  isMobile: boolean;
-  msx: number; msy: number;
-  focusIdx: number; focusInt: number;
-}) {
-  return (
-    <svg viewBox="0 0 900 860" preserveAspectRatio="xMidYMid meet"
-      style={{position:"absolute",inset:0,width:"100%",height:"100%",overflow:"visible"}}>
-      {conns.map((c, ci) => {
-        const isFoc = ci === focusIdx % conns.length;
-        const breathe = 0.5+0.5*Math.sin(t*(Math.PI*2/c.bDur)+c.bPh*Math.PI*2);
-        const mid = qBez(0.5, c.x0, c.y0, c.cpx, c.cpy, c.x1, c.y1);
-        const dist = Math.hypot(msx-mid.x, msy-mid.y);
-        const mBoost = isMobile ? 0 : Math.max(0, 1-dist/260)*0.10;
-        const fBoost = isFoc ? focusInt*0.14 : 0;
-        const lineOp = (0.06+0.08*breathe+fBoost+mBoost).toFixed(3);
-
-        // Signal
-        const tRaw = ((t/c.dur+c.phase)%1+1)%1;
-        const te = eioSoft(tRaw);
-        const sp = qBez(te, c.x0, c.y0, c.cpx, c.cpy, c.x1, c.y1);
-        const tang = qBezTangent(te, c.x0, c.y0, c.cpx, c.cpy, c.x1, c.y1);
-        const angle = Math.atan2(tang.dy, tang.dx);
-        const t2r = Math.max(0, tRaw-0.04);
-        const sp2 = qBez(eioSoft(t2r), c.x0, c.y0, c.cpx, c.cpy, c.x1, c.y1);
-        const t3r = Math.max(0, tRaw-0.09);
-        const sp3 = qBez(eioSoft(t3r), c.x0, c.y0, c.cpx, c.cpy, c.x1, c.y1);
-        const t4r = ((t/c.dur+c.phase+0.5)%1+1)%1;
-        const sp4 = qBez(eioSoft(t4r), c.x0, c.y0, c.cpx, c.cpy, c.x1, c.y1);
-
-        const base = 0.5+0.5*breathe;
-        const fade = Math.sin(tRaw*Math.PI);
-        const sFocBoost = isFoc ? focusInt*0.28 : 0;
-        const sMBoost = isMobile ? 0 : Math.max(0, 1-dist/260)*0.20;
-        const sigOp = Math.min(0.85, (0.45+sFocBoost+sMBoost)*fade*base);
-        const t2Op = sigOp*0.42;
-        const t3Op = sigOp*0.18;
-        const secOp = 0.18*Math.sin(t4r*Math.PI)*base;
-
-        return (
-          <g key={c.id}>
-            <path d={`M ${c.x0} ${c.y0} Q ${c.cpx} ${c.cpy} ${c.x1} ${c.y1}`}
-              fill="none" stroke={`rgba(129,140,248,${lineOp})`}
-              strokeWidth={isFoc ? "0.80" : "0.45"} strokeLinecap="round"/>
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
-
 /* ─── HeroCanvas ─────────────────────────────────────────────────── */
-function HeroCanvas({ mouseX, mouseY, isMobile, metricCycle }: {
-  mouseX: number; mouseY: number; isMobile: boolean; metricCycle: number;
+function HeroCanvas({ mouseX, mouseY, isMobile }: {
+  mouseX: number; mouseY: number; isMobile: boolean;
 }) {
   const [t, setT] = useState<number | null>(null);
+  const divRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    let raf: number, start: number|null = null;
-    const loop = (ts: number) => { if (!start) start=ts; setT((ts-start)/1000); raf=requestAnimationFrame(loop); };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
+    const el = divRef.current;
+    if (!el) return;
+
+    let rafId = 0;
+    let start: number | null = null;
+    let isVisible = true;
+
+    const loop = (ts: number) => {
+      if (!start) start = ts;
+      setT((ts - start) / 1000);
+      rafId = requestAnimationFrame(loop);
+    };
+
+    const resume = () => {
+      if (!isVisible || document.hidden) return;
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(loop);
+    };
+
+    const pause = () => cancelAnimationFrame(rafId);
+
+    const io = new IntersectionObserver(([e]) => {
+      isVisible = e.isIntersecting;
+      if (isVisible) resume(); else pause();
+    }, { threshold: 0 });
+
+    io.observe(el);
+
+    const onVis = () => { if (document.hidden) pause(); else resume(); };
+    document.addEventListener("visibilitychange", onVis);
+
+    rafId = requestAnimationFrame(loop);
+
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(rafId);
+      document.removeEventListener("visibilitychange", onVis);
+    };
   }, []);
 
-  // Don't render on server — all values depend on requestAnimationFrame time
-  if (t === null) return null;
-
-  const ox = isMobile ? 0 : mouseX*9;
-  const oy = isMobile ? 0 : mouseY*6;
-
-  const cards = isMobile ? CARDS_MOBILE : CARDS_DESKTOP;
-  const conns = isMobile ? CONNS_MOBILE : CONNS_DESKTOP;
-
-  const FOCUS_DUR = 9.0;
-  const focusIdx = Math.floor((t/FOCUS_DUR) % conns.length);
-  const focusProg = (t/FOCUS_DUR)%1;
-  const focusInt = Math.max(0, Math.sin(focusProg*Math.PI));
-
-  // Mouse in SVG coords (for proximity calc)
-  const msx = (mouseX*0.5+0.5)*900;
-  const msy = (mouseY*0.5+0.5)*860;
-
+  // divRef is always rendered so the IntersectionObserver and RAF can start on mount.
+  // The canvas content only renders once t is available (after first RAF tick).
   return (
-    <div aria-hidden="true" style={{position:"absolute",inset:0,pointerEvents:"none",overflow:"hidden"}}>
+    <div ref={divRef} aria-hidden="true" style={{position:"absolute",inset:0,pointerEvents:"none",overflow:"hidden"}}>
+      {t !== null && (() => {
+        const ox = isMobile ? 0 : mouseX*9;
+        const oy = isMobile ? 0 : mouseY*6;
 
-      {/* Full-width atmospheric background */}
-      <BgSvg t={t} isMobile={isMobile}/>
+        const cards = isMobile ? CARDS_MOBILE : CARDS_DESKTOP;
 
-      {/* Centered content layer: connections + cards */}
-      <div style={{position:"absolute",inset:0,display:"flex",justifyContent:"center",pointerEvents:"none"}}>
-        <div style={{position:"relative",width:"100%",maxWidth:"1000px",height:"100%"}}>
+        const FOCUS_DUR = 9.0;
+        const focusIdx = Math.floor((t/FOCUS_DUR) % cards.length);
+        const focusProg = (t/FOCUS_DUR)%1;
+        const focusInt = Math.max(0, Math.sin(focusProg*Math.PI));
 
-          {/* Connection + signal SVG */}
-          <ConnSvg t={t} conns={conns} isMobile={isMobile} msx={msx} msy={msy} focusIdx={focusIdx} focusInt={focusInt}/>
+        const msx = (mouseX*0.5+0.5)*900;
+        const msy = (mouseY*0.5+0.5)*860;
 
-          {/* Metric cards */}
-          {cards.map((slot, pi) => {
-            const metricIdx = (slot.mOff + metricCycle) % METRIC_POOL.length;
-            const metric = METRIC_POOL[metricIdx];
+        return (
+          <>
+            {/* Full-width atmospheric background */}
+            <BgSvg t={t} isMobile={isMobile}/>
 
-            const orbitAngle = (t/slot.orbitDur + slot.orbitPhase)*Math.PI*2;
-            const orbitX = Math.cos(orbitAngle)*slot.orbitR;
-            const orbitY = Math.sin(orbitAngle)*slot.orbitR*0.55;
+            {/* Centered content layer: cards */}
+            <div style={{position:"absolute",inset:0,display:"flex",justifyContent:"center",pointerEvents:"none"}}>
+              <div style={{position:"relative",width:"100%",maxWidth:"1000px",height:"100%"}}>
 
-            const px = ox*slot.pFactor;
-            const py = oy*slot.pFactor;
+                {/* Metric cards */}
+                {cards.map((slot, pi) => {
+                  const metricIdx = slot.mOff % METRIC_POOL.length;
+                  const metric = METRIC_POOL[metricIdx];
 
-            const breathe = 0.5+0.5*Math.sin(t*0.52+slot.bOff);
-            const panelOp = 0.88+0.10*breathe;
+                  const orbitAngle = (t/slot.orbitDur + slot.orbitPhase)*Math.PI*2;
+                  const orbitX = Math.cos(orbitAngle)*slot.orbitR;
+                  const orbitY = Math.sin(orbitAngle)*slot.orbitR*0.55;
 
-            const isFoc = pi === focusIdx % cards.length;
-            const focGlow = isFoc ? focusInt*0.22 : 0;
+                  const px = ox*slot.pFactor;
+                  const py = oy*slot.pFactor;
 
-            // Mouse proximity
-            const cxSvg = parseFloat(slot.cx)/100*900;
-            const cySvg = parseFloat(slot.cy)/100*860;
-            const dist = Math.hypot(msx-cxSvg, msy-cySvg);
-            const mProx = isMobile ? 0 : Math.max(0, 1-dist/200);
-            const mGlow = mProx*0.18;
-            const mScale = 1+mProx*0.018;
+                  const breathe = 0.5+0.5*Math.sin(t*0.52+slot.bOff);
+                  const panelOp = 0.88+0.10*breathe;
 
-            const totalGlow = focGlow+mGlow;
-            const scale = (isFoc ? 1+focusInt*0.012 : 1)*mScale;
+                  const isFoc = pi === focusIdx % cards.length;
+                  const focGlow = isFoc ? focusInt*0.22 : 0;
 
-            const borderOp = (0.14+totalGlow*0.80).toFixed(2);
-            const bgAlpha = (0.62+totalGlow*0.18).toFixed(2);
-            const glowStr = totalGlow > 0.02
-              ? `inset 0 1px 0 rgba(255,255,255,0.08),0 8px 32px rgba(0,0,0,0.28),0 0 20px rgba(99,102,241,${(totalGlow*0.35).toFixed(2)})`
-              : "inset 0 1px 0 rgba(255,255,255,0.05),0 6px 20px rgba(0,0,0,0.22)";
+                  const cxSvg = parseFloat(slot.cx)/100*900;
+                  const cySvg = parseFloat(slot.cy)/100*860;
+                  const dist = Math.hypot(msx-cxSvg, msy-cySvg);
+                  const mProx = isMobile ? 0 : Math.max(0, 1-dist/200);
+                  const mGlow = mProx*0.18;
+                  const mScale = 1+mProx*0.018;
 
-            const cardStyle: React.CSSProperties = isMobile ? {
-              padding:"7px 10px",
-              borderRadius:"10px",
-              background:`rgba(8,8,22,${bgAlpha})`,
-              backdropFilter:"blur(18px)",
-              WebkitBackdropFilter:"blur(18px)",
-              border:`1px solid rgba(129,140,248,${borderOp})`,
-              boxShadow:glowStr,
-              display:"flex",flexDirection:"column",
-              minWidth:"82px",maxWidth:"92px",
-              overflow:"hidden",
-            } : {
-              padding:"10px 14px",
-              borderRadius:"12px",
-              background:`rgba(8,8,22,${bgAlpha})`,
-              backdropFilter:"blur(22px)",
-              WebkitBackdropFilter:"blur(22px)",
-              border:`1px solid rgba(129,140,248,${borderOp})`,
-              boxShadow:glowStr,
-              display:"flex",flexDirection:"column",
-              minWidth:"104px",
-              overflow:"hidden",
-            };
+                  const totalGlow = focGlow+mGlow;
+                  const scale = (isFoc ? 1+focusInt*0.012 : 1)*mScale;
 
-            return (
-              <div key={slot.id} style={{
-                position:"absolute",
-                left:slot.cx, top:slot.cy,
-                zIndex:2, pointerEvents:"none",
-                transform:`translate(${orbitX+px}px,${orbitY+py}px)`,
-                willChange:"transform",
-              }}>
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={`${slot.id}-${metricIdx}`}
-                    initial={{ opacity:0, scale:0.86, filter:"blur(8px)" }}
-                    animate={{ opacity:panelOp, scale:scale, filter:"blur(0px)" }}
-                    exit={{ opacity:0, scale:0.86, filter:"blur(8px)" }}
-                    transition={{ duration:0.55, ease:[0.22,1,0.36,1] }}
-                    style={cardStyle}
-                  >
-                    {/* Top shimmer line */}
-                    <span aria-hidden="true" style={{
-                      position:"absolute",top:0,left:0,right:0,height:"1px",
-                      background:"linear-gradient(to right,transparent,rgba(165,180,252,0.22),transparent)",
-                      pointerEvents:"none",
-                    }}/>
-                    {metric.icon === "trend"  && <TrendLine t={t}/>}
-                    {metric.icon === "pulse"  && <PulseBars t={t}/>}
-                    {metric.icon === "bar"    && <ProgressBar t={t}/>}
-                    {metric.icon === "status" && <StatusDot t={t}/>}
-                    <MetricValue metric={metric} t={t}/>
-                  </motion.div>
-                </AnimatePresence>
+                  const borderOp = (0.14+totalGlow*0.80).toFixed(2);
+                  const bgAlpha = (0.62+totalGlow*0.18).toFixed(2);
+                  const glowStr = totalGlow > 0.02
+                    ? `inset 0 1px 0 rgba(255,255,255,0.08),0 8px 32px rgba(0,0,0,0.28),0 0 20px rgba(99,102,241,${(totalGlow*0.35).toFixed(2)})`
+                    : "inset 0 1px 0 rgba(255,255,255,0.05),0 6px 20px rgba(0,0,0,0.22)";
+
+                  const cardStyle: React.CSSProperties = isMobile ? {
+                    padding:"7px 10px",
+                    borderRadius:"10px",
+                    background:`rgba(8,8,22,${bgAlpha})`,
+                    backdropFilter:"blur(18px)",
+                    WebkitBackdropFilter:"blur(18px)",
+                    border:`1px solid rgba(129,140,248,${borderOp})`,
+                    boxShadow:glowStr,
+                    display:"flex",flexDirection:"column",
+                    minWidth:"82px",maxWidth:"92px",
+                    overflow:"hidden",
+                  } : {
+                    padding:"10px 14px",
+                    borderRadius:"12px",
+                    background:`rgba(8,8,22,${bgAlpha})`,
+                    backdropFilter:"blur(22px)",
+                    WebkitBackdropFilter:"blur(22px)",
+                    border:`1px solid rgba(129,140,248,${borderOp})`,
+                    boxShadow:glowStr,
+                    display:"flex",flexDirection:"column",
+                    minWidth:"104px",
+                    overflow:"hidden",
+                  };
+
+                  return (
+                    <div key={slot.id} style={{
+                      position:"absolute",
+                      left:slot.cx, top:slot.cy,
+                      zIndex:2, pointerEvents:"none",
+                      transform:`translate(${orbitX+px}px,${orbitY+py}px)`,
+                      willChange:"transform",
+                    }}>
+                      <motion.div
+                        initial={{ opacity:0, y:8 }}
+                        animate={{ opacity:1, y:0 }}
+                        transition={{ duration:0.8, ease:[0.22,1,0.36,1], delay: pi * 0.13 }}
+                      >
+                        <div style={{
+                          ...cardStyle,
+                          opacity: panelOp,
+                          transform: `scale(${scale})`,
+                          transformOrigin: "center center",
+                        }}>
+                          <span aria-hidden="true" style={{
+                            position:"absolute",top:0,left:0,right:0,height:"1px",
+                            background:"linear-gradient(to right,transparent,rgba(165,180,252,0.22),transparent)",
+                            pointerEvents:"none",
+                          }}/>
+                          {metric.icon === "trend"  && <TrendLine t={t}/>}
+                          {metric.icon === "pulse"  && <PulseBars t={t}/>}
+                          {metric.icon === "bar"    && <ProgressBar t={t}/>}
+                          {metric.icon === "status" && <StatusDot t={t}/>}
+                          <MetricValue metric={metric} t={t}/>
+                        </div>
+                      </motion.div>
+                    </div>
+                  );
+                })}
+
               </div>
-            );
-          })}
-
-        </div>
-      </div>
+            </div>
+          </>
+        );
+      })()}
     </div>
   );
 }
@@ -468,7 +363,6 @@ export function Hero() {
   const [index, setIndex] = useState(0);
   const [mousePos, setMousePos] = useState({ x:0, y:0 });
   const [isMobile, setIsMobile] = useState(false);
-  const [metricCycle, setMetricCycle] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -480,11 +374,6 @@ export function Hero() {
 
   useEffect(() => {
     const id = setInterval(() => setIndex(p => (p+1)%PHRASES.length), PHRASE_DURATION);
-    return () => clearInterval(id);
-  }, []);
-
-  useEffect(() => {
-    const id = setInterval(() => setMetricCycle(c => c+1), 4500);
     return () => clearInterval(id);
   }, []);
 
@@ -523,7 +412,7 @@ export function Hero() {
 
       {/* Canvas */}
       <div style={{position:"absolute",inset:0,zIndex:0,overflow:"hidden",pointerEvents:"none"}}>
-        <HeroCanvas mouseX={mousePos.x} mouseY={mousePos.y} isMobile={isMobile} metricCycle={metricCycle}/>
+        <HeroCanvas mouseX={mousePos.x} mouseY={mousePos.y} isMobile={isMobile}/>
       </div>
 
       {/* Readability vignette — keeps text legible over the orbit */}
@@ -581,8 +470,8 @@ export function Hero() {
             marginBottom:"42px",marginTop:"-8px",
           }}
         >
-          From content execution to lead handling to internal workflows, we design AI-powered systems that help companies{" "}
-          <strong style={{fontWeight:500,color:"rgba(255,255,255,0.96)"}}>scale with less manual work.</strong>
+          From marketing automation to sales pipelines and internal workflows, we build AI-powered systems that help growing companies{" "}
+          <strong style={{fontWeight:500,color:"rgba(255,255,255,0.96)"}}>scale without adding headcount.</strong>
         </motion.p>
 
         <motion.div

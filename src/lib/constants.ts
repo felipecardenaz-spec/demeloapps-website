@@ -4,9 +4,9 @@
  */
 
 export const siteConfig = {
-  name: "DeMeloApps",
+  name: "DeMelo Apps",
   description:
-    "Premium software development for startups and SMBs. We build high-performance custom solutions that scale.",
+    "Custom AI automation, mobile app development, and business software for startups and growing companies. DeMelo Apps builds scalable digital systems that replace manual work and accelerate growth.",
   url: "https://demeloapps.com",
   cta: {
     label: "Book a Free Call",

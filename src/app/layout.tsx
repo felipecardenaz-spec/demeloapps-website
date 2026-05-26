@@ -17,7 +17,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: `${siteConfig.name} — Premium Software Development`,
+    default: `${siteConfig.name} — AI Automation & Custom Software Development`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -27,12 +27,12 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: `${siteConfig.name} — Premium Software Development`,
+    title: `${siteConfig.name} — AI Automation & Custom Software Development`,
     description: siteConfig.description,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} — Premium Software Development`,
+    title: `${siteConfig.name} — AI Automation & Custom Software Development`,
     description: siteConfig.description,
   },
 };

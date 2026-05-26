@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 
 const LOGOS = [
@@ -25,54 +24,83 @@ export function LogoCarousel() {
   const offsetRef = useRef(0);
   const rafRef = useRef<number>(0);
   const singleWidthRef = useRef(0);
+  const cachedCentersRef = useRef<number[]>([]);
+  const cachedItemsRef = useRef<HTMLElement[]>([]);
+  const containerWidthRef = useRef(0);
 
   useEffect(() => {
-    let running = true;
+    const track = trackRef.current;
+    const container = containerRef.current;
+    if (!track || !container) return;
 
-    function frame() {
-      if (!running) return;
-      const track = trackRef.current;
-      const container = containerRef.current;
-      if (!track || !container) {
-        rafRef.current = requestAnimationFrame(frame);
-        return;
+    let isVisible = true;
+
+    const loop = () => {
+      const singleW = singleWidthRef.current;
+      if (singleW > 0) {
+        offsetRef.current += SPEED;
+        if (offsetRef.current >= singleW) offsetRef.current -= singleW;
+
+        track.style.transform = `translateX(-${offsetRef.current}px)`;
+
+        const center = containerWidthRef.current / 2;
+        const centers = cachedCentersRef.current;
+        const items = cachedItemsRef.current;
+        const offset = offsetRef.current;
+
+        for (let i = 0; i < items.length; i++) {
+          const vc = centers[i] - offset;
+          const dist = Math.abs(vc - center);
+          const t = Math.min(dist / (center * 0.85), 1);
+          items[i].style.transform = `scale(${(1.1 - t * 0.22).toFixed(4)})`;
+          items[i].style.opacity = (1.0 - t * 0.60).toFixed(4);
+        }
       }
 
-      if (singleWidthRef.current === 0) {
-        singleWidthRef.current = track.scrollWidth / 3;
-      }
+      if (isVisible) rafRef.current = requestAnimationFrame(loop);
+    };
 
-      offsetRef.current += SPEED;
-      if (offsetRef.current >= singleWidthRef.current) {
-        offsetRef.current -= singleWidthRef.current;
-      }
-
-      track.style.transform = `translateX(-${offsetRef.current}px)`;
-
-      // Per-logo scale + opacity based on distance from center
-      const cw = container.offsetWidth;
-      const center = cw / 2;
-      const containerRect = container.getBoundingClientRect();
-      const items = track.querySelectorAll<HTMLElement>("[data-logo-item]");
-
-      items.forEach((item) => {
-        const rect = item.getBoundingClientRect();
-        const itemCenter = rect.left - containerRect.left + rect.width / 2;
-        const dist = Math.abs(itemCenter - center);
-        const t = Math.min(dist / (center * 0.85), 1);
-        const scale = 1.1 - t * 0.22;
-        const opacity = 1.0 - t * 0.60;
-        item.style.transform = `scale(${scale})`;
-        item.style.opacity = String(opacity);
-      });
-
-      rafRef.current = requestAnimationFrame(frame);
-    }
-
-    rafRef.current = requestAnimationFrame(frame);
-    return () => {
-      running = false;
+    const resume = () => {
+      if (!isVisible || document.hidden) return;
       cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(loop);
+    };
+
+    const pause = () => cancelAnimationFrame(rafRef.current);
+
+    // Measure item positions once after layout — no DOM reads in the hot loop
+    rafRef.current = requestAnimationFrame(() => {
+      singleWidthRef.current = track.scrollWidth / 3;
+      containerWidthRef.current = container.offsetWidth;
+      const items = Array.from(track.querySelectorAll<HTMLElement>("[data-logo-item]"));
+      cachedItemsRef.current = items;
+      const containerLeft = container.getBoundingClientRect().left;
+      cachedCentersRef.current = items.map(item => {
+        const r = item.getBoundingClientRect();
+        return r.left - containerLeft + r.width / 2;
+      });
+      resume();
+    });
+
+    const io = new IntersectionObserver(([e]) => {
+      isVisible = e.isIntersecting;
+      if (isVisible) resume(); else pause();
+    }, { threshold: 0 });
+    io.observe(container);
+
+    const onVis = () => { if (document.hidden) pause(); else resume(); };
+    document.addEventListener("visibilitychange", onVis);
+
+    const ro = new ResizeObserver(() => {
+      containerWidthRef.current = container.offsetWidth;
+    });
+    ro.observe(container);
+
+    return () => {
+      io.disconnect();
+      ro.disconnect();
+      cancelAnimationFrame(rafRef.current);
+      document.removeEventListener("visibilitychange", onVis);
     };
   }, []);
 
@@ -96,7 +124,7 @@ export function LogoCarousel() {
           margin: 0,
           lineHeight: 1.2,
         }}>
-          Empowering Business and Startups
+          Trusted by Ambitious Companies
         </h2>
         <p style={{
           marginTop: "10px",
@@ -106,7 +134,7 @@ export function LogoCarousel() {
           lineHeight: 1.6,
           margin: "10px 0 0",
         }}>
-          Software solutions trusted by startups and businesses
+          Startups and growing teams rely on DeMelo Apps to build products, automate workflows, and scale.
         </p>
       </motion.div>
 

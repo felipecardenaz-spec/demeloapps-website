@@ -1,385 +1,388 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 
-/* ─── Data ──────────────────────────────────────────────────────── */
-const PLANS = [
+/* ═══════════════════════════════════════════════════════════════════
+   InvestmentSection — Editorial pricing layout
+
+   Single font family (inherited Inter from body — no overrides).
+   Maximum font-weight: 600. No bold prices, no gradients on text.
+
+   Structure:
+     1. Section header (eyebrow + headline + subtext)
+     2. Three rich tier cards (label, price, timeline, best-for, includes, CTA)
+     3. Collapsible "Compare all features" toggle + detailed matrix
+     4. Closing CTA banner (free discovery call)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Tier data ──────────────────────────────────────────────────── */
+const TIERS = [
   {
-    id: "launch",
-    label: "Focused Start",
-    title: "Launch System",
+    id: "foundation",
+    label: "Foundation",
+    tagline: "Start lean. Prove the concept.",
     investment: "$5k – $15k",
-    description: "For MVPs, first automations, or one focused workflow.",
+    timeline: "4 – 7 weeks",
+    bestFor: "Startups & lean teams validating an idea or shipping a focused MVP.",
     includes: [
-      "Discovery & scope",
-      "Core build",
-      "Essential integrations",
-      "Launch support",
+      "Strategic discovery & system scoping",
+      "One core workflow or MVP product",
+      "Up to 3 essential integrations",
+      "Launch deployment & documentation",
+      "Post-launch QA & full handoff",
     ],
-    outcome: "Fast validation with controlled scope.",
-    cta: "Start a Project",
+    cta: "Start your foundation",
     featured: false,
   },
   {
     id: "growth",
-    label: "Most Common",
-    title: "Growth System",
+    label: "Growth",
+    tagline: "Connect, automate, compound.",
     investment: "$15k – $40k",
-    description: "For connected workflows, dashboards, and AI-assisted operations.",
+    timeline: "2 – 4 months",
+    bestFor: "Growing companies connecting tools and automating real operations.",
     includes: [
-      "Multi-workflow systems",
-      "Dashboards or portals",
-      "AI-assisted workflows",
-      "Integrations",
+      "Multi-workflow system architecture",
+      "Custom dashboard or client portal",
+      "AI-assisted automation workflows",
+      "Multi-platform integrations (5+ tools)",
+      "30 days of post-launch support",
+      "Performance monitoring setup",
     ],
-    outcome: "Connected systems that reduce manual work.",
-    cta: "Get a Proposal",
+    cta: "Build my growth system",
     featured: true,
   },
   {
-    id: "advanced",
-    label: "Custom Ecosystem",
-    title: "Advanced System",
+    id: "ecosystem",
+    label: "Ecosystem",
+    tagline: "Build the platform that scales you.",
     investment: "$40k+",
-    description: "For complex platforms, automation ecosystems, and scalable infrastructure.",
+    timeline: "5+ months",
+    bestFor: "Established teams scaling complex AI platforms & multi-product systems.",
     includes: [
-      "Custom architecture",
-      "AI automation systems",
-      "Web + mobile platforms",
-      "Complex integrations",
+      "Custom architecture & infrastructure",
+      "Advanced AI agents & automation",
+      "Web + mobile + admin platforms",
+      "Complex API & data layer integrations",
+      "Dedicated technical lead",
+      "Ongoing partnership available",
     ],
-    outcome: "Built for long-term scale.",
-    cta: "Discuss Your System",
+    cta: "Design my ecosystem",
     featured: false,
   },
-];
+] as const;
 
-const COMPARISON_ROWS = [
+/* ─── Comparison matrix ──────────────────────────────────────────── */
+const COMPARISON = [
   {
-    category: "Scope",
-    launch: "One workflow or MVP",
-    growth: "Connected systems",
-    advanced: "Full ecosystem",
+    category: "Project scope",
+    foundation: "Single system or MVP",
+    growth: "Connected operations & workflows",
+    ecosystem: "Multi-system platform",
   },
   {
-    category: "Automation",
-    launch: "Focused automation",
-    growth: "Multi-step workflows",
-    advanced: "Advanced AI operations",
+    category: "Team size fit",
+    foundation: "Founders & lean teams (1–10)",
+    growth: "Growing teams (10–50)",
+    ecosystem: "Established orgs (50+)",
+  },
+  {
+    category: "Technology stack",
+    foundation: "Modern lean stack",
+    growth: "Full-stack + AI/ML tooling",
+    ecosystem: "Custom infrastructure & AI/ML",
+  },
+  {
+    category: "AI capabilities",
+    foundation: "Focused feature (optional)",
+    growth: "AI-assisted workflows",
+    ecosystem: "Custom AI agents & models",
+  },
+  {
+    category: "Deliverables",
+    foundation: "Web app or workflow system",
+    growth: "Dashboard + automated workflows",
+    ecosystem: "Web + mobile + admin platforms",
   },
   {
     category: "Integrations",
-    launch: "Essential tools",
-    growth: "Multiple platforms",
-    advanced: "Complex APIs",
+    foundation: "1 – 3 essential tools",
+    growth: "Multi-platform (5+ tools)",
+    ecosystem: "Custom APIs & data pipelines",
   },
   {
-    category: "Product",
-    launch: "Lean build",
-    growth: "Portals + dashboards",
-    advanced: "Web + mobile + AI",
+    category: "Support window",
+    foundation: "Launch support + handoff",
+    growth: "30 days post-launch",
+    ecosystem: "Ongoing partnership",
   },
   {
-    category: "Scale",
-    launch: "Expandable base",
-    growth: "Built to grow",
-    advanced: "Designed for scale",
+    category: "Typical outcome",
+    foundation: "Validate fast, iterate later",
+    growth: "Automate ops, scale output",
+    ecosystem: "Build a proprietary platform",
   },
-];
+] as const;
 
-/* ─── Check icon ─────────────────────────────────────────────────── */
+/* ─── Icons ──────────────────────────────────────────────────────── */
 function CheckIcon({ featured }: { featured: boolean }) {
   return (
-    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"
-      style={{ flexShrink: 0, marginTop: "2px" }}>
-      <circle cx="7" cy="7" r="6.5"
-        fill={featured ? "rgba(99,102,241,0.18)" : "rgba(255,255,255,0.05)"}
-        stroke={featured ? "rgba(99,102,241,0.38)" : "rgba(255,255,255,0.13)"} />
-      <path d="M4.5 7L6.2 8.7L9.5 5.3"
-        stroke={featured ? "rgba(165,180,252,0.92)" : "rgba(255,255,255,0.55)"}
-        strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"
+      style={{ flexShrink: 0, marginTop: "3px" }}>
+      <circle cx="7" cy="7" r="6.4"
+        fill={featured ? "rgba(99,102,241,0.14)" : "rgba(255,255,255,0.04)"}
+        stroke={featured ? "rgba(129,140,248,0.38)" : "rgba(255,255,255,0.14)"}
+        strokeWidth="0.9" />
+      <path d="M4.4 7L6.2 8.8L9.6 5.3"
+        stroke={featured ? "rgba(199,210,254,0.95)" : "rgba(255,255,255,0.66)"}
+        strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-/* ─── Per-card AI system texture ─────────────────────────────────── */
-function CardTexture({ id, featured }: { id: string; featured: boolean }) {
-  const c = featured ? "rgba(99,102,241," : "rgba(255,255,255,";
-  const baseOp = featured ? 0.10 : 0.05;
-
-  if (id === "launch") {
-    return (
-      <svg width="160" height="100" viewBox="0 0 160 100" fill="none" aria-hidden="true"
-        style={{ position: "absolute", top: 0, right: 0, opacity: baseOp, pointerEvents: "none" }}>
-        <path d="M160 0 Q120 25 95 55 Q70 80 30 100" stroke={`${c}1)`} strokeWidth="0.8" strokeLinecap="round" />
-        <circle cx="95" cy="55" r="2.5" fill={`${c}0.9)`} />
-        <circle cx="125" cy="25" r="1.5" fill={`${c}0.7)`} />
-        <circle cx="55" cy="80" r="1.5" fill={`${c}0.7)`} />
-        <line x1="95" y1="55" x2="115" y2="45" stroke={`${c}0.5)`} strokeWidth="0.5" strokeDasharray="2 3" />
-        <line x1="95" y1="55" x2="75" y2="68" stroke={`${c}0.5)`} strokeWidth="0.5" strokeDasharray="2 3" />
-      </svg>
-    );
-  }
-  if (id === "growth") {
-    return (
-      <svg width="150" height="100" viewBox="0 0 150 100" fill="none" aria-hidden="true"
-        style={{ position: "absolute", top: 0, right: 0, opacity: baseOp, pointerEvents: "none" }}>
-        <circle cx="130" cy="12" r="55" stroke={`${c}1)`} strokeWidth="0.7" />
-        <circle cx="130" cy="12" r="38" stroke={`${c}1)`} strokeWidth="0.55" />
-        <circle cx="130" cy="12" r="22" stroke={`${c}1)`} strokeWidth="0.45" />
-        <circle cx="130" cy="12" r="7" stroke={`${c}1)`} strokeWidth="0.4" />
-        <circle cx="130" cy="12" r="2.5" fill={`${c}0.8)`} />
-        <line x1="75" y1="12" x2="123" y2="12" stroke={`${c}0.5)`} strokeWidth="0.5" strokeDasharray="3 4" />
-      </svg>
-    );
-  }
-  /* advanced — grid fragment */
+function ClockIcon() {
   return (
-    <svg width="150" height="100" viewBox="0 0 150 100" fill="none" aria-hidden="true"
-      style={{ position: "absolute", top: 0, right: 0, opacity: baseOp, pointerEvents: "none" }}>
-      {[0, 25, 50, 75, 100, 125, 150].map((x) => (
-        <line key={`v${x}`} x1={x} y1="0" x2={x} y2="100" stroke={`${c}1)`} strokeWidth="0.4" />
-      ))}
-      {[0, 25, 50, 75, 100].map((y) => (
-        <line key={`h${y}`} x1="0" y1={y} x2="150" y2={y} stroke={`${c}1)`} strokeWidth="0.4" />
-      ))}
-      <circle cx="100" cy="50" r="4.5" fill={`${c}0.7)`} />
-      <circle cx="50" cy="25" r="2.5" fill={`${c}0.5)`} />
-      <circle cx="125" cy="75" r="2" fill={`${c}0.5)`} />
-      <line x1="50" y1="25" x2="100" y2="50" stroke={`${c}0.4)`} strokeWidth="0.5" />
-      <line x1="100" y1="50" x2="125" y2="75" stroke={`${c}0.4)`} strokeWidth="0.5" />
+    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.1" />
+      <path d="M7 4V7L9 8.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-/* ─── Plan Card ─────────────────────────────────────────────────── */
-function PlanCard({ plan }: { plan: typeof PLANS[0] }) {
+function ArrowIcon({ size = 12 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M3 7H11M11 7L7.5 3.5M11 7L7.5 10.5"
+        stroke="currentColor" strokeWidth="1.5"
+        strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ChevronIcon({ open }: { open: boolean }) {
+  return (
+    <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"
+      style={{
+        transform: open ? "rotate(180deg)" : "rotate(0deg)",
+        transition: "transform 280ms cubic-bezier(0.22,1,0.36,1)",
+      }}>
+      <path d="M2.8 5L7 9.2L11.2 5"
+        stroke="currentColor" strokeWidth="1.5"
+        strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/* ─── Tier card ──────────────────────────────────────────────────── */
+function TierCard({ tier }: { tier: typeof TIERS[number] }) {
   const [hov, setHov] = useState(false);
-  const f = plan.featured;
+  const f = tier.featured;
 
   return (
     <div
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
+      className="inv-card"
       style={{
         position: "relative",
-        borderRadius: "20px",
-        padding: "26px 24px 24px",
-        background: f
-          ? hov
-            ? "linear-gradient(150deg,rgba(99,102,241,0.15) 0%,rgba(139,92,246,0.08) 40%,rgba(7,7,17,0.97) 100%)"
-            : "linear-gradient(150deg,rgba(99,102,241,0.10) 0%,rgba(139,92,246,0.05) 40%,rgba(5,5,14,0.97) 100%)"
-          : hov
-            ? "linear-gradient(150deg,rgba(255,255,255,0.07) 0%,rgba(255,255,255,0.025) 100%)"
-            : "linear-gradient(150deg,rgba(255,255,255,0.045) 0%,rgba(255,255,255,0.015) 100%)",
-        border: f
-          ? hov ? "1px solid rgba(99,102,241,0.48)" : "1px solid rgba(99,102,241,0.28)"
-          : hov ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(255,255,255,0.08)",
-        boxShadow: f
-          ? hov
-            ? "inset 0 1px 0 rgba(255,255,255,0.13),0 20px 52px rgba(0,0,0,0.42),0 0 44px rgba(99,102,241,0.12)"
-            : "inset 0 1px 0 rgba(255,255,255,0.08),0 12px 32px rgba(0,0,0,0.36),0 0 24px rgba(99,102,241,0.08)"
-          : hov
-            ? "inset 0 1px 0 rgba(255,255,255,0.10),0 16px 40px rgba(0,0,0,0.34)"
-            : "inset 0 1px 0 rgba(255,255,255,0.05),0 6px 20px rgba(0,0,0,0.24)",
-        transform: hov ? "translateY(-5px)" : "translateY(0)",
-        transition: "all 270ms cubic-bezier(0.22,1,0.36,1)",
-        overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
+        borderRadius: "18px",
+        padding: "32px 28px 28px",
+        background: f
+          ? "linear-gradient(180deg,rgba(99,102,241,0.060) 0%,rgba(99,102,241,0.015) 60%,rgba(255,255,255,0.010) 100%)"
+          : "rgba(255,255,255,0.022)",
+        border: f
+          ? "1px solid rgba(129,140,248,0.34)"
+          : "1px solid rgba(255,255,255,0.08)",
+        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: "blur(14px)",
+        boxShadow: f
+          ? "inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 28px rgba(0,0,0,0.20)"
+          : "inset 0 1px 0 rgba(255,255,255,0.03), 0 4px 14px rgba(0,0,0,0.14)",
+        transform: hov ? "translateY(-4px)" : "translateY(0)",
+        transition:
+          "transform 280ms cubic-bezier(0.22,1,0.36,1), background 280ms ease, border-color 280ms ease, box-shadow 280ms ease",
       }}
     >
-      {/* Top edge reflection */}
-      <span aria-hidden="true" style={{
-        position: "absolute", top: 0, left: 0, right: 0, height: "1px",
-        background: f
-          ? `linear-gradient(to right,transparent,rgba(129,140,248,${hov ? 0.60 : 0.40}),transparent)`
-          : `linear-gradient(to right,transparent,rgba(255,255,255,${hov ? 0.22 : 0.12}),transparent)`,
-        transition: "background 270ms ease",
-        pointerEvents: "none",
-      }} />
-
-      {/* System texture */}
-      <CardTexture id={plan.id} featured={f} />
-
-      {/* Featured corner glow */}
+      {/* Featured tag */}
       {f && (
-        <div aria-hidden="true" style={{
-          position: "absolute", top: "-45px", right: "-25px",
-          width: "170px", height: "170px", borderRadius: "50%",
-          background: `radial-gradient(ellipse,rgba(99,102,241,${hov ? 0.20 : 0.13}) 0%,transparent 70%)`,
-          transition: "background 270ms ease",
-          pointerEvents: "none",
-        }} />
+        <div style={{
+          position: "absolute", top: "-10px", left: "50%",
+          transform: "translateX(-50%)",
+          fontSize: "10px", fontWeight: 500, letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          padding: "4px 12px", borderRadius: "999px",
+          background: "linear-gradient(180deg,rgba(99,102,241,0.95) 0%,rgba(79,70,229,0.95) 100%)",
+          color: "rgba(255,255,255,0.96)",
+          boxShadow: "0 4px 14px rgba(79,70,229,0.40)",
+          whiteSpace: "nowrap",
+        }}>
+          Most Popular
+        </div>
       )}
 
-      {/* Label + badge */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+      {/* Tier label */}
+      <span style={{
+        fontSize: "11px", fontWeight: 600, letterSpacing: "0.18em",
+        textTransform: "uppercase",
+        color: f ? "rgba(165,180,252,0.85)" : "rgba(255,255,255,0.48)",
+        marginBottom: "10px",
+      }}>
+        {tier.label}
+      </span>
+
+      {/* Tagline */}
+      <p style={{
+        fontSize: "14px", fontWeight: 400, lineHeight: 1.45,
+        color: "rgba(245,245,247,0.94)", margin: "0 0 22px",
+        letterSpacing: "-0.005em",
+      }}>
+        {tier.tagline}
+      </p>
+
+      {/* Price block */}
+      <div style={{
+        display: "flex", alignItems: "baseline", flexWrap: "wrap",
+        gap: "8px", marginBottom: "6px",
+      }}>
         <span style={{
-          fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          color: f ? "rgba(165,180,252,0.78)" : "rgba(255,255,255,0.40)",
+          fontSize: "32px", fontWeight: 500, letterSpacing: "-0.030em",
+          lineHeight: 1.05, color: "rgba(245,245,247,0.98)",
+          fontVariantNumeric: "tabular-nums",
         }}>
-          {plan.label}
+          {tier.investment}
         </span>
-        {f && (
-          <span style={{
-            fontSize: "9px", fontWeight: 600, letterSpacing: "0.07em",
-            textTransform: "uppercase",
-            padding: "3px 9px", borderRadius: "99px",
-            background: "rgba(99,102,241,0.18)",
-            border: "1px solid rgba(99,102,241,0.36)",
-            color: "rgba(165,180,252,0.90)",
-          }}>
-            Most Common
-          </span>
-        )}
       </div>
 
-      {/* Title */}
-      <h3 style={{
-        fontSize: "18px", fontWeight: 600, letterSpacing: "-0.02em",
-        color: "#f5f5f7", margin: "0 0 6px",
-        position: "relative", zIndex: 1,
-      }}>
-        {plan.title}
-      </h3>
-
-      {/* Investment — hero element */}
+      {/* Timeline meta */}
       <div style={{
-        fontSize: "28px", fontWeight: 700, letterSpacing: "-0.03em",
-        color: f ? "rgba(199,210,254,0.97)" : "rgba(245,245,247,0.94)",
-        margin: "0 0 12px",
-        fontVariantNumeric: "tabular-nums",
-        lineHeight: 1.1,
-        position: "relative", zIndex: 1,
+        display: "inline-flex", alignItems: "center", gap: "6px",
+        color: "rgba(255,255,255,0.50)",
+        fontSize: "12.5px", fontWeight: 400,
+        marginBottom: "22px",
       }}>
-        {plan.investment}
+        <ClockIcon />
+        <span>{tier.timeline}</span>
       </div>
 
-      {/* Description */}
-      <p style={{
-        fontSize: "12.5px", fontWeight: 400, lineHeight: 1.62,
-        color: "rgba(255,255,255,0.65)", margin: "0 0 18px",
-        position: "relative", zIndex: 1,
+      {/* Best for block */}
+      <div style={{
+        padding: "12px 14px",
+        borderRadius: "10px",
+        background: f ? "rgba(99,102,241,0.06)" : "rgba(255,255,255,0.025)",
+        border: f ? "1px solid rgba(129,140,248,0.16)" : "1px solid rgba(255,255,255,0.05)",
+        marginBottom: "22px",
       }}>
-        {plan.description}
+        <p style={{
+          fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          color: f ? "rgba(165,180,252,0.75)" : "rgba(255,255,255,0.45)",
+          margin: "0 0 6px",
+        }}>
+          Best for
+        </p>
+        <p style={{
+          fontSize: "12.5px", fontWeight: 400, lineHeight: 1.55,
+          color: "rgba(255,255,255,0.74)", margin: 0,
+        }}>
+          {tier.bestFor}
+        </p>
+      </div>
+
+      {/* What's included */}
+      <p style={{
+        fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.14em",
+        textTransform: "uppercase",
+        color: "rgba(255,255,255,0.45)",
+        margin: "0 0 14px",
+      }}>
+        What&apos;s included
       </p>
 
-      {/* Divider */}
-      <div style={{
-        height: "1px",
-        background: f
-          ? "linear-gradient(to right,rgba(99,102,241,0.20),rgba(139,92,246,0.10),transparent)"
-          : "rgba(255,255,255,0.07)",
-        margin: "0 0 18px",
-      }} />
-
-      {/* Includes */}
-      <div style={{ marginBottom: "20px", position: "relative", zIndex: 1, flex: 1 }}>
-        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
-          {plan.includes.map((item) => (
-            <li key={item} style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
-              <CheckIcon featured={f} />
-              <span style={{ fontSize: "12px", color: "rgba(255,255,255,0.72)", fontWeight: 400, lineHeight: 1.5 }}>
-                {item}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Outcome */}
-      <p style={{
-        fontSize: "11px", fontWeight: 400, lineHeight: 1.55,
-        color: f ? "rgba(165,180,252,0.58)" : "rgba(255,255,255,0.36)",
-        margin: "0 0 18px",
-        fontStyle: "italic",
-        position: "relative", zIndex: 1,
-        paddingTop: "12px",
-        borderTop: f ? "1px solid rgba(99,102,241,0.10)" : "1px solid rgba(255,255,255,0.05)",
+      <ul style={{
+        listStyle: "none", margin: 0, padding: 0,
+        display: "flex", flexDirection: "column", gap: "10px",
+        flex: 1, marginBottom: "26px",
       }}>
-        {plan.outcome}
-      </p>
+        {tier.includes.map((item) => (
+          <li key={item} style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+            <CheckIcon featured={f} />
+            <span style={{
+              fontSize: "13px", fontWeight: 400, lineHeight: 1.5,
+              color: "rgba(255,255,255,0.78)",
+            }}>
+              {item}
+            </span>
+          </li>
+        ))}
+      </ul>
 
-      {/* CTA */}
+      {/* CTA — full width */}
       <a
         href="#contact"
+        className="inv-cta"
+        data-featured={f ? "true" : "false"}
         style={{
-          display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
-          padding: "11px 18px", borderRadius: "11px",
-          fontSize: "13px", fontWeight: 500, letterSpacing: "0.01em",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          gap: "8px",
+          padding: "13px 20px",
+          borderRadius: "12px",
+          fontSize: "13.5px", fontWeight: 500, letterSpacing: "0.005em",
           textDecoration: "none",
-          color: f ? "rgba(255,255,255,0.97)" : "rgba(255,255,255,0.80)",
+          color: f ? "rgba(255,255,255,0.98)" : "rgba(245,245,247,0.92)",
           background: f
-            ? hov
-              ? "linear-gradient(170deg,#818cf8 0%,#6366f1 50%,#4f46e5 100%)"
-              : "linear-gradient(170deg,#6366f1 0%,#4f46e5 100%)"
-            : hov ? "rgba(255,255,255,0.11)" : "rgba(255,255,255,0.06)",
+            ? "linear-gradient(170deg,#6366f1 0%,#4f46e5 100%)"
+            : "rgba(255,255,255,0.06)",
           border: f
-            ? hov ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(99,102,241,0.50)"
-            : hov ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(255,255,255,0.11)",
+            ? "1px solid rgba(129,140,248,0.50)"
+            : "1px solid rgba(255,255,255,0.14)",
           boxShadow: f
-            ? hov
-              ? "inset 0 1px 0 rgba(255,255,255,0.20),0 5px 18px rgba(79,70,229,0.42)"
-              : "inset 0 1px 0 rgba(255,255,255,0.12)"
-            : "none",
-          transition: "all 250ms cubic-bezier(0.22,1,0.36,1)",
-          position: "relative", zIndex: 1,
+            ? "inset 0 1px 0 rgba(255,255,255,0.18), 0 4px 16px rgba(79,70,229,0.32)"
+            : "inset 0 1px 0 rgba(255,255,255,0.04)",
+          transition:
+            "background 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms cubic-bezier(0.22,1,0.36,1)",
         }}
       >
-        {plan.cta}
-        <svg width="11" height="11" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-          <path d="M3 7H11M11 7L7.5 3.5M11 7L7.5 10.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        {tier.cta}
+        <ArrowIcon size={12} />
       </a>
     </div>
   );
 }
 
-/* ─── Comparison Matrix — Desktop ───────────────────────────────── */
+/* ─── Comparison matrix — desktop ────────────────────────────────── */
 function ComparisonDesktop() {
   return (
     <div style={{
       borderRadius: "16px",
-      background: "linear-gradient(160deg,rgba(255,255,255,0.04) 0%,rgba(255,255,255,0.015) 100%)",
-      border: "1px solid rgba(255,255,255,0.08)",
-      backdropFilter: "blur(18px)",
-      WebkitBackdropFilter: "blur(18px)",
+      background: "rgba(255,255,255,0.014)",
+      border: "1px solid rgba(255,255,255,0.07)",
+      backdropFilter: "blur(14px)",
+      WebkitBackdropFilter: "blur(14px)",
       overflow: "hidden",
-      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05),0 8px 32px rgba(0,0,0,0.26)",
     }}>
-      {/* Helper text */}
-      <div style={{
-        padding: "13px 22px",
-        borderBottom: "1px solid rgba(255,255,255,0.055)",
-        background: "rgba(255,255,255,0.012)",
-      }}>
-        <p style={{
-          fontSize: "11px", fontWeight: 400, lineHeight: 1.55,
-          color: "rgba(255,255,255,0.38)", margin: 0, fontStyle: "italic",
-        }}>
-          A quick way to compare scope, automation depth, and system complexity.
-        </p>
-      </div>
-
-      {/* Column headers */}
+      {/* Header row */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "1.6fr 1fr 1fr 1fr",
-        padding: "12px 22px",
-        borderBottom: "1px solid rgba(255,255,255,0.07)",
-        background: "rgba(255,255,255,0.018)",
+        gridTemplateColumns: "1.5fr 1fr 1fr 1fr",
+        padding: "18px 26px",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        background: "rgba(255,255,255,0.012)",
       }}>
-        <span style={{ fontSize: "10px", fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: "rgba(255,255,255,0.28)" }} />
-        {["Launch", "Growth", "Advanced"].map((col, i) => (
+        <span style={{
+          fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          color: "rgba(255,255,255,0.42)",
+        }}>
+          Feature
+        </span>
+        {(["Foundation", "Growth", "Ecosystem"] as const).map((col, i) => (
           <span key={col} style={{
-            fontSize: "10px", fontWeight: 600, letterSpacing: "0.08em",
+            fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.16em",
             textTransform: "uppercase",
-            color: i === 1 ? "rgba(165,180,252,0.82)" : "rgba(255,255,255,0.45)",
+            color: i === 1 ? "rgba(165,180,252,0.88)" : "rgba(255,255,255,0.48)",
             textAlign: "center",
           }}>
             {col}
@@ -387,32 +390,42 @@ function ComparisonDesktop() {
         ))}
       </div>
 
-      {/* Rows */}
-      {COMPARISON_ROWS.map((row, idx) => (
+      {/* Body rows */}
+      {COMPARISON.map((row, idx) => (
         <div
           key={row.category}
           style={{
             display: "grid",
-            gridTemplateColumns: "1.6fr 1fr 1fr 1fr",
-            padding: "12px 22px",
-            borderBottom: idx < COMPARISON_ROWS.length - 1 ? "1px solid rgba(255,255,255,0.045)" : "none",
+            gridTemplateColumns: "1.5fr 1fr 1fr 1fr",
+            padding: "16px 26px",
+            borderBottom: idx < COMPARISON.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
             alignItems: "center",
+            position: "relative",
           }}
         >
-          <span style={{ fontSize: "11.5px", fontWeight: 500, color: "rgba(255,255,255,0.58)" }}>
+          <span style={{
+            fontSize: "13px", fontWeight: 500,
+            color: "rgba(255,255,255,0.62)",
+          }}>
             {row.category}
           </span>
-          <span style={{ fontSize: "11.5px", color: "rgba(255,255,255,0.48)", textAlign: "center", lineHeight: 1.5 }}>
-            {row.launch}
+          <span style={{
+            fontSize: "13px", fontWeight: 400, lineHeight: 1.5,
+            color: "rgba(255,255,255,0.74)", textAlign: "center",
+          }}>
+            {row.foundation}
           </span>
           <span style={{
-            fontSize: "11.5px", color: "rgba(199,210,254,0.82)", textAlign: "center",
-            lineHeight: 1.5, fontWeight: 500,
+            fontSize: "13px", fontWeight: 500, lineHeight: 1.5,
+            color: "rgba(129,140,248,0.75)", textAlign: "center",
           }}>
             {row.growth}
           </span>
-          <span style={{ fontSize: "11.5px", color: "rgba(255,255,255,0.48)", textAlign: "center", lineHeight: 1.5 }}>
-            {row.advanced}
+          <span style={{
+            fontSize: "13px", fontWeight: 400, lineHeight: 1.5,
+            color: "rgba(255,255,255,0.74)", textAlign: "center",
+          }}>
+            {row.ecosystem}
           </span>
         </div>
       ))}
@@ -420,52 +433,49 @@ function ComparisonDesktop() {
   );
 }
 
-/* ─── Comparison — Mobile ───────────────────────────────────────── */
+/* ─── Comparison matrix — mobile ─────────────────────────────────── */
 function ComparisonMobile() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-      <p style={{
-        fontSize: "11px", fontWeight: 400, lineHeight: 1.55,
-        color: "rgba(255,255,255,0.38)", margin: "0 0 6px", fontStyle: "italic",
-      }}>
-        A quick way to compare scope, automation depth, and system complexity.
-      </p>
-
-      {COMPARISON_ROWS.map((row) => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+      {COMPARISON.map((row) => (
         <div
           key={row.category}
           style={{
             borderRadius: "12px",
-            background: "rgba(255,255,255,0.03)",
+            background: "rgba(255,255,255,0.022)",
             border: "1px solid rgba(255,255,255,0.07)",
-            padding: "13px 14px",
+            padding: "16px 18px",
           }}
         >
           <p style={{
-            fontSize: "10px", fontWeight: 600, letterSpacing: "0.09em",
-            textTransform: "uppercase", color: "rgba(255,255,255,0.36)",
-            margin: "0 0 9px",
+            fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: "rgba(255,255,255,0.46)",
+            margin: "0 0 12px",
           }}>
             {row.category}
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            {[
-              { label: "Launch", value: row.launch, accent: false },
-              { label: "Growth", value: row.growth, accent: true },
-              { label: "Advanced", value: row.advanced, accent: false },
-            ].map(({ label, value, accent }) => (
-              <div key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "10px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {([
+              { label: "Foundation", value: row.foundation, accent: false },
+              { label: "Growth",     value: row.growth,     accent: true  },
+              { label: "Ecosystem",  value: row.ecosystem,  accent: false },
+            ] as const).map(({ label, value, accent }) => (
+              <div key={label} style={{
+                display: "grid",
+                gridTemplateColumns: "96px 1fr",
+                alignItems: "baseline", gap: "12px",
+              }}>
                 <span style={{
-                  fontSize: "10.5px", fontWeight: 600,
-                  color: accent ? "rgba(165,180,252,0.75)" : "rgba(255,255,255,0.36)",
-                  minWidth: "56px", flexShrink: 0,
+                  fontSize: "11px", fontWeight: 600, letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: accent ? "rgba(165,180,252,0.78)" : "rgba(255,255,255,0.42)",
                 }}>
                   {label}
                 </span>
                 <span style={{
-                  fontSize: "11.5px",
-                  color: accent ? "rgba(199,210,254,0.86)" : "rgba(255,255,255,0.60)",
-                  textAlign: "right", lineHeight: 1.5,
+                  fontSize: "13px", lineHeight: 1.55,
+                  color: accent ? "rgba(207,217,255,0.94)" : "rgba(255,255,255,0.74)",
                   fontWeight: accent ? 500 : 400,
                 }}>
                   {value}
@@ -479,249 +489,304 @@ function ComparisonMobile() {
   );
 }
 
-/* ─── Main Section ──────────────────────────────────────────────── */
+/* ─── Main section ───────────────────────────────────────────────── */
 export function InvestmentSection() {
-  const [comparisonOpen, setComparisonOpen] = useState(false);
+  const [compareOpen, setCompareOpen] = useState(false);
+
+  const headerRef  = useRef<HTMLDivElement>(null);
+  const gridRef    = useRef<HTMLDivElement>(null);
+  const toggleRef  = useRef<HTMLDivElement>(null);
+  const ctaRef     = useRef<HTMLDivElement>(null);
+
+  const headerInView  = useInView(headerRef,  { once: true, margin: "-60px" });
+  const gridInView    = useInView(gridRef,    { once: true, margin: "-60px" });
+  const toggleInView  = useInView(toggleRef,  { once: true, margin: "-40px" });
+  const ctaInView     = useInView(ctaRef,     { once: true, margin: "-40px" });
 
   return (
     <section
       id="investment"
-      aria-label="Investment & Scope"
-      style={{ position: "relative", padding: "96px 20px 112px" }}
+      aria-label="Investment & Engagement"
+      style={{ position: "relative", padding: "112px 20px 120px", overflow: "hidden" }}
     >
-      {/* Subtle radial glow centered behind Growth card */}
+      {/* Atmospheric backdrop — quiet, on-brand */}
       <div aria-hidden="true" style={{
-        position: "absolute", left: "50%", top: "40%",
+        position: "absolute", left: "50%", top: "30%",
         transform: "translate(-50%,-50%)",
-        width: "680px", height: "460px", borderRadius: "9999px",
-        background: "radial-gradient(ellipse,rgba(99,102,241,0.065) 0%,transparent 65%)",
+        width: "780px", height: "440px", borderRadius: "9999px",
+        background: "radial-gradient(ellipse,rgba(99,102,241,0.060) 0%,transparent 65%)",
         pointerEvents: "none", zIndex: 0,
       }} />
-      {/* Faint horizontal light line */}
       <div aria-hidden="true" style={{
-        position: "absolute", left: "50%", top: "24%",
+        position: "absolute", left: "50%", top: "16%",
         transform: "translateX(-50%)",
-        width: "680px", height: "1px",
+        width: "580px", height: "1px",
         background: "linear-gradient(to right,transparent,rgba(255,255,255,0.05),transparent)",
         pointerEvents: "none", zIndex: 0,
       }} />
 
-      <div style={{ maxWidth: "1050px", margin: "0 auto", position: "relative", zIndex: 1 }}>
+      <div style={{ maxWidth: "1120px", margin: "0 auto", position: "relative", zIndex: 1 }}>
 
-        {/* ── Header ── */}
+        {/* ─── Header ─── */}
         <motion.div
+          ref={headerRef}
           initial={{ opacity: 0, y: 22 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
-          style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 60px" }}
+          animate={headerInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 22 }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+          style={{ textAlign: "center", maxWidth: "720px", margin: "0 auto 64px" }}
         >
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginBottom: "16px" }}>
-            <span style={{ display: "inline-block", width: "18px", height: "1px", background: "rgba(129,140,248,0.48)" }} />
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: "8px",
+            marginBottom: "20px",
+          }}>
+            <span style={{ display: "inline-block", width: "20px", height: "1px", background: "rgba(129,140,248,0.48)" }} />
             <span style={{
-              fontSize: "9.5px", fontWeight: 600, letterSpacing: "0.14em",
-              textTransform: "uppercase", color: "rgba(129,140,248,0.72)",
+              fontSize: "10.5px", fontWeight: 600, letterSpacing: "0.16em",
+              textTransform: "uppercase", color: "rgba(129,140,248,0.75)",
             }}>
-              Investment &amp; Scope
+              Investment &amp; Engagement
             </span>
-            <span style={{ display: "inline-block", width: "18px", height: "1px", background: "rgba(129,140,248,0.48)" }} />
+            <span style={{ display: "inline-block", width: "20px", height: "1px", background: "rgba(129,140,248,0.48)" }} />
           </div>
 
           <h2 style={{
-            fontSize: "clamp(24px, 3.2vw, 40px)", fontWeight: 500,
-            letterSpacing: "-0.028em", lineHeight: 1.18,
-            color: "#f0f0f5", margin: "0 0 16px",
+            fontSize: "clamp(28px, 3.6vw, 42px)", fontWeight: 500,
+            letterSpacing: "-0.028em", lineHeight: 1.16,
+            color: "#f0f0f5", margin: "0 0 18px",
           }}>
-            Choose the right system level
+            Transparent pricing for custom software & AI systems
           </h2>
 
           <p style={{
-            fontSize: "clamp(13.5px, 1.35vw, 15.5px)", fontWeight: 300,
-            lineHeight: 1.72, color: "rgba(255,255,255,0.65)",
+            fontSize: "clamp(14px, 1.4vw, 16px)", fontWeight: 400,
+            lineHeight: 1.7, color: "rgba(255,255,255,0.66)",
             maxWidth: "560px", margin: "0 auto",
           }}>
-            Clear engagement ranges for AI systems, custom software, and mobile products — tailored to your scope, complexity, and goals.
+            Three engagement tiers designed around real project scope, from focused MVPs to
+            full multi-product ecosystems. Pick the level that fits where your business is going.
           </p>
         </motion.div>
 
-        {/* ── Cards — desktop ── */}
+        {/* ─── Tier cards: desktop ─── */}
         <motion.div
-          initial={{ opacity: 0, y: 26 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+          ref={gridRef}
+          initial={{ opacity: 0, y: 24 }}
+          animate={gridInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.06 }}
           className="inv-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3,1fr)",
-            gap: "16px",
-            marginBottom: "44px",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "20px",
             alignItems: "stretch",
+            marginBottom: "48px",
           }}
         >
-          {PLANS.map((plan) => (
-            <PlanCard key={plan.id} plan={plan} />
+          {TIERS.map((tier) => (
+            <TierCard key={tier.id} tier={tier} />
           ))}
         </motion.div>
 
-        {/* ── Cards — mobile (Growth first) ── */}
+        {/* ─── Tier cards: mobile (Growth first) ─── */}
         <div
           className="inv-grid-mobile"
-          style={{ display: "none", flexDirection: "column", gap: "14px", marginBottom: "44px" }}
+          style={{ display: "none", flexDirection: "column", gap: "20px", marginBottom: "44px" }}
         >
-          {[PLANS[1], PLANS[0], PLANS[2]].map((plan) => (
-            <PlanCard key={plan.id} plan={plan} />
+          {[TIERS[1], TIERS[0], TIERS[2]].map((tier) => (
+            <TierCard key={tier.id} tier={tier} />
           ))}
         </div>
 
-        {/* ── Comparison toggle ── */}
+        {/* ─── Compare toggle ─── */}
         <motion.div
+          ref={toggleRef}
           initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.60, ease: [0.22, 1, 0.36, 1], delay: 0.14 }}
-          style={{ marginBottom: "32px" }}
+          animate={toggleInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+          style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}
         >
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: "22px" }}>
-            <button
-              onClick={() => setComparisonOpen((v) => !v)}
-              style={{
-                display: "inline-flex", alignItems: "center", gap: "7px",
-                padding: "9px 20px", borderRadius: "11px",
-                fontSize: "12.5px", fontWeight: 500,
-                color: "rgba(255,255,255,0.68)",
-                background: "rgba(255,255,255,0.045)",
-                border: "1px solid rgba(255,255,255,0.10)",
-                cursor: "pointer",
-                transition: "all 200ms ease",
-                backdropFilter: "blur(10px)",
-                WebkitBackdropFilter: "blur(10px)",
-              }}
-              onMouseEnter={(e) => {
-                const b = e.currentTarget as HTMLButtonElement;
-                b.style.background = "rgba(255,255,255,0.08)";
-                b.style.borderColor = "rgba(255,255,255,0.18)";
-                b.style.color = "rgba(255,255,255,0.90)";
-              }}
-              onMouseLeave={(e) => {
-                const b = e.currentTarget as HTMLButtonElement;
-                b.style.background = "rgba(255,255,255,0.045)";
-                b.style.borderColor = "rgba(255,255,255,0.10)";
-                b.style.color = "rgba(255,255,255,0.68)";
-              }}
-            >
-              <svg
-                width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"
-                style={{ transform: comparisonOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 250ms ease" }}
-              >
-                <path d="M2.5 5L7 9.5L11.5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              {comparisonOpen ? "Hide comparison" : "Compare engagement levels"}
-            </button>
-          </div>
-
-          {/* Comparison panel */}
-          <div style={{
-            overflow: "hidden",
-            maxHeight: comparisonOpen ? "1200px" : "0",
-            opacity: comparisonOpen ? 1 : 0,
-            transition: "max-height 460ms cubic-bezier(0.22,1,0.36,1),opacity 300ms ease",
-          }}>
-            <div className="inv-comparison-desktop">
-              <ComparisonDesktop />
-            </div>
-            <div className="inv-comparison-mobile" style={{ display: "none" }}>
-              <ComparisonMobile />
-            </div>
-          </div>
+          <button
+            onClick={() => setCompareOpen((v) => !v)}
+            aria-expanded={compareOpen}
+            aria-controls="inv-comparison-panel"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "10px",
+              padding: "12px 22px", borderRadius: "12px",
+              fontSize: "13.5px", fontWeight: 500, letterSpacing: "0.005em",
+              color: compareOpen ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.74)",
+              background: compareOpen ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.030)",
+              border: compareOpen ? "1px solid rgba(255,255,255,0.16)" : "1px solid rgba(255,255,255,0.10)",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
+              cursor: "pointer",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+              transition:
+                "background 220ms ease, border-color 220ms ease, color 220ms ease, transform 220ms cubic-bezier(0.22,1,0.36,1)",
+            }}
+            onMouseEnter={(e) => {
+              const b = e.currentTarget;
+              b.style.background = "rgba(255,255,255,0.08)";
+              b.style.borderColor = "rgba(255,255,255,0.20)";
+              b.style.color = "rgba(255,255,255,0.94)";
+            }}
+            onMouseLeave={(e) => {
+              const b = e.currentTarget;
+              b.style.background = compareOpen ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.030)";
+              b.style.borderColor = compareOpen ? "rgba(255,255,255,0.16)" : "rgba(255,255,255,0.10)";
+              b.style.color = compareOpen ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.74)";
+            }}
+          >
+            <span>{compareOpen ? "Hide detailed comparison" : "Compare all features"}</span>
+            <ChevronIcon open={compareOpen} />
+          </button>
         </motion.div>
 
-        {/* ── Final CTA ── */}
+        {/* ─── Comparison panel (collapsible) ─── */}
+        <div id="inv-comparison-panel">
+          <AnimatePresence initial={false}>
+            {compareOpen && (
+              <motion.div
+                key="comparison"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{
+                  height: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+                  opacity: { duration: 0.3, ease: "easeOut" },
+                }}
+                style={{ overflow: "hidden", marginBottom: "56px" }}
+              >
+                <div style={{ paddingTop: "8px" }}>
+                  <div className="inv-compare-desktop">
+                    <ComparisonDesktop />
+                  </div>
+                  <div className="inv-compare-mobile" style={{ display: "none" }}>
+                    <ComparisonMobile />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* ─── Closing CTA banner ─── */}
         <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.60, ease: [0.22, 1, 0.36, 1], delay: 0.18 }}
+          ref={ctaRef}
+          initial={{ opacity: 0, y: 18 }}
+          animate={ctaInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 0.14 }}
           style={{
-            borderRadius: "18px",
-            padding: "36px 28px",
-            background: "linear-gradient(160deg,rgba(255,255,255,0.04) 0%,rgba(255,255,255,0.018) 100%)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            backdropFilter: "blur(18px)",
-            WebkitBackdropFilter: "blur(18px)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.055),0 8px 28px rgba(0,0,0,0.20)",
-            textAlign: "center",
+            marginTop: compareOpen ? "16px" : "56px",
+            transition: "margin-top 500ms cubic-bezier(0.22,1,0.36,1)",
             position: "relative",
+            borderRadius: "18px",
+            padding: "36px 32px",
+            background:
+              "linear-gradient(170deg,rgba(99,102,241,0.045) 0%,rgba(99,102,241,0.012) 50%,rgba(255,255,255,0.015) 100%)",
+            border: "1px solid rgba(129,140,248,0.18)",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 28px rgba(0,0,0,0.18)",
             overflow: "hidden",
           }}
         >
+          {/* Top reflection */}
           <span aria-hidden="true" style={{
             position: "absolute", top: 0, left: 0, right: 0, height: "1px",
-            background: "linear-gradient(to right,transparent,rgba(255,255,255,0.14),transparent)",
+            background: "linear-gradient(to right,transparent,rgba(165,180,252,0.36),transparent)",
             pointerEvents: "none",
           }} />
 
-          <h3 style={{
-            fontSize: "clamp(17px, 2vw, 22px)", fontWeight: 500,
-            letterSpacing: "-0.02em", color: "#f5f5f7",
-            margin: "0 0 8px",
-          }}>
-            Want help choosing the right scope?
-          </h3>
-          <p style={{
-            fontSize: "13.5px", fontWeight: 300, lineHeight: 1.68,
-            color: "rgba(255,255,255,0.58)",
-            maxWidth: "420px", margin: "0 auto 24px",
-          }}>
-            We&apos;ll help you define the best approach before you commit.
-          </p>
-          <a
-            href="#contact"
+          <div
+            className="inv-banner-grid"
             style={{
-              display: "inline-flex", alignItems: "center", gap: "7px",
-              padding: "12px 26px", borderRadius: "13px",
-              fontSize: "13.5px", fontWeight: 500, letterSpacing: "0.01em",
-              textDecoration: "none",
-              color: "rgba(255,255,255,0.97)",
-              background: "linear-gradient(170deg,#6366f1 0%,#4f46e5 100%)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18),0 5px 18px rgba(79,70,229,0.34)",
-              transition: "all 250ms cubic-bezier(0.22,1,0.36,1)",
-            }}
-            onMouseEnter={(e) => {
-              const el = e.currentTarget as HTMLAnchorElement;
-              el.style.background = "linear-gradient(170deg,#818cf8 0%,#6366f1 50%,#4f46e5 100%)";
-              el.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.26),0 7px 24px rgba(79,70,229,0.50)";
-              el.style.transform = "scale(1.02)";
-            }}
-            onMouseLeave={(e) => {
-              const el = e.currentTarget as HTMLAnchorElement;
-              el.style.background = "linear-gradient(170deg,#6366f1 0%,#4f46e5 100%)";
-              el.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.18),0 5px 18px rgba(79,70,229,0.34)";
-              el.style.transform = "scale(1)";
+              display: "grid",
+              gridTemplateColumns: "1fr auto",
+              gap: "28px",
+              alignItems: "center",
             }}
           >
-            Book a Free Call
-            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-              <path d="M3 7H11M11 7L7.5 3.5M11 7L7.5 10.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </a>
+            <div>
+              <h3 style={{
+                fontSize: "clamp(18px, 2.2vw, 22px)", fontWeight: 500,
+                letterSpacing: "-0.018em", lineHeight: 1.3,
+                color: "rgba(245,245,247,0.96)", margin: "0 0 8px",
+              }}>
+                Not sure which tier fits your project?
+              </h3>
+              <p style={{
+                fontSize: "14px", fontWeight: 400, lineHeight: 1.65,
+                color: "rgba(255,255,255,0.66)", margin: 0,
+                maxWidth: "560px",
+              }}>
+                Every engagement starts with a free 30-minute scoping call. We&apos;ll review your
+                goals, recommend the right tier, and outline a clear path forward. No commitment required.
+              </p>
+            </div>
+
+            <a
+              href="#contact"
+              className="inv-banner-cta"
+              style={{
+                display: "inline-flex", alignItems: "center", gap: "8px",
+                padding: "13px 24px", borderRadius: "12px",
+                fontSize: "13.5px", fontWeight: 500, letterSpacing: "0.005em",
+                color: "rgba(255,255,255,0.98)",
+                textDecoration: "none",
+                background: "linear-gradient(170deg,#6366f1 0%,#4f46e5 100%)",
+                border: "1px solid rgba(129,140,248,0.50)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.18), 0 4px 16px rgba(79,70,229,0.34)",
+                whiteSpace: "nowrap",
+                transition:
+                  "background 220ms ease, box-shadow 220ms ease, transform 220ms cubic-bezier(0.22,1,0.36,1)",
+              }}
+            >
+              Book a free call
+              <ArrowIcon size={12} />
+            </a>
+          </div>
         </motion.div>
       </div>
 
-      {/* Responsive */}
+      {/* ─── Styles ─── */}
       <style>{`
-        @media (max-width: 899px) {
-          .inv-grid { display: none !important; }
-          .inv-grid-mobile { display: flex !important; }
-          .inv-comparison-desktop { display: none !important; }
-          .inv-comparison-mobile { display: block !important; }
+        /* Cards — hover */
+        .inv-card:hover {
+          background: rgba(255,255,255,0.034);
+          border-color: rgba(255,255,255,0.14);
         }
-        @media (max-width: 767px) {
-          .inv-grid-mobile a[href="#contact"] {
-            width: 100% !important;
-            box-sizing: border-box !important;
+
+        /* CTA hover */
+        .inv-cta[data-featured="true"]:hover {
+          background: linear-gradient(170deg,#818cf8 0%,#6366f1 50%,#4f46e5 100%) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 6px 22px rgba(79,70,229,0.50) !important;
+        }
+        .inv-cta[data-featured="false"]:hover {
+          background: rgba(255,255,255,0.10) !important;
+          border-color: rgba(255,255,255,0.22) !important;
+        }
+
+        /* Banner CTA hover */
+        .inv-banner-cta:hover {
+          background: linear-gradient(170deg,#818cf8 0%,#6366f1 50%,#4f46e5 100%) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 6px 22px rgba(79,70,229,0.50) !important;
+          transform: translateY(-1px);
+        }
+
+        /* Responsive */
+        @media (max-width: 899px) {
+          .inv-grid             { display: none !important; }
+          .inv-grid-mobile      { display: flex !important; }
+          .inv-compare-desktop  { display: none !important; }
+          .inv-compare-mobile   { display: block !important; }
+        }
+        @media (max-width: 720px) {
+          .inv-banner-grid {
+            grid-template-columns: 1fr !important;
+            gap: 22px !important;
+            text-align: center;
           }
+          .inv-banner-cta { justify-self: center; width: 100%; justify-content: center; }
         }
       `}</style>
     </section>
