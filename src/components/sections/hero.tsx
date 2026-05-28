@@ -37,15 +37,15 @@ const CARDS_DESKTOP = [
   { id: "c8", cx: "63%", cy: "74%", orbitR: 8,  orbitDur: 17, orbitPhase: 0.85, pFactor: 0.28, bOff: 3.6, mOff: 7 },
 ];
 
-// Mobile: 4 cards in the corners — above the headline and below the buttons,
-// well clear of the centered text content so they never overlap copy on small screens.
+// Mobile: 4 cards close to the centered text content but never on top of it.
+// Top pair sits just above the headline, bottom pair sits just below the CTAs.
 const CARDS_MOBILE = [
-  // Top pair — sit between the navbar and the headline
-  { id: "m1", cx: "3%",  cy: "11%", orbitR: 5, orbitDur: 20, orbitPhase: 0.00, pFactor: 0, bOff: 0.0, mOff: 0 },
-  { id: "m2", cx: "68%", cy: "11%", orbitR: 5, orbitDur: 24, orbitPhase: 0.25, pFactor: 0, bOff: 2.1, mOff: 1 },
-  // Bottom pair — sit below the CTA buttons, near the section base
-  { id: "m3", cx: "3%",  cy: "87%", orbitR: 5, orbitDur: 18, orbitPhase: 0.50, pFactor: 0, bOff: 4.3, mOff: 3 },
-  { id: "m4", cx: "68%", cy: "87%", orbitR: 5, orbitDur: 22, orbitPhase: 0.75, pFactor: 0, bOff: 1.5, mOff: 2 },
+  // Top pair — close to the headline, below the navbar
+  { id: "m1", cx: "3%",  cy: "20%", orbitR: 5, orbitDur: 20, orbitPhase: 0.00, pFactor: 0, bOff: 0.0, mOff: 0 },
+  { id: "m2", cx: "68%", cy: "20%", orbitR: 5, orbitDur: 24, orbitPhase: 0.25, pFactor: 0, bOff: 2.1, mOff: 1 },
+  // Bottom pair — close to the CTAs, before the section ends
+  { id: "m3", cx: "3%",  cy: "78%", orbitR: 5, orbitDur: 18, orbitPhase: 0.50, pFactor: 0, bOff: 4.3, mOff: 3 },
+  { id: "m4", cx: "68%", cy: "78%", orbitR: 5, orbitDur: 22, orbitPhase: 0.75, pFactor: 0, bOff: 1.5, mOff: 2 },
 ];
 
 /* ─── Mini visualizations ────────────────────────────────────────── */
@@ -482,7 +482,7 @@ export function Hero() {
           transition={{duration:0.72,ease:[0.22,1,0.36,1],delay:0.40}}
           style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"28px",flexWrap:"wrap",pointerEvents:"auto"}}
         >
-          <PrimaryBtn href="#contact" label="Book a Free Call" isMobile={isMobile}/>
+          <PrimaryBtn href="/contact" label="Book a Free Call" isMobile={isMobile}/>
           <SecondaryBtn href="#how-it-works" label="See How It Works" isMobile={isMobile}/>
         </motion.div>
       </div>

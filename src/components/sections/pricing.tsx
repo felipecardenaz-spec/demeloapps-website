@@ -107,7 +107,7 @@ function CardCTA({ label, featured }: { label: string; featured: boolean }) {
 
   return (
     <a
-      href="#contact"
+      href="/contact"
       onMouseEnter={() => setH(true)}
       onMouseLeave={() => setH(false)}
       style={{
@@ -572,7 +572,7 @@ function FinalCTA({ active }: { active: boolean }) {
       </div>
 
       <a
-        href="#contact"
+        href="/contact"
         onMouseEnter={() => setHov(true)}
         onMouseLeave={() => setHov(false)}
         style={{

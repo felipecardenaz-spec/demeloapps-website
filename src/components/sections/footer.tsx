@@ -20,7 +20,7 @@ const NAV = [
       { label: "How It Works", href: "#how-it-works" },
       { label: "Our Work", href: "/our-work" },
       { label: "Investment", href: "#investment" },
-      { label: "Contact", href: "#contact" },
+      { label: "Contact", href: "/contact" },
     ],
   },
 ];
@@ -128,7 +128,7 @@ function BookCallBtn() {
   const [hov, setHov] = useState(false);
   return (
     <a
-      href="#contact"
+      href="/contact"
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
       style={{

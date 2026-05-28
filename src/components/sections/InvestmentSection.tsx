@@ -321,7 +321,7 @@ function TierCard({ tier }: { tier: typeof TIERS[number] }) {
 
       {/* CTA — full width */}
       <a
-        href="#contact"
+        href="/contact"
         className="inv-cta"
         data-featured={f ? "true" : "false"}
         style={{
@@ -725,7 +725,7 @@ export function InvestmentSection() {
             </div>
 
             <a
-              href="#contact"
+              href="/contact"
               className="inv-banner-cta"
               style={{
                 display: "inline-flex", alignItems: "center", gap: "8px",

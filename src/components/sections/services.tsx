@@ -656,7 +656,7 @@ function PrimaryBtn({ label }: { label: string }) {
   const [hovered, setHovered] = useState(false);
   return (
     <a
-      href="#contact"
+      href="/contact"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{

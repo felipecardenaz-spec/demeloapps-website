@@ -10,12 +10,12 @@ export const siteConfig = {
   url: "https://demeloapps.com",
   cta: {
     label: "Book a Free Call",
-    href: "#contact",
+    href: "/contact",
   },
   nav: [
     { label: "Services", href: "#services" },
     { label: "Process", href: "#process" },
     { label: "About", href: "#about" },
-    { label: "Contact", href: "#contact" },
+    { label: "Contact", href: "/contact" },
   ],
 } as const;
