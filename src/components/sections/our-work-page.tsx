@@ -154,7 +154,7 @@ function HeroSection({ isMobile }: { isMobile: boolean }) {
               fontSize: "11px",
               letterSpacing: "0.20em",
               color: "rgba(129,140,248,0.75)",
-              fontWeight: 400,
+              fontWeight: 600,
             }}
           >
             /05

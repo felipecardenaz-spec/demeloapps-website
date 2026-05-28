@@ -353,7 +353,7 @@ function PrincipleCard({ item }: { item: (typeof PRINCIPLES)[number] }) {
           border: "1px solid rgba(129,140,248,0.20)",
           fontFamily: "'Courier New', Courier, monospace",
           fontSize: "12px",
-          fontWeight: 500,
+          fontWeight: 600,
           color: hov ? "rgba(199,210,254,0.95)" : "rgba(165,180,252,0.65)",
           transition: "all 0.30s ease",
         }}

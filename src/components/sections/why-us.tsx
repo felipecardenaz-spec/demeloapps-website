@@ -97,7 +97,7 @@ function Row({
           style={{
             fontFamily: "'Courier New', Courier, monospace",
             fontSize: "10.5px",
-            fontWeight: 500,
+            fontWeight: 600,
             letterSpacing: "0.06em",
             color: hovered ? "rgba(165,180,252,0.75)" : "rgba(129,140,248,0.35)",
             flexShrink: 0,

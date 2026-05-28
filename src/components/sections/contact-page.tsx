@@ -456,7 +456,7 @@ export function ContactPage() {
                 letterSpacing: "0.22em",
                 textTransform: "uppercase",
                 color: "rgba(129,140,248,0.75)",
-                fontWeight: 400,
+                fontWeight: 600,
               }}
             >
               Start a Project
@@ -996,7 +996,7 @@ function ExpectCard({
           letterSpacing: "0.20em",
           textTransform: "uppercase",
           color: "rgba(129,140,248,0.75)",
-          fontWeight: 400,
+          fontWeight: 600,
         }}
       >
         {eyebrow}
