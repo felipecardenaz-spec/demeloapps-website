@@ -7,17 +7,28 @@ export const runtime = "nodejs";
    Contact form submission endpoint.
 
    Receives JSON from the /contact page form, validates required fields,
-   silently drops bot submissions caught by the honeypot, and forwards
-   the payload to your inbox via Resend.
+   silently drops bot submissions caught by the honeypot, and fires two
+   emails per submission:
 
-   Required environment variables (set locally in .env.local AND in
-   your host's environment panel for production):
+     1. Internal notification: rich HTML email to the team inbox with
+        contact info, project details, and campaign attribution.
+     2. Customer auto-reply: a Resend template (by id) sent back to the
+        email address the customer entered, with their values substituted
+        into the template variables.
 
-     RESEND_API_KEY      Get one at https://resend.com/api-keys
-     CONTACT_EMAIL_TO    Inbox that receives new lead notifications
-     CONTACT_EMAIL_FROM  Sender address. Until you verify a custom
-                         domain in Resend, use the sandbox sender:
-                         "DeMelo Apps <onboarding@resend.dev>"
+   The auto-reply is best-effort. If it fails the team notification still
+   succeeds, the submission is still recorded, and the customer still
+   sees the success state.
+
+   Required environment variables (set locally in .env.local AND in your
+   host's environment panel for production):
+
+     RESEND_API_KEY       Get one at https://resend.com/api-keys
+     CONTACT_EMAIL_TO     Inbox that receives lead notifications
+     CONTACT_EMAIL_FROM   Sender address. Until you verify a custom
+                          domain, use "DeMelo Apps <onboarding@resend.dev>"
+     CONTACT_TEMPLATE_ID  (optional) Resend template id for the auto-reply
+                          sent back to the customer. Leave empty to skip.
    ═══════════════════════════════════════════════════════════════════ */
 
 interface ContactPayload {
@@ -193,10 +204,76 @@ ${esc(payload.message || "")}
   return { html, text, subject };
 }
 
+async function sendInternalNotification(
+  resend: Resend,
+  from: string,
+  to: string,
+  payload: ContactPayload,
+) {
+  const { html, text, subject } = buildEmail(payload);
+  const { error } = await resend.emails.send({
+    from,
+    to: [to],
+    subject,
+    html,
+    text,
+    replyTo: payload.email,
+  });
+  if (error) {
+    throw new Error(error.message || "Resend rejected the internal notification");
+  }
+}
+
+async function sendCustomerAutoReply(
+  resend: Resend,
+  from: string,
+  templateId: string,
+  payload: ContactPayload,
+) {
+  if (!payload.email) return;
+
+  // Pass a generous map of common variable names so the same template
+  // works whether it references {{name}}, {{first_name}}, {{firstName}},
+  // {{company}}, etc. The template engine only substitutes the keys it
+  // actually uses; extras are ignored.
+  const firstName = (payload.name ?? "").trim().split(/\s+/)[0] ?? "";
+  const variables: Record<string, string> = {
+    name: payload.name ?? "",
+    full_name: payload.name ?? "",
+    fullName: payload.name ?? "",
+    first_name: firstName,
+    firstName: firstName,
+    email: payload.email ?? "",
+    company: payload.company ?? "",
+    role: payload.role ?? "",
+    location: payload.location ?? "",
+    project_type: payload.projectType ?? "",
+    projectType: payload.projectType ?? "",
+    budget: payload.budget ?? "",
+    timeline: payload.timeline ?? "",
+    message: payload.message ?? "",
+  };
+
+  const { error } = await resend.emails.send({
+    from,
+    to: [payload.email],
+    replyTo: process.env.CONTACT_EMAIL_TO || undefined,
+    template: {
+      id: templateId,
+      variables,
+    },
+  });
+
+  if (error) {
+    throw new Error(error.message || "Resend rejected the auto-reply");
+  }
+}
+
 async function forwardSubmission(payload: ContactPayload) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_EMAIL_TO;
   const from = process.env.CONTACT_EMAIL_FROM;
+  const templateId = process.env.CONTACT_TEMPLATE_ID;
 
   if (!apiKey || !to || !from) {
     // In development without env vars set, fall back to a console log
@@ -212,19 +289,20 @@ async function forwardSubmission(payload: ContactPayload) {
   }
 
   const resend = new Resend(apiKey);
-  const { html, text, subject } = buildEmail(payload);
 
-  const { error } = await resend.emails.send({
-    from,
-    to: [to],
-    subject,
-    html,
-    text,
-    replyTo: payload.email,
-  });
+  // 1. Internal notification to the team. If this fails we surface
+  //    a hard error so the customer sees the retry state — losing a
+  //    lead is worse than the customer seeing a transient error.
+  await sendInternalNotification(resend, from, to, payload);
 
-  if (error) {
-    throw new Error(error.message || "Resend rejected the submission");
+  // 2. Auto-reply to the customer using the saved template.
+  //    Best-effort: a template failure should NOT lose the lead.
+  if (templateId && payload.email) {
+    try {
+      await sendCustomerAutoReply(resend, from, templateId, payload);
+    } catch (err) {
+      console.error("[CONTACT] customer auto-reply failed", err);
+    }
   }
 }
 
