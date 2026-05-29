@@ -136,7 +136,7 @@ export function Stats() {
   return (
     <section
       ref={ref}
-      aria-label="DeMelo Apps by the Numbers"
+      aria-label="DeMeloApps by the Numbers"
       style={{ padding: "16px 24px 96px", position: "relative" }}
     >
       {/* Section-wide ambient glow */}

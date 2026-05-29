@@ -23,12 +23,23 @@ export const runtime = "nodejs";
    Required environment variables (set locally in .env.local AND in your
    host's environment panel for production):
 
-     RESEND_API_KEY       Get one at https://resend.com/api-keys
-     CONTACT_EMAIL_TO     Inbox that receives lead notifications
-     CONTACT_EMAIL_FROM   Sender address. Until you verify a custom
-                          domain, use "DeMelo Apps <onboarding@resend.dev>"
-     CONTACT_TEMPLATE_ID  (optional) Resend template id for the auto-reply
-                          sent back to the customer. Leave empty to skip.
+     RESEND_API_KEY                  Get one at https://resend.com/api-keys
+     CONTACT_EMAIL_TO                Inbox that receives lead notifications
+     CONTACT_EMAIL_FROM              Sender address from a verified domain
+     CONTACT_TEMPLATE_ID             (optional) Resend template id for the
+                                     customer auto-reply
+     TURNSTILE_SECRET_KEY            (optional) Cloudflare Turnstile secret
+                                     key. When set, every submission must
+                                     include a valid Turnstile token. When
+                                     unset, Turnstile verification is skipped.
+     NEXT_PUBLIC_TURNSTILE_SITE_KEY  (optional) Public Turnstile site key
+                                     used by the form to render the widget.
+
+   Defense layers, in order of cheapness:
+     1. Honeypot field (drops dumb bots silently)
+     2. In-memory rate limit (5 submissions / hour / IP)
+     3. Cloudflare Turnstile token verification (when configured)
+     4. Field validation + sanitization
    ═══════════════════════════════════════════════════════════════════ */
 
 interface ContactPayload {
@@ -58,9 +69,84 @@ interface ContactPayload {
   timeOnPageMs?: number;
   // Anti-bot
   honeypot?: string;
+  turnstileToken?: string;
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/* ─── Rate limiting ─────────────────────────────────────────────────
+   Simple in-memory sliding window: max 5 submissions per IP per hour.
+   Fine for low/medium traffic. For higher volume migrate to Vercel KV,
+   Upstash Redis, or any persistent store keyed by IP.
+   ────────────────────────────────────────────────────────────────── */
+const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+const rateLimitStore = new Map<string, number[]>();
+
+function getClientIp(req: Request): string {
+  const xff = req.headers.get("x-forwarded-for");
+  if (xff) return xff.split(",")[0].trim();
+  return (
+    req.headers.get("x-real-ip") ??
+    req.headers.get("x-vercel-forwarded-for") ??
+    "unknown"
+  );
+}
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const windowStart = now - RATE_LIMIT_WINDOW_MS;
+  const hits = rateLimitStore.get(ip) ?? [];
+  const fresh = hits.filter((t) => t > windowStart);
+  if (fresh.length >= RATE_LIMIT_MAX) {
+    rateLimitStore.set(ip, fresh);
+    return true;
+  }
+  fresh.push(now);
+  rateLimitStore.set(ip, fresh);
+
+  // Opportunistic GC so the Map does not grow unbounded.
+  if (rateLimitStore.size > 5000) {
+    for (const [key, value] of rateLimitStore.entries()) {
+      const stillFresh = value.filter((t) => t > windowStart);
+      if (stillFresh.length === 0) rateLimitStore.delete(key);
+      else rateLimitStore.set(key, stillFresh);
+    }
+  }
+  return false;
+}
+
+/* ─── Cloudflare Turnstile verification ─────────────────────────────
+   Only enforced when TURNSTILE_SECRET_KEY is configured. Gives a clean
+   path for deploying the form before Turnstile is registered at
+   https://dash.cloudflare.com/?to=/:account/turnstile and added on
+   the client.
+   ────────────────────────────────────────────────────────────────── */
+async function verifyTurnstile(
+  token: string | undefined,
+  ip: string,
+): Promise<boolean> {
+  const secret = process.env.TURNSTILE_SECRET_KEY;
+  if (!secret) return true; // Not configured → skip
+  if (!token) return false;
+
+  try {
+    const body = new URLSearchParams({
+      secret,
+      response: token,
+      remoteip: ip,
+    });
+    const res = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      { method: "POST", body },
+    );
+    const data = (await res.json()) as { success?: boolean };
+    return data.success === true;
+  } catch (err) {
+    console.error("[CONTACT] turnstile verify failed", err);
+    return false;
+  }
+}
 
 function sanitize(value: unknown, max = 2000): string {
   if (typeof value !== "string") return "";
@@ -307,6 +393,16 @@ async function forwardSubmission(payload: ContactPayload) {
 }
 
 export async function POST(req: Request) {
+  const ip = getClientIp(req);
+
+  // Rate limit — 5 submissions / hour / IP, before parsing anything.
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      { ok: false, error: "Too many submissions. Please try again later." },
+      { status: 429 },
+    );
+  }
+
   let raw: unknown;
   try {
     raw = await req.json();
@@ -323,6 +419,15 @@ export async function POST(req: Request) {
   // they succeeded instead of probing for the validation rules.
   if (typeof body.honeypot === "string" && body.honeypot.length > 0) {
     return NextResponse.json({ ok: true });
+  }
+
+  // Cloudflare Turnstile — only enforced if TURNSTILE_SECRET_KEY is set.
+  const turnstileOk = await verifyTurnstile(body.turnstileToken, ip);
+  if (!turnstileOk) {
+    return NextResponse.json(
+      { ok: false, error: "Verification failed. Please refresh and try again." },
+      { status: 400 },
+    );
   }
 
   const name = sanitize(body.name, 120);

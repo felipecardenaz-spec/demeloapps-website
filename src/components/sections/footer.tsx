@@ -285,7 +285,7 @@ export function Footer() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/logoDeMeloApps2.svg"
-              alt="DeMelo Apps"
+              alt="DeMeloApps"
               style={{
                 height: "26px", width: "auto",
                 marginBottom: "16px",
@@ -355,7 +355,7 @@ export function Footer() {
             fontWeight: 300,
             letterSpacing: "0.01em",
           }}>
-            © 2026 DeMelo Apps. All rights reserved.
+            © 2026 DeMeloApps. All rights reserved.
           </p>
 
           <div style={{ display: "flex", gap: "20px" }}>

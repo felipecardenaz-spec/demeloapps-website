@@ -262,6 +262,16 @@ function TextareaInput(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>)
   );
 }
 
+/* ─── Turnstile site key (public — safe to expose) ──────────────── */
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
+declare global {
+  interface Window {
+    __demeloOnTurnstileToken?: (token: string) => void;
+    __demeloOnTurnstileExpired?: () => void;
+  }
+}
+
 /* ─── Page ──────────────────────────────────────────────────────── */
 export function ContactPage() {
   const [isMobile, setIsMobile] = useState(false);
@@ -269,6 +279,7 @@ export function ContactPage() {
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [status, setStatus] = useState<Status>("idle");
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
 
   const attributionRef = useRef<Attribution>(INITIAL_ATTRIBUTION);
   const mountedAtRef = useRef<number>(Date.now());
@@ -279,6 +290,33 @@ export function ContactPage() {
     check();
     window.addEventListener("resize", check, { passive: true });
     return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // Cloudflare Turnstile — only loads when the site key env var is configured.
+  // Renders a hidden invisible widget that calls our global callback with a
+  // token whenever the user is implicitly verified. Token is then sent up
+  // with the form submission and verified server side.
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY) return;
+
+    window.__demeloOnTurnstileToken = (token: string) => setTurnstileToken(token);
+    window.__demeloOnTurnstileExpired = () => setTurnstileToken("");
+
+    const existing = document.querySelector(
+      'script[src^="https://challenges.cloudflare.com/turnstile"]',
+    );
+    if (!existing) {
+      const script = document.createElement("script");
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+    }
+
+    return () => {
+      delete window.__demeloOnTurnstileToken;
+      delete window.__demeloOnTurnstileExpired;
+    };
   }, []);
 
   // Capture campaign attribution + URL pre-fills on first mount.
@@ -354,6 +392,7 @@ export function ContactPage() {
         body: JSON.stringify({
           ...form,
           ...attributionRef.current,
+          turnstileToken,
           timeOnPageMs: Date.now() - mountedAtRef.current,
         }),
       });
@@ -707,6 +746,21 @@ export function ContactPage() {
                       />
                     </Field>
                   </div>
+
+                  {/* Cloudflare Turnstile — invisible widget, only rendered
+                      when NEXT_PUBLIC_TURNSTILE_SITE_KEY is configured. */}
+                  {TURNSTILE_SITE_KEY && (
+                    <div style={{ marginTop: "18px" }}>
+                      <div
+                        className="cf-turnstile"
+                        data-sitekey={TURNSTILE_SITE_KEY}
+                        data-callback="__demeloOnTurnstileToken"
+                        data-expired-callback="__demeloOnTurnstileExpired"
+                        data-theme="dark"
+                        data-size="flexible"
+                      />
+                    </div>
+                  )}
 
                   {submitError && (
                     <div

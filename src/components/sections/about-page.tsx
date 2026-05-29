@@ -5,7 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { Footer } from "./footer";
 
 /* ═══════════════════════════════════════════════════════════════════
-   AboutPage — DeMelo Apps
+   AboutPage — DeMeloApps
    Editorial layout. Inline styles. Dark theme, indigo/violet accents.
    ═══════════════════════════════════════════════════════════════════ */
 

@@ -4,10 +4,14 @@
  */
 
 export const siteConfig = {
-  name: "DeMelo Apps",
+  name: "DeMeloApps",
+  shortName: "DeMeloApps",
+  legalName: "DeMeloApps",
+  tagline: "AI software made in Vancouver",
   description:
-    "Custom AI automation, mobile app development, and business software for startups and growing companies. DeMelo Apps builds scalable digital systems that replace manual work and accelerate growth.",
+    "DeMeloApps is an AI software studio in Vancouver. We design and build custom AI automation, business software, and mobile apps for growing companies.",
   url: "https://demeloapps.com",
+  locale: "en_US",
   cta: {
     label: "Book a Free Call",
     href: "/contact",

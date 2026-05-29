@@ -134,7 +134,7 @@ export function LogoCarousel() {
           lineHeight: 1.6,
           margin: "10px 0 0",
         }}>
-          Startups and growing teams rely on DeMelo Apps to build products, automate workflows, and scale.
+          Startups and growing teams rely on DeMeloApps to build products, automate workflows, and scale.
         </p>
       </motion.div>
 
